@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-11-26T10:20:23Z" product-name="project_registration">
+		<header/>
+		<body>
+			<trans-unit id="tx_projectregistration_domain_model_project">
+				<source>Project</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_project.date_of_request">
+				<source>Date Of Request</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_project.application">
+				<source>Application</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_project.quantity">
+				<source>Quantity</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_project.estimated_purchase_date">
+				<source>Estimated Purchase Date</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_project.registration_notes">
+				<source>Registration Notes</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_project.internal_note">
+				<source>Internal Note</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_project.denial_note">
+				<source>Denial Note</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_project.approved">
+				<source>Approved</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_project.registrant">
+				<source>Registrant</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_project.end_user">
+				<source>End User</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_project.products">
+				<source>Products</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_product">
+				<source>Product</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_product.title">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_product.properties">
+				<source>Properties</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_productproperty">
+				<source>Product Property</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_productproperty.title">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_productproperty.property_values">
+				<source>Property Values</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_productpropertyvalue">
+				<source>Product Property Value</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_productpropertyvalue.title">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_person">
+				<source>Person</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_person.name">
+				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_person.company">
+				<source>Company</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_person.email">
+				<source>Email</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_person.phone">
+				<source>Phone</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_person.city">
+				<source>City</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_person.site">
+				<source>Site</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_person.country">
+				<source>Country</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_person.state">
+				<source>State</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

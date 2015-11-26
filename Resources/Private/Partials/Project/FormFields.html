@@ -1,0 +1,33 @@
+
+<label for="dateOfRequest">
+	<f:translate key="tx_projectregistration_domain_model_project.date_of_request" /> <span class="required">(required)</span>
+</label><br />
+	<f:form.textfield property="dateOfRequest"  value="{project.dateOfRequest->f:format.date()}" /><br />
+<label for="application">
+	<f:translate key="tx_projectregistration_domain_model_project.application" /> <span class="required">(required)</span>
+</label><br />
+	<f:form.textfield property="application" /><br />
+<label for="quantity">
+	<f:translate key="tx_projectregistration_domain_model_project.quantity" /> <span class="required">(required)</span>
+</label><br />
+	<f:form.textfield property="quantity" /><br />
+<label for="estimatedPurchaseDate">
+	<f:translate key="tx_projectregistration_domain_model_project.estimated_purchase_date" /> <span class="required">(required)</span>
+</label><br />
+	<f:form.textfield property="estimatedPurchaseDate"  value="{project.estimatedPurchaseDate->f:format.date()}" /><br />
+<label for="registrationNotes">
+	<f:translate key="tx_projectregistration_domain_model_project.registration_notes" />
+</label><br />
+	<f:form.textarea property="registrationNotes" cols="40" rows="15" /><br />
+<label for="internalNote">
+	<f:translate key="tx_projectregistration_domain_model_project.internal_note" />
+</label><br />
+	<f:form.textarea property="internalNote" cols="40" rows="15" /><br />
+<label for="denialNote">
+	<f:translate key="tx_projectregistration_domain_model_project.denial_note" />
+</label><br />
+	<f:form.textarea property="denialNote" cols="40" rows="15" /><br />
+<label for="approved">
+	<f:translate key="tx_projectregistration_domain_model_project.approved" />
+</label><br />
+	<f:form.checkbox property="approved" value="1" /><br />

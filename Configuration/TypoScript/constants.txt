@@ -1,0 +1,30 @@
+
+plugin.tx_projectregistration_registration {
+	view {
+		# cat=plugin.tx_projectregistration_registration/file; type=string; label=Path to template root (FE)
+		templateRootPath = EXT:project_registration/Resources/Private/Templates/
+		# cat=plugin.tx_projectregistration_registration/file; type=string; label=Path to template partials (FE)
+		partialRootPath = EXT:project_registration/Resources/Private/Partials/
+		# cat=plugin.tx_projectregistration_registration/file; type=string; label=Path to template layouts (FE)
+		layoutRootPath = EXT:project_registration/Resources/Private/Layouts/
+	}
+	persistence {
+		# cat=plugin.tx_projectregistration_registration//a; type=string; label=Default storage PID
+		storagePid =
+	}
+}
+
+plugin.tx_projectregistration_administration {
+	view {
+		# cat=plugin.tx_projectregistration_administration/file; type=string; label=Path to template root (FE)
+		templateRootPath = EXT:project_registration/Resources/Private/Templates/
+		# cat=plugin.tx_projectregistration_administration/file; type=string; label=Path to template partials (FE)
+		partialRootPath = EXT:project_registration/Resources/Private/Partials/
+		# cat=plugin.tx_projectregistration_administration/file; type=string; label=Path to template layouts (FE)
+		layoutRootPath = EXT:project_registration/Resources/Private/Layouts/
+	}
+	persistence {
+		# cat=plugin.tx_projectregistration_administration//a; type=string; label=Default storage PID
+		storagePid =
+	}
+}
