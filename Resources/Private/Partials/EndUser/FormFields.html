@@ -1,0 +1,75 @@
+<div class="form-group">
+	<div class="powermail_fieldwrap">
+		<label for="prf-enduser-company" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_person.company" /> <span class="mandatory">*</span></label>
+		<f:form.textfield required="required"
+		                  placeholder="Please fill in"
+		                  class="form-control powermail_field"
+		                  id="prf-enduser-company"
+		                  property="endUser.company" />
+	</div>
+</div>
+<div class="form-group">
+	<div class="powermail_fieldwrap">
+		<label for="prf-enduser-name" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_person.name" /></label>
+		<f:form.textfield class="form-control powermail_field"
+		                  id="prf-enduser-name"
+		                  property="endUser.name" />
+	</div>
+</div>
+<div class="form-group">
+	<div class="powermail_fieldwrap">
+		<label for="prf-enduser-email" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_person.email" /></label>
+		<f:form.textfield class="form-control powermail_field"
+		                  id="prf-enduser-email"
+		                  property="endUser.email"
+		                  type="email" />
+	</div>
+</div>
+<div class="form-group">
+	<div class="powermail_fieldwrap">
+		<label for="prf-enduser-phone" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_person.phone" /></label>
+		<f:form.textfield class="form-control powermail_field"
+		                  id="prf-enduser-phone"
+		                  property="endUser.phone" />
+	</div>
+</div>
+<div class="form-group">
+	<div class="powermail_fieldwrap">
+		<label for="prf-enduser-city" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_person.city" /></label>
+		<f:form.textfield class="form-control powermail_field"
+		                  id="prf-enduser-city"
+		                  property="endUser.city" />
+	</div>
+</div>
+<div class="form-group">
+	<div class="powermail_fieldwrap">
+		<label for="prf-enduser-site" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_person.site" /></label>
+		<f:form.textfield class="form-control powermail_field"
+		                  id="prf-enduser-site"
+		                  property="endUser.site" />
+	</div>
+</div>
+<div class="form-group" id="prf-enduser-country-selector">
+	<div class="powermail_fieldwrap">
+		<label for="prf-enduser-country" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_person.country" /> <span class="mandatory">*</span></label>
+		<f:form.select additionalAttributes="{required: 'required'}"
+		               class="form-control powermail_field"
+		               options="{countries}"
+		               optionLabelField="title"
+		               prependOptionLabel="{f:translate(id: 'select_empty_option')}"
+		               prependOptionValue=""
+		               id="prf-enduser-country"
+		               property="endUser.country" />
+	</div>
+</div>
+<div class="form-group" id="prf-enduser-state-selector">
+	<div class="powermail_fieldwrap">
+		<label for="prf-enduser-state" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_person.state" /> <span class="mandatory" style="display: none">*</span></label>
+		<select class="form-control powermail_field" id="prf-enduser-state" name="tx_projectregistration_registration[dto][endUser][state]" disabled>
+			<option value="0"></option>
+			<f:for each="{states}" as="state">
+				<option value="{state.uid}" data-country="{state.country.uid}">{state.title}</option>
+			</f:for>
+		</select>
+	</div>
+</div>

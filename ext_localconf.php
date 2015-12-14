@@ -1,34 +1,26 @@
 <?php
 if (!defined('TYPO3_MODE')) {
-	die('Access denied.');
+    die('Access denied.');
 }
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-	'S3b0.' . $_EXTKEY,
-	'Registration',
-	array(
-		'Project' => 'new, create, confirmation',
-		
-	),
-	// non-cacheable actions
-	array(
-		'Project' => 'create',
-		
-	)
+    'S3b0.' . $_EXTKEY,
+    'Registration',
+    ['Project' => 'new, create, confirmation'],
+    // non-cacheable actions
+    ['Project' => 'create']
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-	'S3b0.' . $_EXTKEY,
-	'Administration',
-	array(
-		'Project' => 'list, show, new, create, edit, update, delete, confirmation, approve, addInternalNote, addDenialNote',
-		'Person' => 'show',
-		
-	),
-	// non-cacheable actions
-	array(
-		'Project' => 'create, update, delete, ',
-		'Person' => '',
-		
-	)
+    'S3b0.' . $_EXTKEY,
+    'Administration',
+    [
+        'Project' => 'list, show, new, create, edit, update, delete, confirmation, approve, addInternalNote, addDenialNote',
+        'Person' => 'show'
+    ],
+    // non-cacheable actions
+    [
+        'Project' => 'create, update, delete, ',
+        'Person' => ''
+    ]
 );

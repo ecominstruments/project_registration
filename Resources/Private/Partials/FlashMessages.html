@@ -1,0 +1,10 @@
+<f:flashMessages as="flashMessages">
+	<ul class="myFlashMessages">
+		<f:for each="{flashMessages}" as="flashMessage">
+			<li class="alert {flashMessage.class}">
+				<h4>{flashMessage.title}</h4>
+				<span class="fancy-icon">{flashMessage.message}</span>
+			</li>
+		</f:for>
+	</ul>
+</f:flashMessages>

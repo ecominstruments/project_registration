@@ -13,14 +13,29 @@ in /Configuration/ExtensionBuilder/settings.yaml:
 Otherwise your changes will be overwritten the next time you save the extension in the extension builder
 
 <f:section name="main">
-<h1>New Project</h1>
 
-<f:flashMessages />
+  <f:render partial="FlashMessages" arguments="{_all}" />
+  <f:render partial="FormErrors" arguments="{object:Project}" />
 
-<f:render partial="FormErrors" arguments="{object:Project}" />
+  <f:form action="create" class="tx-powermail" name="dto" object="{dto}" additionalAttributes="{data-validate: 'html5', data-parsley-validate: 'data-parsley-validate', novalidate: ''}">
 
-<f:form action="create"  name="newProject" object="{newProject}">
-<f:render partial="Project/FormFields" />
-	<f:form.submit value="Create new" />
-</f:form>
+    <section>
+      <h2>Registrant information</h2>
+      <f:render partial="Registrant/FormFields" arguments="{_all}" />
+    </section>
+
+    <section>
+      <h2>Project data</h2>
+      <f:render partial="Project/FormFields" arguments="{_all}" />
+    </section>
+
+    <section>
+      <h2>End user information</h2>
+      <f:render partial="EndUser/FormFields" arguments="{_all}" />
+    </section>
+
+    <f:form.submit value="Create new" />
+  </f:form>
+
+  <script language="JavaScript" type="text/javascript" src="{f:uri.resource(path: 'JavaScript/app.js')}"></script>
 </f:section>

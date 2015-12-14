@@ -29,60 +29,138 @@ namespace S3b0\ProjectRegistration\Domain\Model;
 /**
  * ProductProperty
  */
-class ProductProperty extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+class ProductProperty extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+{
 
-	/**
-	 * title
-	 *
-	 * @var string
-	 * @validate NotEmpty
-	 */
-	protected $title = '';
+    /**
+     * @var string
+     * @validate NotEmpty
+     */
+    protected $title = '';
 
-	/**
-	 * propertyValues
-	 *
-	 * @var \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue
-	 * @lazy
-	 */
-	protected $propertyValues = NULL;
+    /**
+     * @var int
+     */
+    protected $formElementType = 0;
 
-	/**
-	 * Returns the title
-	 *
-	 * @return string $title
-	 */
-	public function getTitle() {
-		return $this->title;
-	}
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue>
+     */
+    protected $propertyValues;
 
-	/**
-	 * Sets the title
-	 *
-	 * @param string $title
-	 * @return void
-	 */
-	public function setTitle($title) {
-		$this->title = $title;
-	}
+    /**
+     * ProductProperty constructor.
+     */
+    public function __construct()
+    {
+        $this->initStorageObjects();
+    }
 
-	/**
-	 * Returns the propertyValues
-	 *
-	 * @return \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue $propertyValues
-	 */
-	public function getPropertyValues() {
-		return $this->propertyValues;
-	}
+    /**
+     * Initializes all ObjectStorage properties
+     */
+    public function initStorageObjects()
+    {
+        $this->propertyValues = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+    }
 
-	/**
-	 * Sets the propertyValues
-	 *
-	 * @param \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue $propertyValues
-	 * @return void
-	 */
-	public function setPropertyValues(\S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue $propertyValues) {
-		$this->propertyValues = $propertyValues;
-	}
+    /**
+     * @return string $title
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFormElementType()
+    {
+        return $this->formElementType;
+    }
+
+    /**
+     * @param int $formElementType
+     */
+    public function setFormElementType($formElementType)
+    {
+        $this->formElementType = $formElementType;
+    }
+
+    /**
+     * @param \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue $propertyValue
+     */
+    public function addPropertyValue(\S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue $propertyValue)
+    {
+        if ($propertyValue instanceof \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue) {
+            if (!$this->propertyValues instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage) {
+                $this->propertyValues = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+            }
+            if (!$this->propertyValues->contains($propertyValue)) {
+                $this->propertyValues->attach($propertyValue);
+            }
+        }
+    }
+
+    /**
+     * @param \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue $propertyValueToRemove
+     */
+    public function removePropertyValue(
+        \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue $propertyValueToRemove
+    ) {
+        if ($propertyValueToRemove instanceof \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue && $this->propertyValues instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $this->propertyValues->contains($propertyValueToRemove)) {
+            $this->propertyValues->detach($propertyValueToRemove);
+        }
+    }
+
+    /**
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     */
+    public function getPropertyValues()
+    {
+        if ($this->propertyValues instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage) {
+            return $this->propertyValues;
+        } else {
+            return new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        }
+    }
+
+    /**
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $propertyValues
+     */
+    public function setPropertyValues(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $propertyValues = null)
+    {
+        $this->propertyValues = $propertyValues;
+    }
+
+    /**
+     * @return string
+     */
+    public function getJsCallerId()
+    {
+        return "prf-property-{$this->uid}";
+    }
+
+    /**
+     * @return string
+     */
+    public function getJsFormTypeIdentifier()
+    {
+        switch ($this->formElementType) {
+            case 1:
+                return 'prf-form-type-select';
+            default:
+                return 'prf-form-type-radio';
+        }
+    }
 
 }

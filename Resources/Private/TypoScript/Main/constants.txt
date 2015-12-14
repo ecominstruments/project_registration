@@ -1,0 +1,29 @@
+
+plugin.tx_projectregistration {
+	view {
+		# cat=plugin.tx_projectregistration_registration/file; type=string; label=Path to templates root (FE)
+		templateRootPath = EXT:project_registration/Resources/Private/Templates/
+		# cat=plugin.tx_projectregistration_registration/file; type=string; label=Path to templates partials (FE)
+		partialRootPath = EXT:project_registration/Resources/Private/Partials/
+		# cat=plugin.tx_projectregistration_registration/file; type=string; label=Path to templates layouts (FE)
+		layoutRootPath = EXT:project_registration/Resources/Private/Layouts/
+	}
+	email {
+		# cat=plugin.tx_projectregistration_registration/file; type=string; label=Path to email templates root (FE)
+		templateRootPath = EXT:project_registration/Resources/Private/Templates/Email/
+		# cat=plugin.tx_projectregistration_registration/file; type=string; label=Path to email templates partials (FE)
+		partialRootPath = EXT:project_registration/Resources/Private/Partials/Email/
+		# cat=plugin.tx_projectregistration_registration/file; type=string; label=Path to email templates layouts (FE)
+		layoutRootPath = EXT:project_registration/Resources/Private/Layouts/Email/
+
+	}
+	persistence {
+		# cat=plugin.tx_projectregistration_registration//a; type=string; label=Default storage PID
+		storagePid =
+	}
+	settings {
+		addressees {
+			label = LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:addressees_label
+		}
+	}
+}

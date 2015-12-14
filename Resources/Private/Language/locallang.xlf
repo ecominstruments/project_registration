@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2015-11-26T10:20:23Z" product-name="project_registration">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-11-26T11:09:59Z" product-name="project_registration">
 		<header/>
 		<body>
 			<trans-unit id="tx_projectregistration_domain_model_project">
 				<source>Project</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_project.title">
+				<source>Title</source>
 			</trans-unit>
 			<trans-unit id="tx_projectregistration_domain_model_project.date_of_request">
 				<source>Date Of Request</source>
@@ -36,8 +39,8 @@
 			<trans-unit id="tx_projectregistration_domain_model_project.end_user">
 				<source>End User</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_project.products">
-				<source>Products</source>
+			<trans-unit id="tx_projectregistration_domain_model_project.product">
+				<source>Product</source>
 			</trans-unit>
 			<trans-unit id="tx_projectregistration_domain_model_product">
 				<source>Product</source>
@@ -73,7 +76,7 @@
 				<source>Company</source>
 			</trans-unit>
 			<trans-unit id="tx_projectregistration_domain_model_person.email">
-				<source>Email</source>
+				<source>E-Mail</source>
 			</trans-unit>
 			<trans-unit id="tx_projectregistration_domain_model_person.phone">
 				<source>Phone</source>
@@ -89,6 +92,22 @@
 			</trans-unit>
 			<trans-unit id="tx_projectregistration_domain_model_person.state">
 				<source>State</source>
+			</trans-unit>
+
+			<trans-unit id="addressees_label">
+				<source>Your Location</source>
+			</trans-unit>
+			<trans-unit id="addressees.I.0">
+				<source>Americas</source>
+			</trans-unit>
+			<trans-unit id="addressees.I.1">
+				<source>Europe, Middle East and Africa</source>
+			</trans-unit>
+			<trans-unit id="addressees.I.2">
+				<source>Asia Pacific</source>
+			</trans-unit>
+			<trans-unit id="select_empty_option">
+				<source>-- Please choose --</source>
 			</trans-unit>
 		</body>
 	</file>

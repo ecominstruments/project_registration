@@ -19,6 +19,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 <table  class="tx_projectregistration" >
 	<tr>
+		<th><f:translate key="tx_projectregistration_domain_model_project.title" /></th>
 		<th><f:translate key="tx_projectregistration_domain_model_project.date_of_request" /></th>
 		<th><f:translate key="tx_projectregistration_domain_model_project.application" /></th>
 		<th><f:translate key="tx_projectregistration_domain_model_project.quantity" /></th>
@@ -33,6 +34,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 	<f:for each="{projects}" as="project">
 		<tr>
+			<td><f:link.action action="show" arguments="{project : project}"> {project.title}</f:link.action></td>
 			<td><f:link.action action="show" arguments="{project : project}"> {project.dateOfRequest -> f:format.date()}</f:link.action></td>
 			<td><f:link.action action="show" arguments="{project : project}"> {project.application}</f:link.action></td>
 			<td><f:link.action action="show" arguments="{project : project}"> {project.quantity}</f:link.action></td>

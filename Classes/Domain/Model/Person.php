@@ -29,222 +29,408 @@ namespace S3b0\ProjectRegistration\Domain\Model;
 /**
  * Person
  */
-class Person extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+class Person extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+{
 
-	/**
-	 * name
-	 *
-	 * @var string
-	 * @validate NotEmpty
-	 */
-	protected $name = '';
+    /**
+     * @var string
+     */
+    protected $name = '';
 
-	/**
-	 * company
-	 *
-	 * @var string
-	 * @validate NotEmpty
-	 */
-	protected $company = '';
+    /**
+     * @var string
+     */
+    protected $firstName = '';
 
-	/**
-	 * email
-	 *
-	 * @var string
-	 * @validate NotEmpty
-	 */
-	protected $email = '';
+    /**
+     * @var string
+     */
+    protected $middleName = '';
 
-	/**
-	 * phone
-	 *
-	 * @var string
-	 * @validate NotEmpty
-	 */
-	protected $phone = '';
+    /**
+     * @var string
+     */
+    protected $lastName = '';
 
-	/**
-	 * city
-	 *
-	 * @var string
-	 * @validate NotEmpty
-	 */
-	protected $city = '';
+    /**
+     * @var string
+     */
+    protected $title = '';
 
-	/**
-	 * site
-	 *
-	 * @var string
-	 * @validate NotEmpty
-	 */
-	protected $site = '';
+    /**
+     * @var string
+     * @validate NotEmpty
+     */
+    protected $company = '';
 
-	/**
-	 * country
-	 *
-	 * @var \Ecom\EcomToolbox\Domain\Model\Region
-	 * @lazy
-	 */
-	protected $country = NULL;
+    /**
+     * @var string
+     */
+    protected $address = '';
 
-	/**
-	 * state
-	 *
-	 * @var \Ecom\EcomToolbox\Domain\Model\State
-	 * @lazy
-	 */
-	protected $state = NULL;
+    /**
+     * @var string
+     */
+    protected $email = '';
 
-	/**
-	 * Returns the name
-	 *
-	 * @return string $name
-	 */
-	public function getName() {
-		return $this->name;
-	}
+    /**
+     * @var string
+     */
+    protected $www = '';
 
-	/**
-	 * Sets the name
-	 *
-	 * @param string $name
-	 * @return void
-	 */
-	public function setName($name) {
-		$this->name = $name;
-	}
+    /**
+     * @var string
+     */
+    protected $phone = '';
 
-	/**
-	 * Returns the company
-	 *
-	 * @return string $company
-	 */
-	public function getCompany() {
-		return $this->company;
-	}
+    /**
+     * @var string
+     */
+    protected $fax = '';
 
-	/**
-	 * Sets the company
-	 *
-	 * @param string $company
-	 * @return void
-	 */
-	public function setCompany($company) {
-		$this->company = $company;
-	}
+    /**
+     * @var string
+     */
+    protected $zip = '';
 
-	/**
-	 * Returns the email
-	 *
-	 * @return string $email
-	 */
-	public function getEmail() {
-		return $this->email;
-	}
+    /**
+     * @var string
+     */
+    protected $city = '';
 
-	/**
-	 * Sets the email
-	 *
-	 * @param string $email
-	 * @return void
-	 */
-	public function setEmail($email) {
-		$this->email = $email;
-	}
+    /**
+     * @var string
+     */
+    protected $site = '';
 
-	/**
-	 * Returns the phone
-	 *
-	 * @return string $phone
-	 */
-	public function getPhone() {
-		return $this->phone;
-	}
+    /**
+     * @var \Ecom\EcomToolbox\Domain\Model\Region
+     */
+    protected $country = null;
 
-	/**
-	 * Sets the phone
-	 *
-	 * @param string $phone
-	 * @return void
-	 */
-	public function setPhone($phone) {
-		$this->phone = $phone;
-	}
+    /**
+     * @var \Ecom\EcomToolbox\Domain\Model\State
+     */
+    protected $state = null;
 
-	/**
-	 * Returns the city
-	 *
-	 * @return string $city
-	 */
-	public function getCity() {
-		return $this->city;
-	}
+    /**
+     * @var \Ecom\EcomToolbox\Domain\Model\User
+     */
+    protected $feUser = null;
 
-	/**
-	 * Sets the city
-	 *
-	 * @param string $city
-	 * @return void
-	 */
-	public function setCity($city) {
-		$this->city = $city;
-	}
+    /**
+     * Person constructor.
+     *
+     * @param \Ecom\EcomToolbox\Domain\Model\User|null $user
+     */
+    public function __construct(\Ecom\EcomToolbox\Domain\Model\User $user = null)
+    {
+        if ($user instanceof \Ecom\EcomToolbox\Domain\Model\User) {
+            $this->name = $user->getName();
+            $this->firstName = $user->getFirstName();
+            $this->middleName = $user->getMiddleName();
+            $this->lastName = $user->getLastName();
+            $this->title = $user->getTitle();
+            $this->company = $user->getCompany();
+            $this->address = $user->getAddress();
+            $this->email = $user->getEmail();
+            $this->www = $user->getWww();
+            $this->phone = $user->getTelephone();
+            $this->fax = $user->getFax();
+            $this->zip = $user->getZip();
+            $this->city = $user->getCity();
+            $this->country = $user->getEcomToolboxCountry();
+            $this->state = $user->getEcomToolboxState();
+            $this->feUser = $user;
+        }
+    }
 
-	/**
-	 * Returns the site
-	 *
-	 * @return string $site
-	 */
-	public function getSite() {
-		return $this->site;
-	}
+    /**
+     * @return string $name
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	/**
-	 * Sets the site
-	 *
-	 * @param string $site
-	 * @return void
-	 */
-	public function setSite($site) {
-		$this->site = $site;
-	}
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
 
-	/**
-	 * Returns the country
-	 *
-	 * @return \Ecom\EcomToolbox\Domain\Model\Region $country
-	 */
-	public function getCountry() {
-		return $this->country;
-	}
+    /**
+     * @return string
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
 
-	/**
-	 * Sets the country
-	 *
-	 * @param \Ecom\EcomToolbox\Domain\Model\Region $country
-	 * @return void
-	 */
-	public function setCountry(\Ecom\EcomToolbox\Domain\Model\Region $country) {
-		$this->country = $country;
-	}
+    /**
+     * @param string $firstName
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    }
 
-	/**
-	 * Returns the state
-	 *
-	 * @return \Ecom\EcomToolbox\Domain\Model\State $state
-	 */
-	public function getState() {
-		return $this->state;
-	}
+    /**
+     * @return string
+     */
+    public function getMiddleName()
+    {
+        return $this->middleName;
+    }
 
-	/**
-	 * Sets the state
-	 *
-	 * @param \Ecom\EcomToolbox\Domain\Model\State $state
-	 * @return void
-	 */
-	public function setState(\Ecom\EcomToolbox\Domain\Model\State $state) {
-		$this->state = $state;
-	}
+    /**
+     * @param string $middleName
+     */
+    public function setMiddleName($middleName)
+    {
+        $this->middleName = $middleName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * @param string $lastName
+     */
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @return string $company
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    /**
+     * @param string $company
+     */
+    public function setCompany($company)
+    {
+        $this->company = $company;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * @return string $email
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWww()
+    {
+        return $this->www;
+    }
+
+    /**
+     * @param string $www
+     */
+    public function setWww($www)
+    {
+        $this->www = $www;
+    }
+
+    /**
+     * @return string $phone
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    /**
+     * @param string $phone
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFax()
+    {
+        return $this->fax;
+    }
+
+    /**
+     * @param string $fax
+     */
+    public function setFax($fax)
+    {
+        $this->fax = $fax;
+    }
+
+    /**
+     * @return string
+     */
+    public function getZip()
+    {
+        return $this->zip;
+    }
+
+    /**
+     * @param string $zip
+     */
+    public function setZip($zip)
+    {
+        $this->zip = $zip;
+    }
+
+    /**
+     * @return string $city
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * @param string $city
+     */
+    public function setCity($city)
+    {
+        $this->city = $city;
+    }
+
+    /**
+     * @return string $site
+     */
+    public function getSite()
+    {
+        return $this->site;
+    }
+
+    /**
+     * @param string $site
+     */
+    public function setSite($site)
+    {
+        $this->site = $site;
+    }
+
+    /**
+     * @return \Ecom\EcomToolbox\Domain\Model\Region $country
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * @param \Ecom\EcomToolbox\Domain\Model\Region $country
+     */
+    public function setCountry(\Ecom\EcomToolbox\Domain\Model\Region $country = null)
+    {
+        $this->country = $country;
+    }
+
+    /**
+     * @return \Ecom\EcomToolbox\Domain\Model\State $state
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param \Ecom\EcomToolbox\Domain\Model\State $state
+     */
+    public function setState(\Ecom\EcomToolbox\Domain\Model\State $state = null)
+    {
+        $this->state = $state;
+    }
+
+    /**
+     * @return \Ecom\EcomToolbox\Domain\Model\User
+     */
+    public function getFeUser()
+    {
+        return $this->feUser;
+    }
+
+    /**
+     * @param \Ecom\EcomToolbox\Domain\Model\User $feUser
+     */
+    public function setFeUser(\Ecom\EcomToolbox\Domain\Model\User $feUser = null)
+    {
+        $this->feUser = $feUser;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLoginUser()
+    {
+        return $this->feUser instanceof \Ecom\EcomToolbox\Domain\Model\User;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNoLoginUser()
+    {
+        return !$this->isLoginUser();
+    }
 
 }

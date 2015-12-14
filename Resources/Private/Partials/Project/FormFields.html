@@ -1,33 +1,120 @@
-
-<label for="dateOfRequest">
-	<f:translate key="tx_projectregistration_domain_model_project.date_of_request" /> <span class="required">(required)</span>
-</label><br />
-	<f:form.textfield property="dateOfRequest"  value="{project.dateOfRequest->f:format.date()}" /><br />
-<label for="application">
-	<f:translate key="tx_projectregistration_domain_model_project.application" /> <span class="required">(required)</span>
-</label><br />
-	<f:form.textfield property="application" /><br />
-<label for="quantity">
-	<f:translate key="tx_projectregistration_domain_model_project.quantity" /> <span class="required">(required)</span>
-</label><br />
-	<f:form.textfield property="quantity" /><br />
-<label for="estimatedPurchaseDate">
-	<f:translate key="tx_projectregistration_domain_model_project.estimated_purchase_date" /> <span class="required">(required)</span>
-</label><br />
-	<f:form.textfield property="estimatedPurchaseDate"  value="{project.estimatedPurchaseDate->f:format.date()}" /><br />
-<label for="registrationNotes">
-	<f:translate key="tx_projectregistration_domain_model_project.registration_notes" />
-</label><br />
-	<f:form.textarea property="registrationNotes" cols="40" rows="15" /><br />
-<label for="internalNote">
-	<f:translate key="tx_projectregistration_domain_model_project.internal_note" />
-</label><br />
-	<f:form.textarea property="internalNote" cols="40" rows="15" /><br />
-<label for="denialNote">
-	<f:translate key="tx_projectregistration_domain_model_project.denial_note" />
-</label><br />
-	<f:form.textarea property="denialNote" cols="40" rows="15" /><br />
-<label for="approved">
-	<f:translate key="tx_projectregistration_domain_model_project.approved" />
-</label><br />
-	<f:form.checkbox property="approved" value="1" /><br />
+<div class="form-group">
+	<div class="powermail_fieldwrap">
+		<label for="prf-title" class="powermail_label">
+			<f:translate id="tx_projectregistration_domain_model_project.title"/>
+			<span class="mandatory">*</span></label>
+		<f:form.textfield property="project.title"
+		                  required="required"
+		                  id="prf-title"
+		                  class="form-control powermail_field"/>
+	</div>
+</div>
+<div class="form-group">
+	<div class="powermail_fieldwrap">
+		<label for="prf-product" class="powermail_label">
+			<f:translate id="tx_projectregistration_domain_model_project.product"/>
+			<span class="mandatory">*</span></label>
+		<select class="form-control powermail_field" id="prf-product"
+		        name="tx_projectregistration_registration[dto][project][product]" required="required">
+			<option value="0">
+				<f:translate id="select_empty_option"/>
+			</option>
+			<f:for each="{products}" as="product">
+				<option value="{product.uid}" data-properties="{product.propertiesList}">{product.title}</option>
+			</f:for>
+		</select>
+	</div>
+</div>
+<f:if condition="{projectProductProperties}">
+	<f:for each="{projectProductProperties}" as="property">
+		<div id="{property.jsCallerId}" class="form-group prf-property-selector {property.jsFormTypeIdentifier}"
+		     style="display: none">
+			<div class="powermail_fieldwrap validate-property-value-{property.uid}">
+				<f:if condition="{property.formElementType} == 0">
+					<span class="powermail_label">{property.title} <span class="mandatory">*</span></span>
+					<f:if condition="{property.propertyValues -> f:count()} > 1">
+						<div class="powermail_radio_outer clearfix ">
+							<f:for each="{property.propertyValues}" as="value">
+								<div class="radio-inline">
+									<label for="{value.jsCallerId}">
+										<f:form.radio
+											additionalAttributes="{data-parsley-errors-container: '.field-error-container-{property.uid}'}"
+											value="{value.uid}"
+											id="{value.jsCallerId}"
+											property="propertyValues.{property.uid}"/>
+										{value.title}
+									</label>
+								</div>
+							</f:for>
+							<div class="field-error-container-{property.uid}"></div>
+						</div>
+					</f:if>
+				</f:if>
+				<f:if condition="{property.formElementType} == 1">
+					<label for="{value.jsCallerId}" class="powermail_label">{property.title} <span
+						class="mandatory">*</span></label>
+					<f:form.select class="form-control powermail_field"
+					               options="{property.propertyValues}"
+					               optionLabelField="title"
+					               prependOptionLabel="{f:translate(id: 'select_empty_option')}"
+					               prependOptionValue=""
+					               id="{value.jsCallerId}"
+					               property="propertyValues.{property.uid}"/>
+				</f:if>
+				<f:if condition="{property.formElementType} == 2">
+					<label for="{value.jsCallerId}" class="powermail_label">{property.title} <span
+						class="mandatory">*</span></label>
+					<f:form.textfield class="form-control powermail_field"
+					                  id="{value.jsCallerId}"
+					                  property="propertyValues.{property.uid}"/>
+				</f:if>
+			</div>
+		</div>
+	</f:for>
+</f:if>
+<div class="form-group">
+	<div class="powermail_fieldwrap">
+		<label for="prf-application" class="powermail_label">
+			<f:translate id="tx_projectregistration_domain_model_project.application"/>
+			<span class="mandatory">*</span></label>
+		<f:form.textfield property="project.application"
+		                  required="required"
+		                  id="prf-application"
+		                  class="form-control powermail_field"/>
+	</div>
+</div>
+<div class="form-group">
+	<div class="powermail_fieldwrap">
+		<label for="prf-quantity" class="powermail_label">
+			<f:translate id="tx_projectregistration_domain_model_project.quantity"/>
+			<span class="mandatory">*</span></label>
+		<f:form.textfield property="project.quantity"
+		                  required="required"
+		                  id="prf-quantity"
+		                  class="form-control powermail_field"/>
+	</div>
+</div>
+<div class="form-group">
+	<div class="powermail_fieldwrap">
+		<label for="prf-estimated-purchase-date" class="powermail_label">
+			<f:translate id="tx_projectregistration_domain_model_project.estimated_purchase_date"/>
+			<span class="mandatory">*</span></label>
+		<f:form.textfield property="project.estimatedPurchaseDate"
+		                  data="{parsley-pattern: '[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])'}"
+		                  id="prf-estimated-purchase-date"
+		                  class="form-control powermail_field has-datepicker"
+		                  value="{project.estimatedPurchaseDate}"/>
+	</div>
+</div>
+<div class="form-group">
+	<div class="powermail_fieldwrap">
+		<label for="prf-registration-notes" class="powermail_label">
+			<f:translate id="tx_projectregistration_domain_model_project.registration_notes"/>
+		</label>
+		<f:form.textarea property="project.registrationNotes"
+		                 cols="20"
+		                 rows="5"
+		                 id="prf-registration-notes"
+		                 class="form-control powermail_field"/>
+	</div>
+</div>

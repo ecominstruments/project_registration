@@ -29,305 +29,346 @@ namespace S3b0\ProjectRegistration\Domain\Model;
 /**
  * Project
  */
-class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+{
 
-	/**
-	 * dateOfRequest
-	 *
-	 * @var \DateTime
-	 * @validate NotEmpty
-	 */
-	protected $dateOfRequest = NULL;
+    /** date format for \DateTime properties */
+    const DATE_FORMAT = 'Y-m-d';
 
-	/**
-	 * application
-	 *
-	 * @var string
-	 * @validate NotEmpty
-	 */
-	protected $application = '';
+    /**
+     * @var string
+     * @validate NotEmpty
+     */
+    protected $title = '';
 
-	/**
-	 * quantity
-	 *
-	 * @var int
-	 * @validate NotEmpty
-	 */
-	protected $quantity = '';
+    /**
+     * @var \DateTime
+     */
+    protected $dateOfRequest = null;
 
-	/**
-	 * estimatedPurchaseDate
-	 *
-	 * @var \DateTime
-	 * @validate NotEmpty
-	 */
-	protected $estimatedPurchaseDate = NULL;
+    /**
+     * @var string
+     * @validate NotEmpty
+     */
+    protected $application = '';
 
-	/**
-	 * registrationNotes
-	 *
-	 * @var string
-	 */
-	protected $registrationNotes = '';
+    /**
+     * @var int
+     * @validate NotEmpty
+     */
+    protected $quantity = '';
 
-	/**
-	 * internalNote
-	 *
-	 * @var string
-	 */
-	protected $internalNote = '';
+    /**
+     * @var \DateTime
+     * @validate NotEmpty
+     */
+    protected $estimatedPurchaseDate = null;
 
-	/**
-	 * denialNote
-	 *
-	 * @var string
-	 */
-	protected $denialNote = '';
+    /**
+     * @var string
+     */
+    protected $registrationNotes = '';
 
-	/**
-	 * approved
-	 *
-	 * @var bool
-	 */
-	protected $approved = FALSE;
+    /**
+     * @var string
+     */
+    protected $internalNote = '';
 
-	/**
-	 * registrant
-	 *
-	 * @var \S3b0\ProjectRegistration\Domain\Model\Person
-	 */
-	protected $registrant = NULL;
+    /**
+     * @var string
+     */
+    protected $denialNote = '';
 
-	/**
-	 * endUser
-	 *
-	 * @var \S3b0\ProjectRegistration\Domain\Model\Person
-	 */
-	protected $endUser = NULL;
+    /**
+     * @var bool
+     */
+    protected $approved = false;
 
-	/**
-	 * products
-	 *
-	 * @var \S3b0\ProjectRegistration\Domain\Model\Product
-	 */
-	protected $products = NULL;
+    /**
+     * @var \S3b0\ProjectRegistration\Domain\Model\Person
+     */
+    protected $registrant = null;
 
-	/**
-	 * Returns the dateOfRequest
-	 *
-	 * @return \DateTime $dateOfRequest
-	 */
-	public function getDateOfRequest() {
-		return $this->dateOfRequest;
-	}
+    /**
+     * @var \S3b0\ProjectRegistration\Domain\Model\Person
+     */
+    protected $endUser = null;
 
-	/**
-	 * Sets the dateOfRequest
-	 *
-	 * @param \DateTime $dateOfRequest
-	 * @return void
-	 */
-	public function setDateOfRequest(\DateTime $dateOfRequest) {
-		$this->dateOfRequest = $dateOfRequest;
-	}
+    /**
+     * @var \S3b0\ProjectRegistration\Domain\Model\Product
+     */
+    protected $product = null;
 
-	/**
-	 * Returns the application
-	 *
-	 * @return string $application
-	 */
-	public function getApplication() {
-		return $this->application;
-	}
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue>
+     */
+    protected $propertyValues = null;
 
-	/**
-	 * Sets the application
-	 *
-	 * @param string $application
-	 * @return void
-	 */
-	public function setApplication($application) {
-		$this->application = $application;
-	}
+    /**
+     * Project constructor.
+     */
+    public function __construct()
+    {
+        $this->dateOfRequest = new \DateTime();
+        $this->initStorageObjects();
+    }
 
-	/**
-	 * Returns the estimatedPurchaseDate
-	 *
-	 * @return \DateTime $estimatedPurchaseDate
-	 */
-	public function getEstimatedPurchaseDate() {
-		return $this->estimatedPurchaseDate;
-	}
+    /**
+     * Initializes all ObjectStorage properties
+     */
+    protected function initStorageObjects()
+    {
+        $this->propertyValues = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+    }
 
-	/**
-	 * Sets the estimatedPurchaseDate
-	 *
-	 * @param \DateTime $estimatedPurchaseDate
-	 * @return void
-	 */
-	public function setEstimatedPurchaseDate(\DateTime $estimatedPurchaseDate) {
-		$this->estimatedPurchaseDate = $estimatedPurchaseDate;
-	}
+    /**
+     * @return string $title
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
 
-	/**
-	 * Returns the registrationNotes
-	 *
-	 * @return string $registrationNotes
-	 */
-	public function getRegistrationNotes() {
-		return $this->registrationNotes;
-	}
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
 
-	/**
-	 * Sets the registrationNotes
-	 *
-	 * @param string $registrationNotes
-	 * @return void
-	 */
-	public function setRegistrationNotes($registrationNotes) {
-		$this->registrationNotes = $registrationNotes;
-	}
+    /**
+     * @return \DateTime $dateOfRequest
+     */
+    public function getDateOfRequest()
+    {
+        return $this->dateOfRequest;
+    }
 
-	/**
-	 * Returns the quantity
-	 *
-	 * @return int quantity
-	 */
-	public function getQuantity() {
-		return $this->quantity;
-	}
+    /**
+     * @param \DateTime $dateOfRequest
+     */
+    public function setDateOfRequest(\DateTime $dateOfRequest)
+    {
+        $this->dateOfRequest = $dateOfRequest;
+    }
 
-	/**
-	 * Sets the quantity
-	 *
-	 * @param string $quantity
-	 * @return void
-	 */
-	public function setQuantity($quantity) {
-		$this->quantity = $quantity;
-	}
+    /**
+     * @return string $application
+     */
+    public function getApplication()
+    {
+        return $this->application;
+    }
 
-	/**
-	 * Returns the registrant
-	 *
-	 * @return \S3b0\ProjectRegistration\Domain\Model\Person $registrant
-	 */
-	public function getRegistrant() {
-		return $this->registrant;
-	}
+    /**
+     * @param string $application
+     */
+    public function setApplication($application)
+    {
+        $this->application = $application;
+    }
 
-	/**
-	 * Sets the registrant
-	 *
-	 * @param \S3b0\ProjectRegistration\Domain\Model\Person $registrant
-	 * @return void
-	 */
-	public function setRegistrant(\S3b0\ProjectRegistration\Domain\Model\Person $registrant) {
-		$this->registrant = $registrant;
-	}
+    /**
+     * @return \DateTime $estimatedPurchaseDate
+     */
+    public function getEstimatedPurchaseDate()
+    {
+        return $this->estimatedPurchaseDate;
+    }
 
-	/**
-	 * Returns the endUser
-	 *
-	 * @return \S3b0\ProjectRegistration\Domain\Model\Person $endUser
-	 */
-	public function getEndUser() {
-		return $this->endUser;
-	}
+    /**
+     * @param \DateTime $estimatedPurchaseDate
+     */
+    public function setEstimatedPurchaseDate(\DateTime $estimatedPurchaseDate)
+    {
+        $this->estimatedPurchaseDate = $estimatedPurchaseDate;
+    }
 
-	/**
-	 * Sets the endUser
-	 *
-	 * @param \S3b0\ProjectRegistration\Domain\Model\Person $endUser
-	 * @return void
-	 */
-	public function setEndUser(\S3b0\ProjectRegistration\Domain\Model\Person $endUser) {
-		$this->endUser = $endUser;
-	}
+    /**
+     * @return string $registrationNotes
+     */
+    public function getRegistrationNotes()
+    {
+        return $this->registrationNotes;
+    }
 
-	/**
-	 * Returns the internalNote
-	 *
-	 * @return string $internalNote
-	 */
-	public function getInternalNote() {
-		return $this->internalNote;
-	}
+    /**
+     * @param string $registrationNotes
+     */
+    public function setRegistrationNotes($registrationNotes)
+    {
+        $this->registrationNotes = $registrationNotes;
+    }
 
-	/**
-	 * Sets the internalNote
-	 *
-	 * @param string $internalNote
-	 * @return void
-	 */
-	public function setInternalNote($internalNote) {
-		$this->internalNote = $internalNote;
-	}
+    /**
+     * @return int quantity
+     */
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
 
-	/**
-	 * Returns the denialNote
-	 *
-	 * @return string $denialNote
-	 */
-	public function getDenialNote() {
-		return $this->denialNote;
-	}
+    /**
+     * @param string $quantity
+     */
+    public function setQuantity($quantity)
+    {
+        $this->quantity = $quantity;
+    }
 
-	/**
-	 * Sets the denialNote
-	 *
-	 * @param string $denialNote
-	 * @return void
-	 */
-	public function setDenialNote($denialNote) {
-		$this->denialNote = $denialNote;
-	}
+    /**
+     * @return string $internalNote
+     */
+    public function getInternalNote()
+    {
+        return $this->internalNote;
+    }
 
-	/**
-	 * Returns the approved
-	 *
-	 * @return bool $approved
-	 */
-	public function getApproved() {
-		return $this->approved;
-	}
+    /**
+     * @param string $internalNote
+     */
+    public function setInternalNote($internalNote)
+    {
+        $this->internalNote = $internalNote;
+    }
 
-	/**
-	 * Sets the approved
-	 *
-	 * @param bool $approved
-	 * @return void
-	 */
-	public function setApproved($approved) {
-		$this->approved = $approved;
-	}
+    /**
+     * @return string $denialNote
+     */
+    public function getDenialNote()
+    {
+        return $this->denialNote;
+    }
 
-	/**
-	 * Returns the boolean state of approved
-	 *
-	 * @return bool
-	 */
-	public function isApproved() {
-		return $this->approved;
-	}
+    /**
+     * @param string $denialNote
+     */
+    public function setDenialNote($denialNote)
+    {
+        $this->denialNote = $denialNote;
+    }
 
-	/**
-	 * Returns the products
-	 *
-	 * @return \S3b0\ProjectRegistration\Domain\Model\Product products
-	 */
-	public function getProducts() {
-		return $this->products;
-	}
+    /**
+     * @return bool $approved
+     */
+    public function getApproved()
+    {
+        return $this->approved;
+    }
 
-	/**
-	 * Sets the products
-	 *
-	 * @param string $products
-	 * @return void
-	 */
-	public function setProducts($products) {
-		$this->products = $products;
-	}
+    /**
+     * @param bool $approved
+     */
+    public function setApproved($approved)
+    {
+        $this->approved = $approved;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isApproved()
+    {
+        return $this->approved;
+    }
+
+    /**
+     * @return \S3b0\ProjectRegistration\Domain\Model\Person $registrant
+     */
+    public function getRegistrant()
+    {
+        return $this->registrant;
+    }
+
+    /**
+     * @param \S3b0\ProjectRegistration\Domain\Model\Person $registrant
+     */
+    public function setRegistrant(\S3b0\ProjectRegistration\Domain\Model\Person $registrant = null)
+    {
+        if ($registrant instanceof \S3b0\ProjectRegistration\Domain\Model\Person) {
+            $this->registrant = $registrant;
+        }
+    }
+
+    /**
+     * @return \S3b0\ProjectRegistration\Domain\Model\Person $endUser
+     */
+    public function getEndUser()
+    {
+        return $this->endUser;
+    }
+
+    /**
+     * @param \S3b0\ProjectRegistration\Domain\Model\Person $endUser
+     */
+    public function setEndUser(\S3b0\ProjectRegistration\Domain\Model\Person $endUser = null)
+    {
+        if ($endUser instanceof \S3b0\ProjectRegistration\Domain\Model\Person) {
+            $this->endUser = $endUser;
+        }
+    }
+
+    /**
+     * @return \S3b0\ProjectRegistration\Domain\Model\Product product
+     */
+    public function getProduct()
+    {
+        return $this->product;
+    }
+
+    /**
+     * @param \S3b0\ProjectRegistration\Domain\Model\Product $product
+     */
+    public function setProduct(\S3b0\ProjectRegistration\Domain\Model\Product $product = null)
+    {
+        if ($product instanceof \S3b0\ProjectRegistration\Domain\Model\Product) {
+            $this->product = $product;
+        }
+    }
+
+    /**
+     * @param \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue $propertyValue
+     */
+    public function addPropertyValue(\S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue $propertyValue = null)
+    {
+        if ($propertyValue instanceof \S3b0\ProjectRegistration\Domain\Model\ProductValues && !$this->propertyValues->contains($propertyValue)) {
+            if (!$this->propertyValues instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage) {
+                $this->propertyValues = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+            }
+            if (!$this->propertyValues->contains($propertyValue)) {
+                $this->propertyValues->attach($propertyValue);
+            }
+        }
+    }
+
+    /**
+     * @param \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue $propertyValueToRemove
+     */
+    public function removePropertyValue(
+        \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue $propertyValueToRemove = null
+    ) {
+        if ($propertyValueToRemove instanceof \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue && $this->propertyValues instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $this->propertyValues->contains($propertyValueToRemove)) {
+            $this->propertyValues->detach($propertyValueToRemove);
+        }
+    }
+
+    /**
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue> $propertyValues
+     */
+    public function getPropertyValues()
+    {
+        return $this->propertyValues;
+    }
+
+    /**
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue> $propertyValues
+     */
+    public function setPropertyValues(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $propertyValues = null)
+    {
+        if ($propertyValues instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage) {
+            $this->propertyValues = $propertyValues;
+        }
+    }
 
 }

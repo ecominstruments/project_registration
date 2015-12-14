@@ -1,0 +1,76 @@
+<div class="form-group">
+	<div class="powermail_fieldwrap">
+		<label for="prf-addressee" class="powermail_label"><f:translate id="{settings.addressees.label}" /> <span class="mandatory">*</span></label>
+		<f:form.select additionalAttributes="{required: 'required', data-parsley-required-message: 'This field must be filled!', data-parsley-trigger: 'change'}"
+		               class="form-control powermail_field"
+		               options="{addressees}"
+		               prependOptionLabel="{f:translate(id: 'select_empty_option')}"
+		               prependOptionValue=""
+		               id="prf-addressee"
+		               name="addressee" />
+	</div>
+</div>
+
+<f:if condition="{dto.registrant.noLoginUser}">
+	<div class="form-group">
+		<div class="powermail_fieldwrap">
+			<label for="prf-registrant-name" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_person.name" /> <span class="mandatory">*</span></label>
+			<f:form.textfield required="required"
+			                  placeholder="Please fill in"
+			                  class="form-control powermail_field"
+			                  id="prf-registrant-name"
+			                  property="registrant.name" />
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="powermail_fieldwrap">
+			<label for="prf-registrant-company" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_person.company" /> <span class="mandatory">*</span></label>
+			<f:form.textfield required="required"
+			                  placeholder="Please fill in"
+			                  class="form-control powermail_field"
+			                  id="prf-registrant-company"
+			                  property="registrant.company" />
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="powermail_fieldwrap">
+			<label for="prf-registrant-email" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_person.email" /> <span class="mandatory">*</span></label>
+			<f:form.textfield required="required"
+			                  placeholder="Please fill in"
+			                  class="form-control powermail_field"
+			                  id="prf-registrant-email"
+			                  property="registrant.email"
+			                  type="email" />
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="powermail_fieldwrap">
+			<label for="prf-registrant-phone" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_person.phone" /> <span class="mandatory">*</span></label>
+			<f:form.textfield required="required"
+			                  placeholder="Please fill in"
+			                  class="form-control powermail_field"
+			                  id="prf-registrant-phone"
+			                  property="registrant.phone" />
+		</div>
+	</div>
+</f:if>
+
+<f:form.hidden property="registrant.feUser" />
+
+<f:comment>
+	<f:form.hidden property="registrant.firstName" />
+	<f:form.hidden property="registrant.middleName" />
+	<f:form.hidden property="registrant.lastName" />
+	<f:form.hidden property="registrant.title" />
+	<f:form.hidden property="registrant.company" />
+	<f:form.hidden property="registrant.address" />
+	<f:form.hidden property="registrant.email" />
+	<f:form.hidden property="registrant.www" />
+	<f:form.hidden property="registrant.phone" />
+	<f:form.hidden property="registrant.fax" />
+	<f:form.hidden property="registrant.zip" />
+	<f:form.hidden property="registrant.city" />
+	<f:form.hidden property="registrant.site" />
+	<f:form.hidden property="registrant.country" />
+	<f:form.hidden property="registrant.state" />
+</f:comment>

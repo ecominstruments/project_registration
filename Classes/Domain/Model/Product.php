@@ -29,99 +29,110 @@ namespace S3b0\ProjectRegistration\Domain\Model;
 /**
  * Product
  */
-class Product extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+class Product extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+{
 
-	/**
-	 * title
-	 *
-	 * @var string
-	 * @validate NotEmpty
-	 */
-	protected $title = '';
+    /**
+     * @var string
+     * @validate NotEmpty
+     */
+    protected $title = '';
 
-	/**
-	 * properties
-	 *
-	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<>
-	 */
-	protected $properties = NULL;
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\ProjectRegistration\Domain\Model\ProductProperty>
+     */
+    protected $properties = null;
 
-	/**
-	 * __construct
-	 */
-	public function __construct() {
-		//Do not remove the next line: It would break the functionality
-		$this->initStorageObjects();
-	}
+    /**
+     * __construct
+     */
+    public function __construct()
+    {
+        $this->initStorageObjects();
+    }
 
-	/**
-	 * Initializes all ObjectStorage properties
-	 * Do not modify this method!
-	 * It will be rewritten on each save in the extension builder
-	 * You may modify the constructor of this class instead
-	 *
-	 * @return void
-	 */
-	protected function initStorageObjects() {
-		$this->properties = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-	}
+    /**
+     * Initializes all ObjectStorage properties
+     */
+    protected function initStorageObjects()
+    {
+        $this->properties = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+    }
 
-	/**
-	 * Returns the title
-	 *
-	 * @return string $title
-	 */
-	public function getTitle() {
-		return $this->title;
-	}
+    /**
+     * @return string $title
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
 
-	/**
-	 * Sets the title
-	 *
-	 * @param string $title
-	 * @return void
-	 */
-	public function setTitle($title) {
-		$this->title = $title;
-	}
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
 
-	/**
-	 * Adds a ProductProperty
-	 *
-	 * @param  $property
-	 * @return void
-	 */
-	public function addProperty($property) {
-		$this->properties->attach($property);
-	}
+    /**
+     * @param \S3b0\ProjectRegistration\Domain\Model\ProductProperty $property
+     */
+    public function addProperty(\S3b0\ProjectRegistration\Domain\Model\ProductProperty $property = null)
+    {
+        if ($property instanceof \S3b0\ProjectRegistration\Domain\Model\ProductProperty) {
+            if (!$this->properties instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage) {
+                $this->properties = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+            }
+            if (!$this->properties->contains($property)) {
+                $this->properties->attach($property);
+            }
+        }
+    }
 
-	/**
-	 * Removes a ProductProperty
-	 *
-	 * @param  $propertyToRemove The  to be removed
-	 * @return void
-	 */
-	public function removeProperty($propertyToRemove) {
-		$this->properties->detach($propertyToRemove);
-	}
+    /**
+     * @param \S3b0\ProjectRegistration\Domain\Model\ProductProperty $propertyToRemove The ProductProperty to be removed
+     */
+    public function removeProperty(\S3b0\ProjectRegistration\Domain\Model\ProductProperty $propertyToRemove = null)
+    {
+        if ($propertyToRemove instanceof \S3b0\ProjectRegistration\Domain\Model\ProductProperty && $this->properties instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $this->properties->contains($propertyToRemove)) {
+            $this->properties->detach($propertyToRemove);
+        }
+    }
 
-	/**
-	 * Returns the properties
-	 *
-	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<> properties
-	 */
-	public function getProperties() {
-		return $this->properties;
-	}
+    /**
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\ProjectRegistration\Domain\Model\ProductProperty> properties
+     */
+    public function getProperties()
+    {
+        return $this->properties;
+    }
 
-	/**
-	 * Sets the properties
-	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<> $properties
-	 * @return void
-	 */
-	public function setProperties(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $properties) {
-		$this->properties = $properties;
-	}
+    /**
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\ProjectRegistration\Domain\Model\ProductProperty> $properties
+     */
+    public function setProperties(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $properties = null)
+    {
+        if ($properties instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage) {
+            $this->properties = $properties;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getPropertiesList()
+    {
+        if ($this->properties instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $this->properties->count()) {
+            $jsCallerIds = [];
+            /** @var \S3b0\ProjectRegistration\Domain\Model\ProductProperty $property */
+            foreach ($this->properties as $property) {
+                $jsCallerIds[] = $property->getJsCallerId();
+            }
+            return '#' . implode(',#', $jsCallerIds);
+        } else {
+            return '';
+        }
+    }
 
 }

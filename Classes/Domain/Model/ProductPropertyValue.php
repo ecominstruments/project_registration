@@ -29,33 +29,63 @@ namespace S3b0\ProjectRegistration\Domain\Model;
 /**
  * ProductPropertyValue
  */
-class ProductPropertyValue extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+class ProductPropertyValue extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+{
 
-	/**
-	 * title
-	 *
-	 * @var string
-	 * @validate NotEmpty
-	 */
-	protected $title = '';
+    /**
+     * @var string
+     * @validate NotEmpty
+     */
+    protected $title = '';
 
-	/**
-	 * Returns the title
-	 *
-	 * @return string $title
-	 */
-	public function getTitle() {
-		return $this->title;
-	}
+    /**
+     * @var \S3b0\ProjectRegistration\Domain\Model\ProductProperty
+     * @validate NotEmpty
+     */
+    protected $property;
 
-	/**
-	 * Sets the title
-	 *
-	 * @param string $title
-	 * @return void
-	 */
-	public function setTitle($title) {
-		$this->title = $title;
-	}
+    /**
+     * @return string $title
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @return \S3b0\ProjectRegistration\Domain\Model\ProductProperty
+     */
+    public function getProperty()
+    {
+        return $this->property;
+    }
+
+    /**
+     * @param \S3b0\ProjectRegistration\Domain\Model\ProductProperty $property
+     */
+    public function setProperty(\S3b0\ProjectRegistration\Domain\Model\ProductProperty $property = null)
+    {
+        $this->property = $property;
+    }
+
+    public function getJsCallerId()
+    {
+        if ($this->property->getFormElementType() === 0) {
+            return "prf-property-value-{$this->property->getUid()}-{$this->uid}";
+        }
+        if ($this->property->getFormElementType() === 1) {
+            return "prf-property-value-{$this->property->getUid()}";
+        }
+
+        return '';
+    }
 
 }

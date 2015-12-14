@@ -27,9 +27,9 @@ namespace S3b0\ProjectRegistration\Domain\Repository;
  ***************************************************************/
 
 /**
- * The repository for Projects
+ * The repository for Products
  */
-class ProjectRepository extends \S3b0\ProjectRegistration\Domain\Repository\AbstractRepository
+class ProductPropertyValueRepository extends \S3b0\ProjectRegistration\Domain\Repository\AbstractRepository
 {
 
 }

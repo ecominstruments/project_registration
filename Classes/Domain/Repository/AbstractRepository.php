@@ -27,9 +27,21 @@ namespace S3b0\ProjectRegistration\Domain\Repository;
  ***************************************************************/
 
 /**
- * The repository for Projects
+ * Class AbstractRepository
+ * @package S3b0\ProjectRegistration\Domain\Repository
  */
-class ProjectRepository extends \S3b0\ProjectRegistration\Domain\Repository\AbstractRepository
+class AbstractRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
+
+    /**
+     * Set repository wide settings
+     */
+    public function initializeObject()
+    {
+        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings */
+        $querySettings = $this->objectManager->get(\TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface::class);
+        $querySettings->setStoragePageIds([$GLOBALS[ 'TSFE' ]->id]); // Disable storage pid
+        $this->setDefaultQuerySettings($querySettings);
+    }
 
 }

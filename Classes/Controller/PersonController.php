@@ -29,16 +29,19 @@ namespace S3b0\ProjectRegistration\Controller;
 /**
  * PersonController
  */
-class PersonController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
+class PersonController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+{
 
-	/**
-	 * action show
-	 *
-	 * @param \S3b0\ProjectRegistration\Domain\Model\Person $person
-	 * @return void
-	 */
-	public function showAction(\S3b0\ProjectRegistration\Domain\Model\Person $person) {
-		$this->view->assign('person', $person);
-	}
+    /**
+     * action show
+     *
+     * @param \S3b0\ProjectRegistration\Domain\Model\Person $person
+     *
+     * @return void
+     */
+    public function showAction(\S3b0\ProjectRegistration\Domain\Model\Person $person)
+    {
+        $this->view->assign('person', $person);
+    }
 
 }

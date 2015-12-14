@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2015-11-26T10:20:23Z" product-name="project_registration">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-11-26T11:09:59Z" product-name="project_registration">
 		<header/>
 		<body>
 			<trans-unit id="tx_projectregistration_domain_model_project">
 				<source>Project</source>
+			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_project.title">
+				<source>Title</source>
 			</trans-unit>
 			<trans-unit id="tx_projectregistration_domain_model_project.date_of_request">
 				<source>Date Of Request</source>
@@ -36,8 +39,8 @@
 			<trans-unit id="tx_projectregistration_domain_model_project.end_user">
 				<source>End User</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_project.products">
-				<source>Products</source>
+			<trans-unit id="tx_projectregistration_domain_model_project.product">
+				<source>Product</source>
 			</trans-unit>
 			<trans-unit id="tx_projectregistration_domain_model_product">
 				<source>Product</source>
