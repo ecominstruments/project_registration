@@ -1,11 +1,12 @@
 <?php
-namespace S3b0\ProjectRegistration\Domain\Repository;
+namespace S3b0\ProjectRegistration\ViewHelpers;
+
 
 /***************************************************************
  *
  *  Copyright notice
  *
- *  (c) 2015 Sebastian Iffland <sebastian.iffland@ecom-ex.com>, ecom instruments GmbH
+ *  (c) 2014 Sebastian Iffland <sebastian.iffland@ecom-ex.com>, ecom instruments GmbH
  *
  *  All rights reserved
  *
@@ -27,21 +28,22 @@ namespace S3b0\ProjectRegistration\Domain\Repository;
  ***************************************************************/
 
 /**
- * Class AbstractRepository
- * @package S3b0\ProjectRegistration\Domain\Repository
+ * Class GetArrayElementViewHelper
  */
-class AbstractRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
-{
+class GetArrayElementViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
-    /**
-     * Set repository wide settings
-     */
-    public function initializeObject()
-    {
-        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings */
-        $querySettings = $this->objectManager->get(\TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface::class);
-        $querySettings->setStoragePageIds([$GLOBALS[ 'TSFE' ]->id]); // Set storage pid
-        $this->setDefaultQuerySettings($querySettings);
-    }
+	/**
+	 * @param array $array
+	 * @param mixed $key
+	 *
+	 * @return bool
+	 */
+	public function render($array, $key = null) {
+		if ( $key === null ) {
+			$key = $this->renderChildren();
+		}
+
+		return is_array($array) && array_key_exists($key, $array) ? $array[ $key ] : '';
+	}
 
 }

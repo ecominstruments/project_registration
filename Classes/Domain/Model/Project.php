@@ -25,6 +25,7 @@ namespace S3b0\ProjectRegistration\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Project
@@ -34,6 +35,11 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 
     /** date format for \DateTime properties */
     const DATE_FORMAT = 'Y-m-d';
+
+    /**
+     * @var bool
+     */
+    protected $hidden = false;
 
     /**
      * @var string
@@ -80,6 +86,12 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $denialNote = '';
 
     /**
+     * @var int
+     * @validate NotEmpty
+     */
+    protected $addressee = 0;
+
+    /**
      * @var bool
      */
     protected $approved = false;
@@ -122,7 +134,31 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return string $title
+     * @return boolean
+     */
+    public function isHidden()
+    {
+        return $this->hidden;
+    }
+
+    /**
+     * @param boolean $hidden
+     */
+    public function setHidden($hidden)
+    {
+        $this->hidden = $hidden;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVisible()
+    {
+        return !$this->hidden;
+    }
+
+    /**
+     * @return string
      */
     public function getTitle()
     {
@@ -138,7 +174,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return \DateTime $dateOfRequest
+     * @return \DateTime
      */
     public function getDateOfRequest()
     {
@@ -154,7 +190,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return string $application
+     * @return string
      */
     public function getApplication()
     {
@@ -170,7 +206,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return \DateTime $estimatedPurchaseDate
+     * @return \DateTime
      */
     public function getEstimatedPurchaseDate()
     {
@@ -186,7 +222,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return string $registrationNotes
+     * @return string
      */
     public function getRegistrationNotes()
     {
@@ -202,7 +238,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return int quantity
+     * @return int
      */
     public function getQuantity()
     {
@@ -218,7 +254,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return string $internalNote
+     * @return string
      */
     public function getInternalNote()
     {
@@ -234,7 +270,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return string $denialNote
+     * @return string
      */
     public function getDenialNote()
     {
@@ -250,9 +286,25 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return bool $approved
+     * @return int
      */
-    public function getApproved()
+    public function getAddressee()
+    {
+        return $this->addressee;
+    }
+
+    /**
+     * @param int $addressee
+     */
+    public function setAddressee($addressee)
+    {
+        $this->addressee = $addressee;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isApproved()
     {
         return $this->approved;
     }
@@ -268,13 +320,34 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @return bool
      */
-    public function isApproved()
+    public function isAccepted()
     {
-        return $this->approved;
+        return $this->isVisible() && $this->approved;
     }
 
     /**
-     * @return \S3b0\ProjectRegistration\Domain\Model\Person $registrant
+     * @return bool
+     */
+    public function isRejected()
+    {
+        return $this->isVisible() && !$this->approved;
+    }
+
+    public function getFontAwesomeStatus()
+    {
+        if ($this->isVisible()) {
+            if ($this->approved) {
+                return '<i class="fa fa-check-circle-o text-success fa-lg" title="' . LocalizationUtility::translate('state_1', 'project_registration') . '"></i>';
+            } else {
+                return '<i class="fa fa-times-circle-o text-danger fa-lg" title="' . LocalizationUtility::translate('state_0', 'project_registration') . '"></i>';
+            }
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * @return \S3b0\ProjectRegistration\Domain\Model\Person
      */
     public function getRegistrant()
     {
@@ -292,7 +365,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return \S3b0\ProjectRegistration\Domain\Model\Person $endUser
+     * @return \S3b0\ProjectRegistration\Domain\Model\Person
      */
     public function getEndUser()
     {
@@ -310,7 +383,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return \S3b0\ProjectRegistration\Domain\Model\Product product
+     * @return \S3b0\ProjectRegistration\Domain\Model\Product
      */
     public function getProduct()
     {
@@ -354,7 +427,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue> $propertyValues
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue>
      */
     public function getPropertyValues()
     {

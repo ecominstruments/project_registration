@@ -1,22 +1,84 @@
-
 <f:layout name="Default" />
 
-This Template is responsible for displaying a single view for a domain object
-
-If you modify this template, do not forget to change the overwrite settings
-in /Configuration/ExtensionBuilder/settings.yaml:
-  Resources:
-    Private:
-      Templates:
-        Show.html: keep
-
-Otherwise your changes will be overwritten the next time you save the extension in the extension builder
-
 <f:section name="main">
-<h1>Single View for Person</h1>
 
-<f:flashMessages />
-<f:render partial="Person/Properties" arguments="{person:person}" />
-<f:link.action action="list">Back to list</f:link.action><br />
-<f:link.action action="new">New Person</f:link.action>
+  <h1>{person.name}</h1>
+
+
+  <table class="table table-striped">
+    <tbody>
+    <tr>
+      <td>Name :</td>
+      <td>{person.name}</td>
+    </tr>
+    <tr>
+      <td>First name :</td>
+      <td>{person.firstName}</td>
+    </tr>
+    <f:if condition="{person.middleName}">
+      <tr>
+        <td>Middle name :</td>
+        <td>{person.middleName}</td>
+      </tr>
+    </f:if>
+    <tr>
+      <td>Last name :</td>
+      <td>{person.lastName}</td>
+    </tr>
+    <f:if condition="{person.title}">
+      <tr>
+        <td>Title :</td>
+        <td>{person.title}</td>
+      </tr>
+    </f:if>
+    <tr>
+    <tr>
+      <td>Company :</td>
+      <td>{person.company}</td>
+    </tr>
+    <tr>
+      <td>E-Mail :</td>
+      <td><f:link.typolink parameter="{person.email}" /></td>
+    </tr>
+    <tr>
+      <td>Web :</td>
+      <td><f:link.typolink parameter="{person.www}" /></td>
+    </tr>
+    <tr>
+      <td>Phone :</td>
+      <td>{person.phone}</td>
+    </tr>
+    <tr>
+      <td>Fax :</td>
+      <td>{person.fax}</td>
+    </tr>
+    <tr>
+      <td>Address :</td>
+      <td>{person.address}</td>
+    </tr>
+    <tr>
+      <td>Postal code :</td>
+      <td>{person.zip}</td>
+    </tr>
+    <tr>
+      <td>City :</td>
+      <td>{person.city}</td>
+    </tr>
+    <tr>
+      <td>Site :</td>
+      <td>{person.site}</td>
+    </tr>
+    <tr>
+      <td>Country :</td>
+      <td>{person.country.title}</td>
+    </tr>
+    <tr>
+      <td>State / Province :</td>
+      <td>{person.state.title}</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <a href="javascript:history.back()" class="btn btn-default"><i class="fa fa-step-backward fa-fw"></i> Back to previous page</a><br>
+
 </f:section>

@@ -1,0 +1,23 @@
+<f:form action="reject" arguments="{project: project}" class="tx-powermail" name="project" object="{project}" additionalAttributes="{data-validate: 'html5', data-parsley-validate: 'data-parsley-validate', novalidate: ''}">
+
+	<div class="form-group">
+		<div class="powermail_fieldwrap">
+			<label for="prf-project-denial-note" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_project.denial_note" /> <span class="mandatory">*</span></label>
+			<f:form.textarea placeholder="Please fill in"
+			                 class="form-control powermail_field"
+			                 cols="20"
+			                 rows="5"
+			                 id="prf-project-denial-note"
+			                 property="denialNote" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="powermail_fieldwrap">
+			<button type="submit" class="btn btn-primary morelink" data-loading-text="Processing your request... <i class='fa fa-circle-o-notch fa-fw fa-spin'></i>">
+				Send request
+			</button>
+		</div>
+	</div>
+
+</f:form>

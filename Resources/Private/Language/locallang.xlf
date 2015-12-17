@@ -97,17 +97,23 @@
 			<trans-unit id="addressees_label">
 				<source>Your Location</source>
 			</trans-unit>
-			<trans-unit id="addressees.I.0">
+			<trans-unit id="addressees_I_0">
 				<source>Americas</source>
 			</trans-unit>
-			<trans-unit id="addressees.I.1">
+			<trans-unit id="addressees_I_1">
 				<source>Europe, Middle East and Africa</source>
 			</trans-unit>
-			<trans-unit id="addressees.I.2">
+			<trans-unit id="addressees_I_2">
 				<source>Asia Pacific</source>
 			</trans-unit>
 			<trans-unit id="select_empty_option">
 				<source>-- Please choose --</source>
+			</trans-unit>
+			<trans-unit id="state_0">
+				<source>rejected</source>
+			</trans-unit>
+			<trans-unit id="state_1">
+				<source>accepted</source>
 			</trans-unit>
 		</body>
 	</file>

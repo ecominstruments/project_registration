@@ -433,4 +433,12 @@ class Person extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         return !$this->isLoginUser();
     }
 
+    /**
+     * @return array|null
+     */
+    public function getFeUserGroups()
+    {
+        return $this->feUser instanceof \Ecom\EcomToolbox\Domain\Model\User ? $this->feUser->getFeUserGroups() : null;
+    }
+
 }

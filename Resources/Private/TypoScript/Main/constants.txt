@@ -1,29 +1,34 @@
-
 plugin.tx_projectregistration {
 	view {
-		# cat=plugin.tx_projectregistration_registration/file; type=string; label=Path to templates root (FE)
+		# cat=project registration/file/1; type=string; label=Path to templates root (FE)
 		templateRootPath = EXT:project_registration/Resources/Private/Templates/
-		# cat=plugin.tx_projectregistration_registration/file; type=string; label=Path to templates partials (FE)
+		# cat=project registration/file/1; type=string; label=Path to templates partials (FE)
 		partialRootPath = EXT:project_registration/Resources/Private/Partials/
-		# cat=plugin.tx_projectregistration_registration/file; type=string; label=Path to templates layouts (FE)
+		# cat=project registration/file/1; type=string; label=Path to templates layouts (FE)
 		layoutRootPath = EXT:project_registration/Resources/Private/Layouts/
 	}
 	email {
-		# cat=plugin.tx_projectregistration_registration/file; type=string; label=Path to email templates root (FE)
+		# cat=project registration/file/2; type=string; label=Path to email templates root (FE): Currently not in use
 		templateRootPath = EXT:project_registration/Resources/Private/Templates/Email/
-		# cat=plugin.tx_projectregistration_registration/file; type=string; label=Path to email templates partials (FE)
+		# cat=project registration/file/2; type=string; label=Path to email templates partials (FE): Currently not in use
 		partialRootPath = EXT:project_registration/Resources/Private/Partials/Email/
-		# cat=plugin.tx_projectregistration_registration/file; type=string; label=Path to email templates layouts (FE)
+		# cat=project registration/file/2; type=string; label=Path to email templates layouts (FE): Currently not in use
 		layoutRootPath = EXT:project_registration/Resources/Private/Layouts/Email/
-
 	}
 	persistence {
-		# cat=plugin.tx_projectregistration_registration//a; type=string; label=Default storage PID
+		# cat=project registration//9999; type=string; label=Default storage PID: Currently not in use, projects are stored on root page (#0)
 		storagePid =
 	}
 	settings {
 		addressees {
+			# cat=project registration//30; type=string; label=Addressee label: <label> for addressee field in form
 			label = LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:addressees_label
 		}
+		#cat=project registration//15;type=int+;label=Certified Registrants (usergroup): The (FE-)usergroup of certified registrants
+		certifiedUsersUserGroup = 8
+		#cat=project registration//20;type=int+;label=Investigator: The investigator (FE-user) accepting/rejecting projects
+		investigator = 385
+		#cat=project registration//25;type=int+;label=Administrator: The master chief (FE-user)
+		admin = 389
 	}
 }

@@ -1,3 +1,4 @@
+{namespace s=S3b0\ProjectRegistration\ViewHelpers}
 <div class="form-group">
 	<div class="powermail_fieldwrap">
 		<label for="prf-title" class="powermail_label">
@@ -14,15 +15,14 @@
 		<label for="prf-product" class="powermail_label">
 			<f:translate id="tx_projectregistration_domain_model_project.product"/>
 			<span class="mandatory">*</span></label>
-		<select class="form-control powermail_field" id="prf-product"
-		        name="tx_projectregistration_registration[dto][project][product]" required="required">
-			<option value="0">
-				<f:translate id="select_empty_option"/>
-			</option>
-			<f:for each="{products}" as="product">
-				<option value="{product.uid}" data-properties="{product.propertiesList}">{product.title}</option>
-			</f:for>
-		</select>
+		<s:form.select class="form-control powermail_field"
+		               id="prf-product"
+		               options="{products}"
+		               optionLabelField="title"
+		               optionDataAttributes="{properties: 'propertiesList'}"
+		               prependOptionLabel="{f:translate(id: 'select_empty_option')}"
+		               prependOptionValue=""
+		               property="project.product"/>
 	</div>
 </div>
 <f:if condition="{projectProductProperties}">
@@ -60,13 +60,6 @@
 					               prependOptionValue=""
 					               id="{value.jsCallerId}"
 					               property="propertyValues.{property.uid}"/>
-				</f:if>
-				<f:if condition="{property.formElementType} == 2">
-					<label for="{value.jsCallerId}" class="powermail_label">{property.title} <span
-						class="mandatory">*</span></label>
-					<f:form.textfield class="form-control powermail_field"
-					                  id="{value.jsCallerId}"
-					                  property="propertyValues.{property.uid}"/>
 				</f:if>
 			</div>
 		</div>
@@ -118,3 +111,4 @@
 		                 class="form-control powermail_field"/>
 	</div>
 </div>
+<f:form.hidden value="1" property="project.hidden" />

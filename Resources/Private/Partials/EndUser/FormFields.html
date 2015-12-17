@@ -1,3 +1,4 @@
+{namespace s=S3b0\ProjectRegistration\ViewHelpers}
 <div class="form-group">
 	<div class="powermail_fieldwrap">
 		<label for="prf-enduser-company" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_person.company" /> <span class="mandatory">*</span></label>
@@ -19,7 +20,8 @@
 <div class="form-group">
 	<div class="powermail_fieldwrap">
 		<label for="prf-enduser-email" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_person.email" /></label>
-		<f:form.textfield class="form-control powermail_field"
+		<f:form.textfield additionalAttributes="{autocomplete: 'off'}"
+		                  class="form-control powermail_field"
 		                  id="prf-enduser-email"
 		                  property="endUser.email"
 		                  type="email" />
@@ -65,11 +67,13 @@
 <div class="form-group" id="prf-enduser-state-selector">
 	<div class="powermail_fieldwrap">
 		<label for="prf-enduser-state" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_person.state" /> <span class="mandatory" style="display: none">*</span></label>
-		<select class="form-control powermail_field" id="prf-enduser-state" name="tx_projectregistration_registration[dto][endUser][state]" disabled>
-			<option value="0"></option>
-			<f:for each="{states}" as="state">
-				<option value="{state.uid}" data-country="{state.country.uid}">{state.title}</option>
-			</f:for>
-		</select>
+		<s:form.select class="form-control powermail_field"
+		               id="prf-enduser-state"
+		               options="{states}"
+		               optionLabelField="title"
+		               optionDataAttributes="{country: 'country.uid'}"
+		               prependOptionLabel="{f:translate(id: 'select_empty_option')}"
+		               prependOptionValue=""
+		               property="endUser.state"/>
 	</div>
 </div>

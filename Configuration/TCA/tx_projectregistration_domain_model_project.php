@@ -12,7 +12,7 @@ return [
         'searchFields'  => 'title,date_of_request,application,quantity,estimated_purchase_date,registration_notes,internal_note,denial_note,approved,registrant,end_user,product',
         'iconfile'      => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('project_registration') . 'Resources/Public/Icons/tx_projectregistration_domain_model_project.gif'
     ],
-    'interface' => ['showRecordFieldList' => 'hidden, title, date_of_request, application, quantity, estimated_purchase_date, registration_notes, internal_note, denial_note, approved, registrant, end_user, product, property_values'],
+    'interface' => ['showRecordFieldList' => 'hidden, title, date_of_request, application, quantity, estimated_purchase_date, registration_notes, internal_note, denial_note, addressee, approved, registrant, end_user, product, property_values'],
     'types'     => ['1' => ['showitem' => 'hidden;;1, title, date_of_request, application, quantity, estimated_purchase_date, registration_notes, internal_note, denial_note, approved, registrant, end_user, product, property_values']],
     'palettes'  => ['1' => ['showitem' => '']],
     'columns'   => [
@@ -100,6 +100,15 @@ return [
                 'cols' => 40,
                 'rows' => 15,
                 'eval' => 'trim'
+            ]
+        ],
+        'addressee'               => [
+            'exclude' => 0,
+            'label'   => 'Addressee',
+            'config'  => [
+                'type' => 'input',
+                'size' => 30,
+                'eval' => 'int'
             ]
         ],
         'approved'                => [

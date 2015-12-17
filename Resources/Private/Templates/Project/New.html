@@ -1,16 +1,4 @@
-
 <f:layout name="Default" />
-
-This template displays a NEW form for the current domain object.
-
-If you modify this template, do not forget to change the overwrite settings
-in /Configuration/ExtensionBuilder/settings.yaml:
-  Resources:
-    Private:
-      Templates:
-        New.html: keep
-
-Otherwise your changes will be overwritten the next time you save the extension in the extension builder
 
 <f:section name="main">
 
@@ -34,7 +22,13 @@ Otherwise your changes will be overwritten the next time you save the extension 
       <f:render partial="EndUser/FormFields" arguments="{_all}" />
     </section>
 
-    <f:form.submit value="Create new" />
+    <div class="form-group">
+      <div class="powermail_fieldwrap">
+        <button type="submit" class="btn btn-primary morelink" data-loading-text="Processing your request... <i class='fa fa-circle-o-notch fa-fw fa-spin'></i>">
+          Send request
+        </button>
+      </div>
+    </div>
   </f:form>
 
   <script language="JavaScript" type="text/javascript" src="{f:uri.resource(path: 'JavaScript/app.js')}"></script>

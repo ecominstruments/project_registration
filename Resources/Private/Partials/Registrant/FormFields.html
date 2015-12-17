@@ -7,7 +7,7 @@
 		               prependOptionLabel="{f:translate(id: 'select_empty_option')}"
 		               prependOptionValue=""
 		               id="prf-addressee"
-		               name="addressee" />
+		               property="project.addressee" />
 	</div>
 </div>
 
@@ -35,7 +35,8 @@
 	<div class="form-group">
 		<div class="powermail_fieldwrap">
 			<label for="prf-registrant-email" class="powermail_label"><f:translate id="tx_projectregistration_domain_model_person.email" /> <span class="mandatory">*</span></label>
-			<f:form.textfield required="required"
+			<f:form.textfield additionalAttributes="{autocomplete: 'off'}"
+			                  required="required"
 			                  placeholder="Please fill in"
 			                  class="form-control powermail_field"
 			                  id="prf-registrant-email"

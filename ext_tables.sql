@@ -14,6 +14,7 @@ CREATE TABLE tx_projectregistration_domain_model_project (
 	registration_notes text NOT NULL,
 	internal_note text NOT NULL,
 	denial_note text NOT NULL,
+	addressee int(11) unsigned DEFAULT '0',
 	approved tinyint(1) unsigned DEFAULT '0' NOT NULL,
 	registrant int(11) unsigned DEFAULT '0',
 	end_user int(11) unsigned DEFAULT '0',

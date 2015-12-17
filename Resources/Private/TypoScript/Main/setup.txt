@@ -1,4 +1,3 @@
-
 plugin.tx_projectregistration_registration {
 	view {
 		templateRootPaths.0 = {$plugin.tx_projectregistration.view.templateRootPath}
@@ -17,23 +16,41 @@ plugin.tx_projectregistration_registration {
 		addressees {
 			label = {$plugin.tx_projectregistration.settings.addressees.label}
 			data {
-				10.label = LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:addressees.I.0
+				10.label = LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:addressees_I_0
 				10.name = Warren Rainer
 				#10.mail = warren.rainer@ecom-ex.com
 				10.mail = sebastian.iffland@ecom-ex.com
+				10.inactive = 0
 
-				20.label = LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:addressees.I.1
+				20.label = LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:addressees_I_1
 				20.name = Marcel Nied
 				#20.mail = marcel.nied@ecom-ex.com
 				20.mail = sebastian.iffland@ecom-ex.com
+				20.inactive = 0
 
-				30.label = LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:addressees.I.2
+				30.label = LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:addressees_I_2
 				30.name = Harald Zeier
 				#30.mail = harald.zeier@ecom-ex.com
 				30.mail = sebastian.iffland@ecom-ex.com
+				30.inactive = 0
 			}
 		}
+		certifiedUsersUserGroup = {$plugin.tx_projectregistration.settings.certifiedUsersUserGroup}
+		investigator = {$plugin.tx_projectregistration.settings.investigator}
+		admin = {$plugin.tx_projectregistration.settings.admin}
 	}
 }
 
 plugin.tx_projectregistration_administration < plugin.tx_projectregistration_registration
+
+page.includeJSLibs{
+	stupidTable = EXT:project_registration/Resources/Public/JavaScript/stupidtable.min.js
+	stupidTable.disableCompression = 1
+	stupidTable.excludeFromConcatenation = 1
+}
+
+page.includeCSSLibs {
+	projectRegistration = EXT:project_registration/Resources/Public/CSS/app.css
+}
+
+page.meta.robots = noindex,nofollow,noarchive

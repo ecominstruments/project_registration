@@ -84,9 +84,6 @@ $(document).ready(function($) {
     $('select#prf-product').on('change', function() {
         $('.prf-property-selector').each(function() {
             $(this).hide();
-            if ($(this).hasClass('prf-form-type-text')) {
-                setAttribute('#' + $(this).attr('id') + ' input', 'required', true, '');
-            }
             if ($(this).hasClass('prf-form-type-radio')) {
                 setAttribute('#' + $(this).attr('id') + ' input[type="radio"]', 'required', true, '');
             }
@@ -107,9 +104,6 @@ $(document).ready(function($) {
             $.each(propertyValues, function(index, value) {
                 var propertyDiv = $(value);
                 propertyDiv.show();
-                if (propertyDiv.hasClass('prf-form-type-text')) {
-                    setAttribute(value + ' input', 'required', false, 'required');
-                }
                 if (propertyDiv.hasClass('prf-form-type-radio')) {
                     setAttribute(value + ' input[type="radio"]', 'required', false, 'required');
                 }

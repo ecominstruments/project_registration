@@ -32,4 +32,33 @@ namespace S3b0\ProjectRegistration\Domain\Repository;
 class ProjectRepository extends \S3b0\ProjectRegistration\Domain\Repository\AbstractRepository
 {
 
+    /**
+     * Set repository wide settings
+     */
+    public function initializeObject()
+    {
+        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings */
+        $querySettings = $this->objectManager->get(\TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface::class);
+        $querySettings->setRespectStoragePage(false); // Disable storage pid
+        $querySettings->setIgnoreEnableFields(true);
+        $querySettings->setEnableFieldsToBeIgnored(['disabled']); // Disable hidden field
+        $this->setDefaultQuerySettings($querySettings);
+    }
+
+    /**
+     * Finds an object matching the given identifier.
+     *
+     * @param int $uid
+     *
+     * @return \S3b0\ProjectRegistration\Domain\Model\Project
+     */
+    public function findByUid($uid)
+    {
+        $query = $this->createQuery();
+
+        return $query->matching(
+            $query->equals('uid', $uid)
+        )->execute()->getFirst();
+    }
+
 }

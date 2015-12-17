@@ -1,22 +1,110 @@
-
 <f:layout name="Default" />
 
-This Template is responsible for displaying a single view for a domain object
-
-If you modify this template, do not forget to change the overwrite settings
-in /Configuration/ExtensionBuilder/settings.yaml:
-  Resources:
-    Private:
-      Templates:
-        Show.html: keep
-
-Otherwise your changes will be overwritten the next time you save the extension in the extension builder
-
 <f:section name="main">
-<h1>Single View for Project</h1>
 
-<f:flashMessages />
-<f:render partial="Project/Properties" arguments="{project:project}" />
-<f:link.action action="list">Back to list</f:link.action><br />
-<f:link.action action="new">New Project</f:link.action>
+  <h1>{project.title} [#{project.uid}] &nbsp;{project.fontAwesomeStatus -> f:format.raw()}</h1>
+
+  <table class="table table-striped">
+    <tbody>
+      <tr>
+        <td colspan="2"><br /><h3>Project information</h3></td>
+      </tr>
+      <tr>
+        <td>Project name :</td>
+        <td>{project.title}</td>
+      </tr>
+      <tr>
+        <td>Registrant :</td>
+        <td>{project.registrant.name} <f:if condition="{project.registrant.noLoginUser}"><span class="text-danger">[NOT certified Registrant]</span></f:if> <f:link.action action="show" controller="Person" arguments="{person: project.registrant}" title="Show all information"><i class="fa fa-info-circle fa-fw"></i></f:link.action></td>
+      </tr>
+      <tr>
+        <td>Region :</td>
+        <td>addressee</td>
+      </tr>
+      <tr>
+        <td>Date of request :</td>
+        <td>{project.dateOfRequest -> f:format.date(format: 'r')}</td>
+      </tr>
+      <tr>
+        <td>Product :</td>
+        <td>{project.product.title}</td>
+      </tr>
+      <f:if condition="{project.propertyValues -> f:count()}">
+        <f:for each="{project.propertyValues}" as="propertyValue">
+          <tr>
+            <td>{propertyValue.property.title} :</td>
+            <td>{propertyValue.title}</td>
+          </tr>
+        </f:for>
+      </f:if>
+      <tr>
+        <td>Application :</td>
+        <td>{project.application}</td>
+      </tr>
+      <tr>
+        <td>Quantity :</td>
+        <td>{project.quantity}</td>
+      </tr>
+      <tr>
+        <td>Estimated rollout :</td>
+        <td>{project.estimatedPurchaseDate -> f:format.date(format: 'F Y')}</td>
+      </tr>
+      <tr>
+        <td>Notes :</td>
+        <td>{project.registrationNotes -> f:format.nl2br()}</td>
+      </tr>
+      <f:if condition="{project.internalNote}">
+        <tr>
+          <td>Internal note :</td>
+          <td>{project.internalNote -> f:format.nl2br()}</td>
+        </tr>
+      </f:if>
+      <f:if condition="{project.rejected}">
+        <f:if condition="{project.denialNote}">
+          <tr>
+            <td>Denial note :</td>
+            <td>{project.denialNote -> f:format.nl2br()}</td>
+          </tr>
+        </f:if>
+      </f:if>
+      <tr>
+        <td colspan="2"><br /><h3>End user information <f:link.action action="show" controller="Person" arguments="{person: project.endUser}" title="Show all information"><i class="fa fa-info-circle fa-fw"></i></f:link.action></h3></td>
+      </tr>
+      <tr>
+        <td>Contact :</td>
+        <td>{project.endUser.name}</td>
+      </tr>
+      <tr>
+        <td>Company :</td>
+        <td>{project.endUser.company}</td>
+      </tr>
+      <tr>
+        <td>E-Mail :</td>
+        <td><f:link.typolink parameter="{project.endUser.email}" /></td>
+      </tr>
+      <tr>
+        <td>Phone :</td>
+        <td>{project.endUser.phone}</td>
+      </tr>
+      <tr>
+        <td>City :</td>
+        <td>{project.endUser.city}</td>
+      </tr>
+      <tr>
+        <td>Site :</td>
+        <td>{project.endUser.site}</td>
+      </tr>
+      <tr>
+        <td>Country :</td>
+        <td>{project.endUser.country.title}</td>
+      </tr>
+      <tr>
+        <td>State / Province :</td>
+        <td>{project.endUser.state.title}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <a href="javascript:window.close()" class="btn btn-danger"><i class="fa fa-times-circle fa-lg"></i> &nbsp;Close window</a><br>
+
 </f:section>

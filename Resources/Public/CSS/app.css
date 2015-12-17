@@ -1,0 +1,49 @@
+th.sortable {
+	cursor: pointer;
+}
+th.sortable:after {
+	content: "\f0dc";
+}
+th.sortable.alpha.sorting-asc:after {
+	content: "\f15d";
+}
+th.sortable.alpha.sorting-desc:after {
+	content: "\f15e";
+}
+th.sortable.num.sorting-asc:after {
+	content: "\f162";
+}
+th.sortable.num.sorting-desc:after {
+	content: "\f163";
+}
+th.sortable.amount.sorting-asc:after {
+	content: "\f160";
+}
+th.sortable.amount.sorting-desc:after {
+	content: "\f161";
+}
+
+th.sortable:after {
+	font-family: 'FontAwesome';
+	font-weight: normal;
+	font-style: normal;
+	display: inline-block;
+	font: normal normal normal 14px/1 FontAwesome;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-size: 1.2em;
+	line-height: 0.75em;
+	vertical-align: -15%;
+	width: 1.25em;
+	text-align: right;
+}
+
+/* Ensure that even links without href showing cursor pointer on hover */
+a {
+	cursor: pointer;
+}
+
+a[aria-describedby] {
+	color: #0083cb;
+}
