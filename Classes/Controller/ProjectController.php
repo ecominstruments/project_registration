@@ -25,6 +25,7 @@ namespace S3b0\ProjectRegistration\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use In2code\Powermail\Utility\SessionUtility;
 use S3b0\ProjectRegistration\Domain\Model;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Utility as CoreUtility;
@@ -47,16 +48,16 @@ class ProjectController extends RepositoryInjectionController
         $loggedInUserRole = 0;
 
         if ($this->getTypoScriptFrontendController()->loginUser) {
-            if ((int) $this->settings['investigator'] === (int) $this->getTypoScriptFrontendController()->fe_user->user[ $this->getTypoScriptFrontendController()->fe_user->userid_column ]) {
+            if ((int)$this->settings[ 'investigator' ] === (int)$this->getTypoScriptFrontendController()->fe_user->user[ $this->getTypoScriptFrontendController()->fe_user->userid_column ]) {
                 $loggedInUserRole = 1;
             }
-            if ((int) $this->settings['admin'] === (int) $this->getTypoScriptFrontendController()->fe_user->user[ $this->getTypoScriptFrontendController()->fe_user->userid_column ]) {
+            if ((int)$this->settings[ 'admin' ] === (int)$this->getTypoScriptFrontendController()->fe_user->user[ $this->getTypoScriptFrontendController()->fe_user->userid_column ]) {
                 $loggedInUserRole = 2;
             }
         }
 
         if ($loggedInUserRole < 1) {
-              // @todo activate on finish
+            // @todo activate on finish
             /*$this->getTypoScriptFrontendController()->pageNotFoundAndExit();*/
         }
 
@@ -139,7 +140,8 @@ class ProjectController extends RepositoryInjectionController
      *
      * @return void
      */
-    public function createAction(Model\Dto\ProjectPersonsDto $dto) {
+    public function createAction(Model\Dto\ProjectPersonsDto $dto)
+    {
         // Add endUser to personRepository
         $this->personRepository->add($dto->getEndUser());
         // Add registrant to personRepository (if not existing feUser reference)
@@ -178,8 +180,8 @@ class ProjectController extends RepositoryInjectionController
         $persistenceManager->persistAll();
 
         $noReply = null;
-        if ($this->settings[ 'mail' ][ 'noReplyEmail' ] && CoreUtility\GeneralUtility::validEmail($this->settings[ 'mail' ][ 'noReplyEmail' ]) && $this->settings[ 'mail' ][ 'senderName' ]) {
-            $noReply = [$this->settings[ 'mail' ][ 'noReplyEmail' ] => $this->settings[ 'mail' ][ 'senderName' ]];
+        if ($this->settings[ 'mail' ][ 'noReplyEmail' ] && CoreUtility\GeneralUtility::validEmail($this->settings[ 'mail' ][ 'noReplyEmail' ])) {
+            $noReply = [$this->settings[ 'mail' ][ 'noReplyEmail' ] => $this->settings[ 'mail' ][ 'noReplyName' ] ?: $this->settings[ 'mail' ][ 'senderName' ]];
         }
         $sender = $this->getAddressees(true, $project->getAddressee()) ?: CoreUtility\MailUtility::getSystemFrom();
         $carbonCopyReceivers = [];
@@ -205,8 +207,7 @@ class ProjectController extends RepositoryInjectionController
                              ->getEmail() => $dto->getRegistrant()
                                                  ->getName()
                      ])
-                        /** @todo localize! */
-                     ->setSubject($this->settings[ 'mail' ][ 'projectRegisteredConfirmationSubject' ] ?: (LocalizationUtility::translate('mail.projectRegisteredConfirmation.subject', $this->extensionName) ?: 'You project registration request -- DEV!'))
+                     ->setSubject($this->settings[ 'mail' ][ 'projectRegisteredConfirmationSubject' ] ?: (LocalizationUtility::translate('mail_project_registered_confirmation_subject', $this->extensionName) ?: 'Your project registration request -- DEV!'))
                      ->setBody($this->getStandAloneTemplate(
                          CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectRegisteredConfirmation.html',
                          [
@@ -216,6 +217,33 @@ class ProjectController extends RepositoryInjectionController
                          ]
                      ))
                      ->send();
+
+        /** @var \TYPO3\CMS\Core\Mail\MailMessage $mailToSender */
+        $mailToReceiver = CoreUtility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
+        $mailToReceiver->setContentType('text/html');
+
+        /**
+         * Email to receiver (notification mail)
+         */
+        $mailToReceiver->setTo($sender)
+                       ->setFrom([
+                           $dto->getRegistrant()
+                               ->getEmail() => $dto->getRegistrant()
+                                                   ->getName()
+                       ])
+                       ->setSubject(($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (LocalizationUtility::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted -- DEV!')) . ($dto->getRegistrant()
+                                                                                                                                                                                                                                                         ->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $dto->getRegistrant()
+                                                                                                                                                                                                                                                                                                                                           ->getFeUserGroups()) ? ' » certified registrant' : ' » NOT certified registrant'))
+                       ->setBody($this->getStandAloneTemplate(
+                           CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectRegisteredInfo.html',
+                           [
+                               'settings'             => $this->settings,
+                               'submitted'            => $dto,
+                               'addressees'           => $this->getAddressees(),
+                               'marketingInformation' => SessionUtility::getMarketingInfos()
+                           ]
+                       ))
+                       ->send();
 #        $this->internalRedirect('confirmation');
     }
 
@@ -317,7 +345,8 @@ class ProjectController extends RepositoryInjectionController
         $project->setHidden(false);
         $project->setApproved(true);
         $this->updateRecord($project, "Project with #{$project->getUid()} was approved!", \TYPO3\CMS\Core\Messaging\AbstractMessage::OK, self::NEUTER_ARTICLE, true);
-        // @todo: mail to registrant with status update
+
+        $this->updateStatusMail($project, true);
         $this->internalRedirect('list');
     }
 
@@ -341,7 +370,8 @@ class ProjectController extends RepositoryInjectionController
         $project->setHidden(false);
         $project->setApproved(false);
         $this->updateRecord($project, "Project with #{$project->getUid()} was rejected!", \TYPO3\CMS\Core\Messaging\AbstractMessage::WARNING, self::NEUTER_ARTICLE, true);
-        // @todo: mail to registrant with status update
+
+        $this->updateStatusMail($project, false);
         $this->internalRedirect('list');
     }
 
@@ -386,6 +416,52 @@ class ProjectController extends RepositoryInjectionController
     }
 
     /**
+     * @param Model\Project $project
+     * @param bool          $isAccepted
+     */
+    public function updateStatusMail(Model\Project $project, $isAccepted = true)
+    {
+        $noReply = null;
+        if ($this->settings[ 'mail' ][ 'noReplyEmail' ] && CoreUtility\GeneralUtility::validEmail($this->settings[ 'mail' ][ 'noReplyEmail' ])) {
+            $noReply = [$this->settings[ 'mail' ][ 'noReplyEmail' ] => $this->settings[ 'mail' ][ 'noReplyName' ] ?: $this->settings[ 'mail' ][ 'senderName' ]];
+        }
+        $sender = $this->getAddressees(true, $project->getAddressee()) ?: CoreUtility\MailUtility::getSystemFrom();
+        $carbonCopyReceivers = [];
+        if ($this->settings[ 'mail' ][ 'carbonCopy' ]) {
+            foreach (explode(',', $this->settings[ 'mail' ][ 'carbonCopy' ]) as $carbonCopyReceiver) {
+                $tokens = CoreUtility\GeneralUtility::trimExplode(' ', $carbonCopyReceiver, true, 2);
+                if (CoreUtility\GeneralUtility::validEmail($tokens[ 0 ])) {
+                    $carbonCopyReceivers[ $tokens[ 0 ] ] = $tokens[ 1 ];
+                }
+            }
+        }
+
+        /** @var \TYPO3\CMS\Core\Mail\MailMessage $mailToSender */
+        $mailToSender = CoreUtility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
+        $mailToSender->setContentType('text/html');
+
+        /**
+         * Email to sender
+         */
+        $mailToSender->setFrom($noReply ?: $sender)
+                     ->setTo([
+                         $project->getRegistrant()
+                                 ->getEmail() => $project->getRegistrant()
+                                                         ->getName()
+                     ])
+                     ->setSubject($this->settings[ 'mail' ][ 'projectStatusUpdateSubject' ] ?: (LocalizationUtility::translate('mail_project_status_update_subject', $this->extensionName) ?: 'Project status update -- DEV!'))
+                     ->setBody($this->getStandAloneTemplate(
+                         CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectStatusUpdated.html',
+                         [
+                             'settings' => $this->settings,
+                             'project'  => $project,
+                             'accepted' => $isAccepted
+                         ]
+                     ))
+                     ->send();
+    }
+
+    /**
      * manuallySetProjectArgument action.
      * Needed since working with hidden records displayed too, but handling them is not supported by the core! Our
      * repository does this job.
@@ -400,8 +476,8 @@ class ProjectController extends RepositoryInjectionController
                 $this->request->setArgument('project', $this->projectRepository->findByUid($this->request->getArgument('project')));
             } elseif (is_array($this->request->getArgument('project')) && array_key_exists('__identity', $this->request->getArgument('project'))) {
                 /** @var \S3b0\ProjectRegistration\Domain\Model\Project $project */
-                $project = $this->projectRepository->findByUid($this->request->getArgument('project')['__identity']);
-                foreach ((array) $this->request->getArgument('project') as $property => $propertyValue) {
+                $project = $this->projectRepository->findByUid($this->request->getArgument('project')[ '__identity' ]);
+                foreach ((array)$this->request->getArgument('project') as $property => $propertyValue) {
                     if ($project->_hasProperty($property)) {
                         $project->_setProperty($property, $propertyValue);
                     }

@@ -1,0 +1,152 @@
+{namespace s=S3b0\ProjectRegistration\ViewHelpers}
+{namespace vh=In2code\Powermail\ViewHelpers}
+<p style="font-size: 1.2em;font-weight: bold">New registration request received:</p>
+<hr />
+<table>
+	<tr>
+		<td><f:translate id="{data.settings.addressees.label}" /></td>
+		<td>{s:getArrayElement(array: data.addressees, key: data.submitted.project.addressee)}</td>
+	</tr>
+	<tr>
+		<td colspan="2" style="font-size: 1.2em; font-weight: bold; padding-top: 1em;text-align: left"><f:translate id="registrant"/></td>
+	</tr>
+	<tr>
+		<td><f:translate id="name" /></td>
+		<td>{data.submitted.registrant.name}</td>
+	</tr>
+	<tr>
+		<td><f:translate id="company" /></td>
+		<td>{data.submitted.registrant.company}</td>
+	</tr>
+	<tr>
+		<td><f:translate id="email" /></td>
+		<td>{data.submitted.registrant.email}</td>
+	</tr>
+	<tr>
+		<td><f:translate id="phone" /></td>
+		<td>{data.submitted.registrant.phone}</td>
+	</tr>
+	<tr>
+		<td colspan="2" style="font-size: 1.2em; font-weight: bold; padding-top: 1em;text-align: left"><f:translate id="project"/></td>
+	</tr>
+	<tr>
+		<td>ID</td>
+		<td>#{data.submitted.project.uid}</td>
+	</tr>
+	<tr>
+		<td><f:translate id="date_of_request"/></td>
+		<td>{data.submitted.project.dateOfRequest -> f:format.date(format: '{data.settings.formatDate} h:i A')}</td>
+	</tr>
+	<tr>
+		<td><f:translate id="title"/></td>
+		<td>{data.submitted.project.title}</td>
+	</tr>
+	<tr>
+		<td><f:translate id="product"/></td>
+		<td>{data.submitted.project.product.title}</td>
+	</tr>
+	<f:if condition="{data.submitted.project.propertyValues -> f:count()}">
+		<f:for each="{data.submitted.project.propertyValues}" as="propertyValue">
+			<tr>
+				<td>{propertyValue.property.title}</td>
+				<td>{propertyValue.title}</td>
+			</tr>
+		</f:for>
+	</f:if>
+	<tr>
+		<td><f:translate id="application"/></td>
+		<td>{data.submitted.project.application}</td>
+	</tr>
+	<tr>
+		<td><f:translate id="quantity"/></td>
+		<td>{data.submitted.project.quantity}</td>
+	</tr>
+	<tr>
+		<td><f:translate id="estimated_purchase_date"/></td>
+		<td>{data.submitted.project.estimatedPurchaseDate -> f:format.date(format: data.settings.formatDate)}</td>
+	</tr>
+	<f:if condition="{data.submitted.project.registrationNotes}">
+		<tr>
+			<td><f:translate id="registration_notes"/></td>
+			<td>{data.submitted.project.registrationNotes -> f:format.nl2br()}</td>
+		</tr>
+	</f:if>
+	<!-- End user information -->
+	<tr>
+		<td colspan="2" style="font-size: 1.2em; font-weight: bold; padding-top: 1em;text-align: left"><f:translate id="end_user"/></td>
+	</tr>
+	<tr>
+		<td><f:translate id="company" /></td>
+		<td>{data.submitted.endUser.company}</td>
+	</tr>
+	<f:if condition="{data.submitted.endUser.name}">
+		<tr>
+			<td><f:translate id="name" /></td>
+			<td>{data.submitted.endUser.name}</td>
+		</tr>
+	</f:if>
+	<f:if condition="{data.submitted.endUser.email}">
+		<tr>
+			<td><f:translate id="email" /></td>
+			<td>{data.submitted.endUser.email}</td>
+		</tr>
+	</f:if>
+	<f:if condition="{data.submitted.endUser.phone}">
+		<tr>
+			<td><f:translate id="phone" /></td>
+			<td>{data.submitted.endUser.phone}</td>
+		</tr>
+	</f:if>
+	<f:if condition="{data.submitted.endUser.city}">
+		<tr>
+			<td><f:translate id="city" /></td>
+			<td>{data.submitted.endUser.city}</td>
+		</tr>
+	</f:if>
+	<f:if condition="{data.submitted.endUser.site}">
+		<tr>
+			<td><f:translate id="site" /></td>
+			<td>{data.submitted.endUser.site}</td>
+		</tr>
+	</f:if>
+	<tr>
+		<td><f:translate id="country" /></td>
+		<td>{data.submitted.endUser.country.title}</td>
+	</tr>
+	<f:if condition="{data.submitted.endUser.state}">
+		<tr>
+			<td><f:translate id="state" /></td>
+			<td>{data.submitted.endUser.state.title}</td>
+		</tr>
+	</f:if>
+</table>
+<p>&nbsp;</p>
+<table width="500px">
+	<tr>
+		<th colspan="2" align="left" style="font-size: 14px;">
+			<b><f:translate key="MarketingInformation" default="Marketing Information" /></b>
+		</th>
+	</tr>
+	<f:for each="{data.marketingInformation}" as="value" key="key">
+		<tr valign="top">
+
+			<td style="font-size: 12px;" width="50%">
+				<b><f:translate key="\In2code\Powermail\Domain\Model\Mail.marketing{vh:String.Upper(string:'{key}')}" default="{key}" /></b>
+			</td>
+
+			<f:if condition="{vh:Condition.IsArray(val:'{value}')}">
+				<f:else>
+					<td style="font-size: 12px;" width="50%">{value}</td>
+				</f:else>
+				<f:then>
+					<td style="font-size: 12px;" width="50%">
+						<f:for each="{value}" as="subvalue" iteration="index">
+							<f:link.page pageUid="{subvalue}" absolute="1"><vh:Getter.GetPageNameFromUid uid="{subvalue}" /></f:link.page><f:if condition="{index.isLast}"><f:else> &gt; </f:else></f:if>
+						</f:for>
+					</td>
+				</f:then>
+			</f:if>
+
+		</tr>
+	</f:for>
+</table>

@@ -3,97 +3,71 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2015-11-26T11:09:59Z" product-name="project_registration">
 		<header/>
 		<body>
-			<trans-unit id="tx_projectregistration_domain_model_project">
+			<!-- PROJECT DATA FIELDS -->
+			<trans-unit id="project">
 				<source>Project</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_project.title">
+			<trans-unit id="title">
 				<source>Title</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_project.date_of_request">
+			<trans-unit id="date_of_request">
 				<source>Date Of Request</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_project.application">
+			<trans-unit id="application">
 				<source>Application</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_project.quantity">
+			<trans-unit id="quantity">
 				<source>Quantity</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_project.estimated_purchase_date">
+			<trans-unit id="estimated_purchase_date">
 				<source>Estimated Purchase Date</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_project.registration_notes">
+			<trans-unit id="registration_notes">
 				<source>Registration Notes</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_project.internal_note">
+			<trans-unit id="internal_note">
 				<source>Internal Note</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_project.denial_note">
+			<trans-unit id="denial_note">
 				<source>Denial Note</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_project.approved">
-				<source>Approved</source>
-			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_project.registrant">
+			<trans-unit id="registrant">
 				<source>Registrant</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_project.end_user">
+			<trans-unit id="end_user">
 				<source>End User</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_project.product">
+			<trans-unit id="product">
 				<source>Product</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_product">
-				<source>Product</source>
-			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_product.title">
-				<source>Title</source>
-			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_product.properties">
-				<source>Properties</source>
-			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_productproperty">
-				<source>Product Property</source>
-			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_productproperty.title">
-				<source>Title</source>
-			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_productproperty.property_values">
-				<source>Property Values</source>
-			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_productpropertyvalue">
-				<source>Product Property Value</source>
-			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_productpropertyvalue.title">
-				<source>Title</source>
-			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_person">
-				<source>Person</source>
-			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_person.name">
+
+			<!-- PERSONAL DATA FIELDS -->
+			<trans-unit id="name">
 				<source>Name</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_person.company">
+			<trans-unit id="company">
 				<source>Company</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_person.email">
+			<trans-unit id="email">
 				<source>E-Mail</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_person.phone">
+			<trans-unit id="phone">
 				<source>Phone</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_person.city">
+			<trans-unit id="city">
 				<source>City</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_person.site">
+			<trans-unit id="site">
 				<source>Site</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_person.country">
+			<trans-unit id="country">
 				<source>Country</source>
 			</trans-unit>
-			<trans-unit id="tx_projectregistration_domain_model_person.state">
+			<trans-unit id="state">
 				<source>State</source>
 			</trans-unit>
 
+			<!-- UNIQUE FIELDS -->
 			<trans-unit id="addressees_label">
 				<source>Your Location</source>
 			</trans-unit>
@@ -114,6 +88,17 @@
 			</trans-unit>
 			<trans-unit id="state_1">
 				<source>accepted</source>
+			</trans-unit>
+
+			<!-- MAILS -->
+			<trans-unit id="mail_project_registered_confirmation_subject">
+				<source>Your project registration request</source>
+			</trans-unit>
+			<trans-unit id="mail_project_registered_info_subject">
+				<source>New project registration submitted</source>
+			</trans-unit>
+			<trans-unit id="mail_project_status_update_subject">
+				<source>Project status update</source>
 			</trans-unit>
 		</body>
 	</file>

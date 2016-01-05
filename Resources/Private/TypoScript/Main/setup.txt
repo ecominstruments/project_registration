@@ -35,9 +35,14 @@ plugin.tx_projectregistration_registration {
 				30.inactive = 0
 			}
 		}
+		mail {
+			noReplyEmail = noreply@ecom-ex.com
+			noReplyName = ecom instruments GmbH
+		}
 		certifiedUsersUserGroup = {$plugin.tx_projectregistration.settings.certifiedUsersUserGroup}
 		investigator = {$plugin.tx_projectregistration.settings.investigator}
 		admin = {$plugin.tx_projectregistration.settings.admin}
+		formatDate = j M Y
 	}
 }
 
