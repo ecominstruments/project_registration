@@ -35,15 +35,15 @@
 					<td>{project.dateOfRequest -> f:format.date(format: 'd-m-Y')}</td>
 					<td>{project.registrant.name}
 						<f:if condition="{f:ecom.inArray(haystack: project.registrant.feUserGroups, needle: settings.certifiedUsersUserGroup)}">
-							<f:then><span class="text-primary"><i class="fa fa-star fa-fw"></i></span></f:then>
+							<f:then><span class="text-primary" title="Certified registrant"><i class="fa fa-star fa-fw"></i></span></f:then>
 							<f:else>
-								<f:if condition="{project.registrant.feUser}"><i class="fa fa-star fa-fw"></i></f:if>
+								<f:if condition="{project.registrant.feUser}"><i class="fa fa-star fa-fw" title="Registered user (NOT certified)"></i></f:if>
 							</f:else>
 						</f:if>
 					</td>
 					<td>
 						<f:link.action action="show" controller="Person" arguments="{person: project.registrant}" title="Show registrant details"><i class="fa fa-user"></i></f:link.action>&nbsp;
-						<a data-toggle="popover" title="E-M@il:" data-content="{project.registrant.email}"><i class="fa fa-envelope-o"></i></a>&nbsp;
+						<a data-toggle="popover" title="E-Mail:" data-content="{project.registrant.email}"><i class="fa fa-envelope-o"></i></a>&nbsp;
 						<a data-toggle="popover" title="Phone:" data-content="{project.registrant.phone}"><i class="fa fa-phone-square"></i></a>
 						<f:if condition="{project.internalNote}">
 							<a data-toggle="popover" title="Internal note:" data-content="{project.internalNote}"><span class="text-primary"><i class="fa fa-sticky-note"></i></span></a>
@@ -69,27 +69,29 @@
 							</f:if>
 						</f:else>
 					</f:if>
-						<f:if condition="{project.hidden}">
-							<f:then>
-								<f:link.action action="accept" arguments="{project: project}" noCacheHash="1">
-									<i class="fa fa-check-circle-o fa-lg"></i>
-								</f:link.action>
-								&nbsp;
-								<f:link.action arguments="{project: project}" noCacheHash="1" onclick="askForNoteOnDenial(this,'Do you want to add a note?')">
-									<i class="fa fa-times-circle-o fa-lg"></i>
-								</f:link.action>
-							</f:then>
-							<f:else>
-								{project.fontAwesomeStatus -> f:format.raw()}
-							</f:else>
-						</f:if>
+					<f:if condition="{project.hidden}">
+						<f:then>
+							<f:link.action action="confirmation" arguments="{project: project, state: 1}" noCacheHash="1">
+								<i class="fa fa-check-circle-o fa-lg"></i>
+							</f:link.action>
+							&nbsp;
+							<f:link.action action="confirmation" arguments="{project: project, state: 0}" noCacheHash="1">
+								<i class="fa fa-times-circle-o fa-lg"></i>
+							</f:link.action>
+						</f:then>
+						<f:else>
+							{project.fontAwesomeStatus -> f:format.raw()}
+						</f:else>
+					</f:if>
 					&nbsp;
-					<f:link.action action="addInternalNote" arguments="{project: project}" title="Add internal note">
-						<f:if condition="{project.internalNote}">
-							<f:then><i class="fa fa-sticky-note"></i></f:then>
-							<f:else><i class="fa fa-sticky-note-o"></i></f:else>
-						</f:if>
-					</f:link.action>
+					<f:if condition="{project.internalNote}">
+						<f:then>
+							<f:link.action action="addInternalNote" arguments="{project: project}" title="Edit internal note"><i class="fa fa-sticky-note"></i></f:link.action>
+						</f:then>
+						<f:else>
+							<f:link.action action="addInternalNote" arguments="{project: project}" title="Add internal note"><i class="fa fa-sticky-note-o"></i></f:link.action>
+						</f:else>
+					</f:if>
 					</td>
 					<td>
 						<f:link.action action="show" arguments="{project: project}" target="_blank"><i class="fa fa-lg fa-fw fa-info-circle"></i></f:link.action>
@@ -101,14 +103,6 @@
 	</section>
 
 	<script language="JavaScript" type="text/javascript">
-		function askForNoteOnDenial(e,m) {
-			if ( confirm(m)) {
-				e.href += "&tx_projectregistration_administration%5Baction%5D=addDenialNote";
-			} else {
-				e.href += "&tx_projectregistration_administration%5Baction%5D=reject";
-			}
-		}
-
 		/**
 		 * Credits to Chris Coyier @see http://codepen.io/chriscoyier/pen/tIuBL
 		 */

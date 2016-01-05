@@ -48,6 +48,8 @@ plugin.tx_projectregistration_registration {
 
 plugin.tx_projectregistration_administration < plugin.tx_projectregistration_registration
 
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:project_registration/Resources/Private/TypoScript/Includes/notification_emails.txt">
+
 page.includeJSLibs{
 	stupidTable = EXT:project_registration/Resources/Public/JavaScript/stupidtable.min.js
 	stupidTable.disableCompression = 1

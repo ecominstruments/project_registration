@@ -43,8 +43,8 @@ class ProjectController extends RepositoryInjectionController
      */
     public function listAction()
     {
-        $projects         = $this->projectRepository->findAll();
-        $addressees       = $this->getAddressees();
+        $projects = $this->projectRepository->findAll();
+        $addressees = $this->getAddressees();
         $loggedInUserRole = 0;
 
         if ($this->getTypoScriptFrontendController()->loginUser) {
@@ -232,8 +232,8 @@ class ProjectController extends RepositoryInjectionController
                                                    ->getName()
                        ])
                        ->setSubject(($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (LocalizationUtility::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted -- DEV!')) . ($dto->getRegistrant()
-                                                                                                                                                                                                                                                         ->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $dto->getRegistrant()
-                                                                                                                                                                                                                                                                                                                                           ->getFeUserGroups()) ? ' » certified registrant' : ' » NOT certified registrant'))
+                                                                                                                                                                                                                                                           ->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $dto->getRegistrant()
+                                                                                                                                                                                                                                                                                                                                             ->getFeUserGroups()) ? ' » certified registrant' : ' » NOT certified registrant'))
                        ->setBody($this->getStandAloneTemplate(
                            CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectRegisteredInfo.html',
                            [
@@ -248,13 +248,35 @@ class ProjectController extends RepositoryInjectionController
     }
 
     /**
+     * @return void
+     */
+    public function initializeConfirmationAction()
+    {
+        $this->manuallySetProjectArgument();
+    }
+
+    /**
      * action confirmation
+     *
+     * @param Model\Project $project
+     * @param bool          $state
      *
      * @return void
      */
-    public function confirmationAction()
+    public function confirmationAction(Model\Project $project, $state = true)
     {
+        $receivers = [];
+        if (isset($this->settings[ 'notificationEmails' ]) && is_array($this->settings[ 'notificationEmails' ])) {
+            foreach ($this->settings[ 'notificationEmails' ] as $receiver) {
+                $receivers[ $receiver[ 'mail' ] ] = "{$receiver[ 'name' ]} <{$receiver[ 'mail' ]}>";
+            }
+        }
 
+        $this->view->assignMultiple([
+            'receivers' => $receivers,
+            'project'   => $project,
+            'state'     => $state
+        ]);
     }
 
     /**
@@ -273,9 +295,8 @@ class ProjectController extends RepositoryInjectionController
      *
      * @return void
      */
-    public function editAction(
-        Model\Project $project
-    ) {
+    public function editAction(Model\Project $project)
+    {
         $this->view->assign('project', $project);
     }
 
@@ -294,9 +315,8 @@ class ProjectController extends RepositoryInjectionController
      *
      * @return void
      */
-    public function updateAction(
-        Model\Project $project
-    ) {
+    public function updateAction(Model\Project $project)
+    {
         $this->updateRecord($project, "Project with #{$project->getUid()} was updated!", \TYPO3\CMS\Core\Messaging\AbstractMessage::OK, self::NEUTER_ARTICLE, true);
         $this->redirect('list');
     }
@@ -316,9 +336,8 @@ class ProjectController extends RepositoryInjectionController
      *
      * @return void
      */
-    public function deleteAction(
-        Model\Project $project
-    ) {
+    public function deleteAction(Model\Project $project)
+    {
         if ($project->isVisible()) {
             $this->deleteRecord($project, "Project with #{$project->getUid()} was deleted!", \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR, self::NEUTER_ARTICLE, true);
         }
@@ -337,16 +356,20 @@ class ProjectController extends RepositoryInjectionController
      * action accept
      *
      * @param \S3b0\ProjectRegistration\Domain\Model\Project $project
+     * @param array                                          $receivers
+     * @param bool                                           $sendmail
      *
      * @return void
      */
-    public function acceptAction(Model\Project $project)
+    public function acceptAction(Model\Project $project, array $receivers = [], $sendmail = true)
     {
         $project->setHidden(false);
         $project->setApproved(true);
         $this->updateRecord($project, "Project with #{$project->getUid()} was approved!", \TYPO3\CMS\Core\Messaging\AbstractMessage::OK, self::NEUTER_ARTICLE, true);
 
-        $this->updateStatusMail($project, true);
+        if ($sendmail) {
+            $this->updateStatusMail($project, $receivers, true);
+        }
         $this->internalRedirect('list');
     }
 
@@ -362,16 +385,20 @@ class ProjectController extends RepositoryInjectionController
      * action reject
      *
      * @param \S3b0\ProjectRegistration\Domain\Model\Project $project
+     * @param array                                          $receivers
+     * @param bool                                           $sendmail
      *
      * @return void
      */
-    public function rejectAction(Model\Project $project)
+    public function rejectAction(Model\Project $project, array $receivers = [], $sendmail = true)
     {
         $project->setHidden(false);
         $project->setApproved(false);
         $this->updateRecord($project, "Project with #{$project->getUid()} was rejected!", \TYPO3\CMS\Core\Messaging\AbstractMessage::WARNING, self::NEUTER_ARTICLE, true);
 
-        $this->updateStatusMail($project, false);
+        if ($sendmail) {
+            $this->updateStatusMail($project, $receivers, false);
+        }
         $this->internalRedirect('list');
     }
 
@@ -417,9 +444,10 @@ class ProjectController extends RepositoryInjectionController
 
     /**
      * @param Model\Project $project
+     * @param array         $receivers
      * @param bool          $isAccepted
      */
-    public function updateStatusMail(Model\Project $project, $isAccepted = true)
+    public function updateStatusMail(Model\Project $project, array $receivers = [], $isAccepted = true)
     {
         $noReply = null;
         if ($this->settings[ 'mail' ][ 'noReplyEmail' ] && CoreUtility\GeneralUtility::validEmail($this->settings[ 'mail' ][ 'noReplyEmail' ])) {
@@ -449,6 +477,7 @@ class ProjectController extends RepositoryInjectionController
                                  ->getEmail() => $project->getRegistrant()
                                                          ->getName()
                      ])
+                     ->setCc($receivers)
                      ->setSubject($this->settings[ 'mail' ][ 'projectStatusUpdateSubject' ] ?: (LocalizationUtility::translate('mail_project_status_update_subject', $this->extensionName) ?: 'Project status update -- DEV!'))
                      ->setBody($this->getStandAloneTemplate(
                          CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectStatusUpdated.html',

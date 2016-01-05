@@ -20,7 +20,7 @@ if (!defined('TYPO3_MODE')) {
     ],
     // non-cacheable actions
     [
-        'Project' => 'create, update, delete, accept, reject',
+        'Project' => 'create, update, delete, confirmation, accept, reject',
         'Person' => ''
     ]
 );

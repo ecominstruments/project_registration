@@ -1,0 +1,14 @@
+plugin.tx_projectregistration_administration.settings.notificationEmails {
+	1.name = Markus Nied
+	1.mail = markus.nied@ecom-ex.com
+	2.name = Marcel Nied
+	2.mail = marcel.nied@ecom-ex.com
+	#todo remove this line +1 before going live
+	2.mail = sebastian.iffland@ecom-ex.com
+	3.name = Sandro Nied
+	3.mail = sandro.nied@ecom-ex.com
+	#todo remove this line +1 before going live
+	3.mail = adwords@ecom-ex.com
+	4.name = Yvonne Leuser
+	4.mail = yvonne.leuser@ecom-ex.com
+}

@@ -1,0 +1,83 @@
+<f:if condition="{state}">
+	<f:then>
+		<div class="alert alert-info alert-dismissible" role="alert">
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			You are about to accept project #{project.uid} ("{project.title}") added {project.dateOfRequest -> f:format.date(format: '{settings.formatDate} h:i A')} by {project.registrant.name}
+		</div>
+	</f:then>
+	<f:else>
+		<div class="alert alert-warning alert-dismissible" role="alert">
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			You are about to reject project #{project.uid} ("{project.title}") added {project.dateOfRequest -> f:format.date(format: '{settings.formatDate} h:i A')} by {project.registrant.name}
+		</div>
+	</f:else>
+</f:if>
+
+<f:form action="{f:if(condition: state, then: 'accept', else: 'reject')}" arguments="{project: project}" class="tx-powermail" name="project" object="{project}" additionalAttributes="{data-validate: 'html5', data-parsley-validate: 'data-parsley-validate', novalidate: ''}">
+
+	<div class="form-group">
+		<div class="powermail_fieldwrap">
+			<span class="powermail_label"><f:translate id="sendmail" default="Send Mail?" /></span>
+				<div class="powermail_check_outer clearfix ">
+					<div class="check-inline">
+						<label for="prf-sendmail">
+							<f:form.checkbox class="powermail_checkbox"
+							                 id="prf-sendmail"
+							                 onclick="toggleReceivers(this)"
+							                 name="sendmail"
+							                 value="1"
+							                 checked="1" />
+						</label>
+					</div>
+				</div>
+		</div>
+	</div>
+
+	<f:if condition="{receivers}">
+		<div class="form-group" id="prf-wrap-receivers">
+			<div class="powermail_fieldwrap">
+				<label for="prf-receivers" class="powermail_label"><f:translate id="receivers" default="Receivers" /></label>
+				<f:form.select options="{receivers}"
+				               class="form-control powermail_field"
+				               id="prf-receivers"
+				               multiple="multiple"
+				               name="receivers"
+				               size="20" />
+			</div>
+		</div>
+	</f:if>
+
+	<f:if condition="{state} == 0">
+		<div class="form-group">
+			<div class="powermail_fieldwrap">
+				<label for="prf-project-denial-note" class="powermail_label"><f:translate id="denial_note" /></label>
+				<f:form.textarea placeholder="Please fill in"
+				                 class="form-control powermail_field"
+				                 cols="20"
+				                 rows="5"
+				                 id="prf-project-denial-note"
+				                 property="denialNote" />
+			</div>
+		</div>
+	</f:if>
+
+	<div class="form-group">
+		<div class="powermail_fieldwrap">
+			<f:link.action action="list" class="btn btn-danger">Cancel</f:link.action>
+			<button type="submit" class="btn btn-primary" data-loading-text="Processing your request... <i class='fa fa-circle-o-notch fa-fw fa-spin'></i>">
+				Confirm &nbsp;<i class="fa fa-angle-right"></i>
+			</button>
+		</div>
+	</div>
+
+</f:form>
+
+<script language="JavaScript" type="text/javascript">
+	function toggleReceivers(val) {
+		if (val.checked) {
+			document.getElementById("prf-wrap-receivers").style.display = "block";
+		} else {
+			document.getElementById("prf-wrap-receivers").style.display = "none";
+		}
+	}
+</script>
