@@ -3,9 +3,35 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2015-11-26T11:09:59Z" product-name="project_registration">
 		<header/>
 		<body>
+			<!-- LEGEND (HEADER FIELDS) -->
+			<trans-unit id="legend_project_id">
+				<source>Project#</source>
+			</trans-unit>
+			<trans-unit id="legend_project_region">
+				<source>Region</source>
+			</trans-unit>
+			<trans-unit id="legend_project_name">
+				<source>Project name</source>
+			</trans-unit>
+			<trans-unit id="legend_enduser_company">
+				<source>Company (End-user)</source>
+			</trans-unit>
+			<trans-unit id="legend_enduser_country">
+				<source>Country (End-user)</source>
+			</trans-unit>
+
 			<!-- PROJECT DATA FIELDS -->
+			<trans-unit id="project_data">
+				<source>Project data</source>
+			</trans-unit>
+			<trans-unit id="project_information">
+				<source>Project information</source>
+			</trans-unit>
 			<trans-unit id="project">
 				<source>Project</source>
+			</trans-unit>
+			<trans-unit id="project_title">
+				<source>Project name</source>
 			</trans-unit>
 			<trans-unit id="title">
 				<source>Title</source>
@@ -40,10 +66,31 @@
 			<trans-unit id="product">
 				<source>Product</source>
 			</trans-unit>
+			<trans-unit id="status">
+				<source>Status</source>
+			</trans-unit>
 
 			<!-- PERSONAL DATA FIELDS -->
+			<trans-unit id="registrant_information">
+				<source>Registrant information</source>
+			</trans-unit>
+			<trans-unit id="end_user_information">
+				<source>End user information</source>
+			</trans-unit>
 			<trans-unit id="name">
 				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="first_name">
+				<source>First name</source>
+			</trans-unit>
+			<trans-unit id="middle_name">
+				<source>Middle name</source>
+			</trans-unit>
+			<trans-unit id="last_name">
+				<source>Last name</source>
+			</trans-unit>
+			<trans-unit id="contact">
+				<source>Contact</source>
 			</trans-unit>
 			<trans-unit id="company">
 				<source>Company</source>
@@ -51,8 +98,20 @@
 			<trans-unit id="email">
 				<source>E-Mail</source>
 			</trans-unit>
+			<trans-unit id="www">
+				<source>Web</source>
+			</trans-unit>
 			<trans-unit id="phone">
 				<source>Phone</source>
+			</trans-unit>
+			<trans-unit id="fax">
+				<source>Fax</source>
+			</trans-unit>
+			<trans-unit id="address">
+				<source>Address</source>
+			</trans-unit>
+			<trans-unit id="zip">
+				<source>Postal Code</source>
 			</trans-unit>
 			<trans-unit id="city">
 				<source>City</source>
@@ -66,10 +125,16 @@
 			<trans-unit id="state">
 				<source>State</source>
 			</trans-unit>
+			<trans-unit id="state_province">
+				<source>State / Province</source>
+			</trans-unit>
 
 			<!-- UNIQUE FIELDS -->
 			<trans-unit id="addressees_label">
 				<source>Your Location</source>
+			</trans-unit>
+			<trans-unit id="addressees_label_1">
+				<source>Region</source>
 			</trans-unit>
 			<trans-unit id="addressees_I_0">
 				<source>Americas</source>
@@ -89,8 +154,23 @@
 			<trans-unit id="state_1">
 				<source>accepted</source>
 			</trans-unit>
+			<trans-unit id="state_2">
+				<source>needs action</source>
+			</trans-unit>
+			<trans-unit id="button_send_request">
+				<source>Send request</source>
+			</trans-unit>
+			<trans-unit id="button_confirm">
+				<source>Confirm</source>
+			</trans-unit>
+			<trans-unit id="button_cancel">
+				<source>Cancel</source>
+			</trans-unit>
+			<trans-unit id="button_back">
+				<source>Back</source>
+			</trans-unit>
 
-			<!-- MAILS -->
+			<!-- MAIL SUBJECTS -->
 			<trans-unit id="mail_project_registered_confirmation_subject">
 				<source>Your project registration request</source>
 			</trans-unit>
@@ -99,6 +179,41 @@
 			</trans-unit>
 			<trans-unit id="mail_project_status_update_subject">
 				<source>Project status update</source>
+			</trans-unit>
+
+			<trans-unit id="link_back_tpp">
+				<source>Back to previous page</source>
+			</trans-unit>
+			<trans-unit id="link_close_window">
+				<source>Close window</source>
+			</trans-unit>
+			<trans-unit id="user_default">
+				<source>NOT certified registrant</source>
+			</trans-unit>
+			<trans-unit id="user_registered">
+				<source>Registered user (NOT certified)</source>
+			</trans-unit>
+			<trans-unit id="user_certified">
+				<source>Certified registrant</source>
+			</trans-unit>
+
+			<trans-unit id="message_accepting">
+				<source>You are about to accept project #%1$s ("%2$s") added %3$s by %4$s</source>
+			</trans-unit>
+			<trans-unit id="message_rejecting">
+				<source>You are about to reject project #%1$s ("%2$s") added %3$s by %4$s</source>
+			</trans-unit>
+			<trans-unit id="message_resetting">
+				<source>You are about to reset project #%1$s ("%2$s") added %3$s by %4$s</source>
+			</trans-unit>
+			<trans-unit id="us_format">
+				<source>US-Format</source>
+			</trans-unit>
+			<trans-unit id="deleted">
+				<source>Deleted</source>
+			</trans-unit>
+			<trans-unit id="outdated">
+				<source>Outdated</source>
 			</trans-unit>
 		</body>
 	</file>

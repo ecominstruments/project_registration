@@ -18,18 +18,21 @@ plugin.tx_projectregistration_registration {
 			data {
 				10.label = LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:addressees_I_0
 				10.name = Warren Rainer
+				#todo
 				#10.mail = warren.rainer@ecom-ex.com
 				10.mail = sebastian.iffland@ecom-ex.com
 				10.inactive = 0
 
 				20.label = LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:addressees_I_1
 				20.name = Marcel Nied
+				#todo
 				#20.mail = marcel.nied@ecom-ex.com
 				20.mail = sebastian.iffland@ecom-ex.com
 				20.inactive = 0
 
 				30.label = LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:addressees_I_2
 				30.name = Harald Zeier
+				#todo
 				#30.mail = harald.zeier@ecom-ex.com
 				30.mail = sebastian.iffland@ecom-ex.com
 				30.inactive = 0
@@ -38,6 +41,8 @@ plugin.tx_projectregistration_registration {
 		mail {
 			noReplyEmail = noreply@ecom-ex.com
 			noReplyName = ecom instruments GmbH
+			#todo
+			#carbonCopy = markus.nied@ecom-ex.com Markus Nied,lothar.berger@ecom-ex.com Lothar Berger
 		}
 		certifiedUsersUserGroup = {$plugin.tx_projectregistration.settings.certifiedUsersUserGroup}
 		investigator = {$plugin.tx_projectregistration.settings.investigator}

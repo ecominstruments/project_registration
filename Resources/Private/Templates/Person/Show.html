@@ -8,77 +8,77 @@
   <table class="table table-striped">
     <tbody>
     <tr>
-      <td>Name :</td>
+      <td><f:translate id="name" /> :</td>
       <td>{person.name}</td>
     </tr>
     <tr>
-      <td>First name :</td>
+      <td><f:translate id="first_name" /> :</td>
       <td>{person.firstName}</td>
     </tr>
     <f:if condition="{person.middleName}">
       <tr>
-        <td>Middle name :</td>
+        <td><f:translate id="middle_name" /> :</td>
         <td>{person.middleName}</td>
       </tr>
     </f:if>
     <tr>
-      <td>Last name :</td>
+      <td><f:translate id="last_name" /> :</td>
       <td>{person.lastName}</td>
     </tr>
     <f:if condition="{person.title}">
       <tr>
-        <td>Title :</td>
+        <td><f:translate id="title" /> :</td>
         <td>{person.title}</td>
       </tr>
     </f:if>
     <tr>
     <tr>
-      <td>Company :</td>
+      <td><f:translate id="company" /> :</td>
       <td>{person.company}</td>
     </tr>
     <tr>
-      <td>E-Mail :</td>
+      <td><f:translate id="email" /> :</td>
       <td><f:link.typolink parameter="{person.email}" /></td>
     </tr>
     <tr>
-      <td>Web :</td>
+      <td><f:translate id="www" /> :</td>
       <td><f:link.typolink parameter="{person.www}" /></td>
     </tr>
     <tr>
-      <td>Phone :</td>
+      <td><f:translate id="phone" /> :</td>
       <td>{person.phone}</td>
     </tr>
     <tr>
-      <td>Fax :</td>
+      <td><f:translate id="fax" /> :</td>
       <td>{person.fax}</td>
     </tr>
     <tr>
-      <td>Address :</td>
+      <td><f:translate id="address" /> :</td>
       <td>{person.address}</td>
     </tr>
     <tr>
-      <td>Postal code :</td>
+      <td><f:translate id="zip" /> :</td>
       <td>{person.zip}</td>
     </tr>
     <tr>
-      <td>City :</td>
+      <td><f:translate id="city" /> :</td>
       <td>{person.city}</td>
     </tr>
     <tr>
-      <td>Site :</td>
+      <td><f:translate id="site" /> :</td>
       <td>{person.site}</td>
     </tr>
     <tr>
-      <td>Country :</td>
+      <td><f:translate id="country" /> :</td>
       <td>{person.country.title}</td>
     </tr>
     <tr>
-      <td>State / Province :</td>
+      <td><f:translate id="state_province" /> :</td>
       <td>{person.state.title}</td>
     </tr>
     </tbody>
   </table>
 
-  <a href="javascript:history.back()" class="btn btn-default"><i class="fa fa-step-backward fa-fw"></i> Back to previous page</a><br>
+  <a href="javascript:history.back()" class="btn btn-default"><i class="fa fa-step-backward fa-fw"></i> <f:translate id="link_back_tpp" /></a><br>
 
 </f:section>

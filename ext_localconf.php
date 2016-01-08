@@ -6,21 +6,21 @@ if (!defined('TYPO3_MODE')) {
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'S3b0.' . $_EXTKEY,
     'Registration',
-    ['Project' => 'new, create, confirmation'],
+    ['Project' => 'new, create, submitted'],
     // non-cacheable actions
-    ['Project' => 'create']
+    ['Project' => 'create, submitted']
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'S3b0.' . $_EXTKEY,
     'Administration',
     [
-        'Project' => 'list, show, new, create, edit, update, delete, confirmation, accept, reject, addInternalNote, addDenialNote',
+        'Project' => 'list, show, new, create, delete, confirmation, accept, reject, resetState, addInternalNote, addDenialNote, exportCSV',
         'Person' => 'show'
     ],
     // non-cacheable actions
     [
-        'Project' => 'create, update, delete, confirmation, accept, reject',
+        'Project' => 'create, delete, confirmation, accept, reject, resetState, exportCSV',
         'Person' => ''
     ]
 );

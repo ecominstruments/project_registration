@@ -58,7 +58,7 @@ class ProjectController extends RepositoryInjectionController
 
         if ($loggedInUserRole < 1) {
             // @todo activate on finish
-            /*$this->getTypoScriptFrontendController()->pageNotFoundAndExit();*/
+            #$this->getTypoScriptFrontendController()->pageNotFoundAndExit();
         }
 
         $this->view->assignMultiple([
@@ -82,7 +82,10 @@ class ProjectController extends RepositoryInjectionController
      */
     public function showAction(Model\Project $project)
     {
-        $this->view->assign('project', $project);
+        $this->view->assignMultiple([
+            'project'   => $project,
+            'addressee' => $this->getAddressees(false, $project->getAddressee())
+        ]);
     }
 
     /**
@@ -160,7 +163,10 @@ class ProjectController extends RepositoryInjectionController
         } else {
             $this->personRepository->add($dto->getRegistrant());
         }
-        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager $persistenceManager */
+        /**
+         * Persist Persons in order to get corresponding uid to link to in Project
+         * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager $persistenceManager
+         */
         $persistenceManager = CoreUtility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager::class);
         $persistenceManager->persistAll();
         // Add property values
@@ -176,6 +182,7 @@ class ProjectController extends RepositoryInjectionController
         $project->setRegistrant($dto->getRegistrant());
         $project->setEndUser($dto->getEndUser());
         $project->setPropertyValues($propertyValues);
+        // Persist Project to get the uid to use as Project# in emails
         $this->projectRepository->add($project);
         $persistenceManager->persistAll();
 
@@ -226,6 +233,7 @@ class ProjectController extends RepositoryInjectionController
          * Email to receiver (notification mail)
          */
         $mailToReceiver->setTo($sender)
+                       ->setCc($carbonCopyReceivers)
                        ->setFrom([
                            $dto->getRegistrant()
                                ->getEmail() => $dto->getRegistrant()
@@ -233,7 +241,7 @@ class ProjectController extends RepositoryInjectionController
                        ])
                        ->setSubject(($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (LocalizationUtility::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted -- DEV!')) . ($dto->getRegistrant()
                                                                                                                                                                                                                                                            ->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $dto->getRegistrant()
-                                                                                                                                                                                                                                                                                                                                             ->getFeUserGroups()) ? ' » certified registrant' : ' » NOT certified registrant'))
+                                                                                                                                                                                                                                                                                                                                             ->getFeUserGroups()) ? ' » ' . LocalizationUtility::translate('user_certified', $this->extensionName) : ' » ' . LocalizationUtility::translate('user_default', $this->extensionName)))
                        ->setBody($this->getStandAloneTemplate(
                            CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectRegisteredInfo.html',
                            [
@@ -244,7 +252,30 @@ class ProjectController extends RepositoryInjectionController
                            ]
                        ))
                        ->send();
-#        $this->internalRedirect('confirmation');
+        $this->internalRedirect('submitted', ['project' => $dto->getProject()]);
+    }
+
+    /**
+     * @return void
+     */
+    public function initializeSubmittedAction()
+    {
+        $this->manuallySetProjectArgument();
+    }
+
+    /**
+     * action submitted
+     *
+     * @param Model\Project $project
+     *
+     * @return void
+     */
+    public function submittedAction(Model\Project $project)
+    {
+        $this->view->assignMultiple([
+            'project'  => $project,
+            'addressees' => $this->getAddressees()
+        ]);
     }
 
     /**
@@ -259,11 +290,11 @@ class ProjectController extends RepositoryInjectionController
      * action confirmation
      *
      * @param Model\Project $project
-     * @param bool          $state
+     * @param string        $do
      *
      * @return void
      */
-    public function confirmationAction(Model\Project $project, $state = true)
+    public function confirmationAction(Model\Project $project, $do = 'accept')
     {
         $receivers = [];
         if (isset($this->settings[ 'notificationEmails' ]) && is_array($this->settings[ 'notificationEmails' ])) {
@@ -275,50 +306,8 @@ class ProjectController extends RepositoryInjectionController
         $this->view->assignMultiple([
             'receivers' => $receivers,
             'project'   => $project,
-            'state'     => $state
+            'action'     => $do
         ]);
-    }
-
-    /**
-     * @return void
-     */
-    public function initializeEditAction()
-    {
-        $this->manuallySetProjectArgument();
-    }
-
-    /**
-     * action edit
-     *
-     * @param \S3b0\ProjectRegistration\Domain\Model\Project $project
-     * @ignorevalidation $project
-     *
-     * @return void
-     */
-    public function editAction(Model\Project $project)
-    {
-        $this->view->assign('project', $project);
-    }
-
-    /**
-     * @return void
-     */
-    public function initializeUpdateAction()
-    {
-        $this->manuallySetProjectArgument();
-    }
-
-    /**
-     * action update
-     *
-     * @param \S3b0\ProjectRegistration\Domain\Model\Project $project
-     *
-     * @return void
-     */
-    public function updateAction(Model\Project $project)
-    {
-        $this->updateRecord($project, "Project with #{$project->getUid()} was updated!", \TYPO3\CMS\Core\Messaging\AbstractMessage::OK, self::NEUTER_ARTICLE, true);
-        $this->redirect('list');
     }
 
     /**
@@ -338,9 +327,7 @@ class ProjectController extends RepositoryInjectionController
      */
     public function deleteAction(Model\Project $project)
     {
-        if ($project->isVisible()) {
-            $this->deleteRecord($project, "Project with #{$project->getUid()} was deleted!", \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR, self::NEUTER_ARTICLE, true);
-        }
+        $this->deleteRecord($project, "Project with #{$project->getUid()} was deleted!", \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR, self::NEUTER_ARTICLE, true);
         $this->internalRedirect('list');
     }
 
@@ -365,7 +352,7 @@ class ProjectController extends RepositoryInjectionController
     {
         $project->setHidden(false);
         $project->setApproved(true);
-        $this->updateRecord($project, "Project with #{$project->getUid()} was approved!", \TYPO3\CMS\Core\Messaging\AbstractMessage::OK, self::NEUTER_ARTICLE, true);
+        $this->updateRecord($project, "Project with #{$project->getUid()} was accepted!", \TYPO3\CMS\Core\Messaging\AbstractMessage::OK, self::NEUTER_ARTICLE, true);
 
         if ($sendmail) {
             $this->updateStatusMail($project, $receivers, true);
@@ -394,11 +381,33 @@ class ProjectController extends RepositoryInjectionController
     {
         $project->setHidden(false);
         $project->setApproved(false);
-        $this->updateRecord($project, "Project with #{$project->getUid()} was rejected!", \TYPO3\CMS\Core\Messaging\AbstractMessage::WARNING, self::NEUTER_ARTICLE, true);
+        $this->updateRecord($project, "Project with #{$project->getUid()} was rejected!", \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR, self::NEUTER_ARTICLE, true);
 
         if ($sendmail) {
             $this->updateStatusMail($project, $receivers, false);
         }
+        $this->internalRedirect('list');
+    }
+
+    /**
+     * @return void
+     */
+    public function initializeResetStateNoteAction()
+    {
+        $this->manuallySetProjectArgument();
+    }
+
+    /**
+     * action resetState
+     *
+     * @return void
+     */
+    public function resetStateAction(Model\Project $project)
+    {
+        $project->setHidden(true);
+        $project->setApproved(false);
+        $this->updateRecord($project, "State of project #{$project->getUid()} was reset!", \TYPO3\CMS\Core\Messaging\AbstractMessage::WARNING, self::NEUTER_ARTICLE, true);
+
         $this->internalRedirect('list');
     }
 
@@ -425,21 +434,135 @@ class ProjectController extends RepositoryInjectionController
     }
 
     /**
-     * @return void
-     */
-    public function initializeAddDenialNoteAction()
-    {
-        $this->manuallySetProjectArgument();
-    }
-
-    /**
-     * action addDenialNote
+     * action exportCSV
+     *
+     * @param bool $noUSFormat
      *
      * @return void
      */
-    public function addDenialNoteAction(Model\Project $project)
+    public function exportCSVAction($noUSFormat = false)
     {
-        $this->view->assign('project', $project);
+        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings */
+        $querySettings = $this->objectManager->get(\TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface::class);
+        $querySettings->setRespectStoragePage(false); // Disable storage pid
+        $querySettings->setIncludeDeleted(true);
+        $querySettings->setIgnoreEnableFields(true);
+        $querySettings->setEnableFieldsToBeIgnored(['disabled']); // Disable hidden field
+        $this->projectRepository->setDefaultQuerySettings($querySettings);
+        $projects = $this->projectRepository->findAll();
+        $deleted = $this->projectRepository->findByDeleted(1);
+        $properties = $this->productPropertyRepository->findAll();
+        $csvArray = [];
+
+        if ($projects && $projects instanceof \Countable) {
+            /** @var Model\Project $project */
+            foreach ($projects as $project) {
+                if ($project instanceof Model\Project) {
+                    $data = [];
+                    $status = $project->isHidden() ? LocalizationUtility::translate('state_2', $this->extensionName) : ($project->isAccepted() ? LocalizationUtility::translate('state_1', $this->extensionName) : LocalizationUtility::translate('state_0', $this->extensionName));
+                    if ($project->isOutdated()) {
+                        $status .= '/' . strtolower(LocalizationUtility::translate('outdated', $this->extensionName));
+                    }
+                    if ($deleted instanceof \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult && in_array($project, $deleted->toArray())) {
+                        $status .= '/' . strtolower(LocalizationUtility::translate('deleted', $this->extensionName));
+                    }
+                    $data[ LocalizationUtility::translate('status', $this->extensionName) ] = "<{$status}>";
+                    $data[ LocalizationUtility::translate('legend_project_id', $this->extensionName) ] = $project->getUid();
+                    $data[ LocalizationUtility::translate('date_of_request', $this->extensionName) ] = $project->getDateOfRequest()
+                                                                                                               ->format($this->settings[ 'formatDate' ] . ' h:i A');
+                    $data[ LocalizationUtility::translate('legend_project_region', $this->extensionName) ] = $this->getAddressees(false, $project->getAddressee());
+                    $data[ LocalizationUtility::translate('registrant', $this->extensionName) ] = $project->getRegistrant()
+                                                                                                          ->getName();
+                    $data[ LocalizationUtility::translate('company', $this->extensionName) ] = $project->getRegistrant()
+                                                                                                       ->getCompany();
+                    $data[ LocalizationUtility::translate('email', $this->extensionName) ] = $project->getRegistrant()
+                                                                                                     ->getEmail();
+                    $data[ LocalizationUtility::translate('phone', $this->extensionName) ] = $project->getRegistrant()
+                                                                                                     ->getPhone();
+                    $data[ LocalizationUtility::translate('legend_project_name', $this->extensionName) ] = $project->getTitle();
+                    $data[ LocalizationUtility::translate('product', $this->extensionName) ] = $project->getProduct() instanceof Model\Product ? $project->getProduct()
+                                                                                                                                                         ->getTitle() : '';
+                    /** @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage $values */
+                    if ($values = $project->getPropertyValues()) {
+                        /** @var Model\ProductPropertyValue $value */
+                        foreach ($values as $value) {
+                            $data[ LocalizationUtility::translate('product', $this->extensionName) ] .= " | {$value->getProperty()->getTitle()}: {$value->getTitle()}";
+                        }
+                    }
+                    $data[ LocalizationUtility::translate('application', $this->extensionName) ] = $project->getApplication();
+                    $data[ LocalizationUtility::translate('quantity', $this->extensionName) ] = $project->getQuantity();
+                    $data[ LocalizationUtility::translate('estimated_purchase_date', $this->extensionName) ] = $project->getEstimatedPurchaseDate()
+                                                                                                                       ->format($this->settings[ 'formatDate' ]);
+                    $data[ LocalizationUtility::translate('registration_notes', $this->extensionName) ] = $project->getRegistrationNotes();
+                    $data[ LocalizationUtility::translate('legend_enduser_company', $this->extensionName) ] = $project->getEndUser()
+                                                                                                                      ->getCompany();
+                    $data[ LocalizationUtility::translate('contact', $this->extensionName) ] = $project->getEndUser()
+                                                                                                       ->getName();
+                    $data[ LocalizationUtility::translate('email', $this->extensionName) ] = $project->getEndUser()
+                                                                                                     ->getEmail();
+                    $data[ LocalizationUtility::translate('phone', $this->extensionName) ] = $project->getEndUser()
+                                                                                                     ->getPhone();
+                    $data[ LocalizationUtility::translate('city', $this->extensionName) ] = $project->getEndUser()
+                                                                                                    ->getCity();
+                    $data[ LocalizationUtility::translate('site', $this->extensionName) ] = $project->getEndUser()
+                                                                                                    ->getSite();
+                    $data[ LocalizationUtility::translate('country', $this->extensionName) ] = $project->getEndUser()
+                                                                                                       ->getCountry() instanceof \Ecom\EcomToolbox\Domain\Model\Region ? $project->getEndUser()
+                                                                                                                                                                                 ->getCountry()
+                                                                                                                                                                                 ->getTitle() : '';
+                    $data[ LocalizationUtility::translate('state_province', $this->extensionName) ] = $project->getEndUser()
+                                                                                                              ->getState() instanceof \Ecom\EcomToolbox\Domain\Model\State ? $project->getEndUser()
+                                                                                                                                                                                     ->getState()
+                                                                                                                                                                                     ->getTitle() : '';
+                    $data[ LocalizationUtility::translate('internal_note', $this->extensionName) ] = $project->getInternalNote();
+                    $data[ LocalizationUtility::translate('denial_note', $this->extensionName) ] = $project->getDenialNote();
+                    // Convert UTF-8 to ANSI for Excel
+                    array_walk($data, create_function('&$val', '$val = iconv("UTF-8", "Windows-1252", $val);'));
+                    $csvArray[] = $data;
+                }
+            }
+        }
+
+        // disable caching
+        $now = gmdate("D, d M Y H:i:s");
+        header("Expires: Tue, 03 Jul 2001 06:00:00 GMT");
+        header("Cache-Control: max-age=0, no-cache, must-revalidate, proxy-revalidate");
+        header("Last-Modified: {$now} GMT");
+
+        // force download
+        header("Content-Type: application/force-download");
+        header("Content-Type: application/octet-stream");
+        header("Content-Type: application/download");
+
+        // disposition / encoding on response body
+        header("Content-Disposition: attachment;filename=export_" . date("Y-m-d") . ".csv");
+        header("Content-Transfer-Encoding: binary");
+
+        echo $this->array2csv($csvArray, $noUSFormat);
+        die();
+    }
+
+    /**
+     * @param array $array
+     * @param bool  $noUSFormat
+     *
+     * @return null|string
+     */
+    private function array2csv(array &$array, $noUSFormat = false)
+    {
+        if (count($array) == 0) {
+            return null;
+        }
+        ob_start();
+        $df = fopen("php://output", 'w');
+        $delimiter = $noUSFormat ? ';' : ',';
+        fputcsv($df, array_keys(reset($array)), $delimiter);
+        foreach ($array as $row) {
+            fputcsv($df, $row, $delimiter);
+        }
+        fclose($df);
+
+        return ob_get_clean();
     }
 
     /**

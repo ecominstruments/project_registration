@@ -1,0 +1,125 @@
+{namespace s=S3b0\ProjectRegistration\ViewHelpers}
+<p style="font-size: 1.2em;font-weight: bold">Your subsequent project registration has been submitted successfully.</p>
+<table class="table table-striped">
+	<tr>
+		<td><f:translate id="{settings.addressees.label}" /></td>
+		<td>{s:getArrayElement(array: addressees, key: project.addressee)}</td>
+	</tr>
+	<f:if condition="{project.registrant.noLoginUser}">
+		<tr>
+			<td colspan="2" style="font-size: 1.2em; font-weight: bold; padding-top: 1em;text-align: left"><f:translate id="registrant"/></td>
+		</tr>
+		<tr>
+			<td><f:translate id="name" /></td>
+			<td>{project.registrant.name}</td>
+		</tr>
+		<tr>
+			<td><f:translate id="company" /></td>
+			<td>{project.registrant.company}</td>
+		</tr>
+		<tr>
+			<td><f:translate id="email" /></td>
+			<td>{project.registrant.email}</td>
+		</tr>
+		<tr>
+			<td><f:translate id="phone" /></td>
+			<td>{project.registrant.phone}</td>
+		</tr>
+	</f:if>
+	<tr>
+		<td colspan="2" style="font-size: 1.2em; font-weight: bold; padding-top: 1em;text-align: left"><f:translate id="project"/></td>
+	</tr>
+	<tr>
+		<td>ID</td>
+		<td>#{project.uid}</td>
+	</tr>
+	<tr>
+		<td><f:translate id="date_of_request"/></td>
+		<td>{project.dateOfRequest -> f:format.date(format: '{settings.formatDate} h:i A')}</td>
+	</tr>
+	<tr>
+		<td><f:translate id="title"/></td>
+		<td>{project.title}</td>
+	</tr>
+	<tr>
+		<td><f:translate id="product"/></td>
+		<td>{project.product.title}</td>
+	</tr>
+	<f:if condition="{project.propertyValues -> f:count()}">
+		<f:for each="{project.propertyValues}" as="propertyValue">
+			<tr>
+				<td>{propertyValue.property.title}</td>
+				<td>{propertyValue.title}</td>
+			</tr>
+		</f:for>
+	</f:if>
+	<tr>
+		<td><f:translate id="application"/></td>
+		<td>{project.application}</td>
+	</tr>
+	<tr>
+		<td><f:translate id="quantity"/></td>
+		<td>{project.quantity}</td>
+	</tr>
+	<tr>
+		<td><f:translate id="estimated_purchase_date"/></td>
+		<td>{project.estimatedPurchaseDate -> f:format.date(format: settings.formatDate)}</td>
+	</tr>
+	<f:if condition="{project.registrationNotes}">
+		<tr>
+			<td><f:translate id="registration_notes"/></td>
+			<td>{project.registrationNotes -> f:format.nl2br()}</td>
+		</tr>
+	</f:if>
+	<!-- End user information -->
+	<tr>
+		<td colspan="2" style="font-size: 1.2em; font-weight: bold; padding-top: 1em;text-align: left"><f:translate id="end_user"/></td>
+	</tr>
+	<tr>
+		<td><f:translate id="company" /></td>
+		<td>{project.endUser.company}</td>
+	</tr>
+	<f:if condition="{project.endUser.name}">
+		<tr>
+			<td><f:translate id="name" /></td>
+			<td>{project.endUser.name}</td>
+		</tr>
+	</f:if>
+	<f:if condition="{project.endUser.email}">
+		<tr>
+			<td><f:translate id="email" /></td>
+			<td>{project.endUser.email}</td>
+		</tr>
+	</f:if>
+	<f:if condition="{project.endUser.phone}">
+		<tr>
+			<td><f:translate id="phone" /></td>
+			<td>{project.endUser.phone}</td>
+		</tr>
+	</f:if>
+	<f:if condition="{project.endUser.city}">
+		<tr>
+			<td><f:translate id="city" /></td>
+			<td>{project.endUser.city}</td>
+		</tr>
+	</f:if>
+	<f:if condition="{project.endUser.site}">
+		<tr>
+			<td><f:translate id="site" /></td>
+			<td>{project.endUser.site}</td>
+		</tr>
+	</f:if>
+	<tr>
+		<td><f:translate id="country" /></td>
+		<td>{project.endUser.country.title}</td>
+	</tr>
+	<f:if condition="{project.endUser.state}">
+		<tr>
+			<td><f:translate id="state" /></td>
+			<td>{project.endUser.state.title}</td>
+		</tr>
+	</f:if>
+</table>
+<p>&nbsp;</p>
+<p>Within the following 3-5 business days we will provide you with the information about acceptance or denial in a separate E-mail.</p>
+<p>Your ecom team</p>

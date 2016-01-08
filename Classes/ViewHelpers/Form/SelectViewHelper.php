@@ -85,7 +85,7 @@ class SelectViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\SelectViewHelpe
                     foreach ($this->arguments[ 'optionDataAttributes' ] as $attribute => $property) {
                         if ($this->persistenceManager->getIdentifierByObject($value) !== null) {
                             $propertyValue = \TYPO3\CMS\Extbase\Reflection\ObjectAccess::getPropertyPath($value, $property);
-                            $dataAttributes[] = " data-$attribute=\"$propertyValue\"";
+                            $dataAttributes[] = " data-{$attribute}=\"{$propertyValue}\"";
                         }
                     }
                 }

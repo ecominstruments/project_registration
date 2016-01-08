@@ -32,6 +32,10 @@ namespace S3b0\ProjectRegistration\Domain\Repository;
 class ProjectRepository extends \S3b0\ProjectRegistration\Domain\Repository\AbstractRepository
 {
 
+    protected $defaultOrderings = [
+        'date_of_request' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
+    ];
+
     /**
      * Set repository wide settings
      */

@@ -95,7 +95,7 @@ class Product extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public function removeProperty(\S3b0\ProjectRegistration\Domain\Model\ProductProperty $propertyToRemove = null)
     {
-        if ($propertyToRemove instanceof \S3b0\ProjectRegistration\Domain\Model\ProductProperty && $this->properties instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $this->properties->contains($propertyToRemove)) {
+        if ($this->properties instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $propertyToRemove instanceof \S3b0\ProjectRegistration\Domain\Model\ProductProperty && $this->properties->contains($propertyToRemove)) {
             $this->properties->detach($propertyToRemove);
         }
     }

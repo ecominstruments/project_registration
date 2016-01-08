@@ -117,7 +117,7 @@ class ProductProperty extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function removePropertyValue(
         \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue $propertyValueToRemove
     ) {
-        if ($propertyValueToRemove instanceof \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue && $this->propertyValues instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $this->propertyValues->contains($propertyValueToRemove)) {
+        if ($this->propertyValues instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $propertyValueToRemove instanceof \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue && $this->propertyValues->contains($propertyValueToRemove)) {
             $this->propertyValues->detach($propertyValueToRemove);
         }
     }

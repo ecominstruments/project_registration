@@ -8,24 +8,24 @@
   <f:form action="create" class="tx-powermail" name="dto" object="{dto}" additionalAttributes="{data-validate: 'html5', data-parsley-validate: 'data-parsley-validate', novalidate: ''}">
 
     <section>
-      <h2>Registrant information</h2>
+      <h2><f:translate id="registrant_information" /></h2>
       <f:render partial="Registrant/FormFields" arguments="{_all}" />
     </section>
 
     <section>
-      <h2>Project data</h2>
+      <h2><f:translate id="project_data" /></h2>
       <f:render partial="Project/FormFields" arguments="{_all}" />
     </section>
 
     <section>
-      <h2>End user information</h2>
+      <h2><f:translate id="end_user_information" /></h2>
       <f:render partial="EndUser/FormFields" arguments="{_all}" />
     </section>
 
     <div class="form-group">
       <div class="powermail_fieldwrap">
         <button type="submit" class="btn btn-primary morelink" data-loading-text="Processing your request... <i class='fa fa-circle-o-notch fa-fw fa-spin'></i>">
-          Send request
+          <f:translate id="button_send_request" />
         </button>
       </div>
     </div>

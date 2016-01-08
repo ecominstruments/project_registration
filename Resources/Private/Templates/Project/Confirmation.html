@@ -1,19 +1,17 @@
-<f:if condition="{state}">
-	<f:then>
-		<div class="alert alert-info alert-dismissible" role="alert">
-			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			You are about to accept project #{project.uid} ("{project.title}") added {project.dateOfRequest -> f:format.date(format: '{settings.formatDate} h:i A')} by {project.registrant.name}
-		</div>
-	</f:then>
-	<f:else>
-		<div class="alert alert-warning alert-dismissible" role="alert">
-			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			You are about to reject project #{project.uid} ("{project.title}") added {project.dateOfRequest -> f:format.date(format: '{settings.formatDate} h:i A')} by {project.registrant.name}
-		</div>
-	</f:else>
+<f:if condition="{action} == 'accept'">
+	<div class="alert alert-success alert-dismissible" role="alert">
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<f:translate id="message_accepting" arguments="{0: project.uid, 1: project.title, 2: '{project.dateOfRequest -> f:format.date(format: \'D, j M Y H:i:s \G\M\T P\')}', 3: project.registrant.name}" />
+	</div>
+</f:if>
+<f:if condition="{action} == 'reject'">
+	<div class="alert alert-danger alert-dismissible" role="alert">
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<f:translate id="message_rejecting" arguments="{0: project.uid, 1: project.title, 2: '{project.dateOfRequest -> f:format.date(format: \'D, j M Y H:i:s \G\M\T P\')}', 3: project.registrant.name}" />
+	</div>
 </f:if>
 
-<f:form action="{f:if(condition: state, then: 'accept', else: 'reject')}" arguments="{project: project}" class="tx-powermail" name="project" object="{project}" additionalAttributes="{data-validate: 'html5', data-parsley-validate: 'data-parsley-validate', novalidate: ''}">
+<f:form action="{action}" arguments="{project: project}" class="tx-powermail" name="project" object="{project}" additionalAttributes="{data-validate: 'html5', data-parsley-validate: 'data-parsley-validate', novalidate: ''}">
 
 	<div class="form-group">
 		<div class="powermail_fieldwrap">
@@ -47,25 +45,30 @@
 		</div>
 	</f:if>
 
-	<f:if condition="{state} == 0">
-		<div class="form-group">
-			<div class="powermail_fieldwrap">
-				<label for="prf-project-denial-note" class="powermail_label"><f:translate id="denial_note" /></label>
-				<f:form.textarea placeholder="Please fill in"
-				                 class="form-control powermail_field"
-				                 cols="20"
-				                 rows="5"
-				                 id="prf-project-denial-note"
-				                 property="denialNote" />
+	<f:if condition="{action} == 'reject'">
+		<f:then>
+			<div class="form-group">
+				<div class="powermail_fieldwrap">
+					<label for="prf-project-denial-note" class="powermail_label"><f:translate id="denial_note" /></label>
+					<f:form.textarea placeholder="Please fill in"
+					                 class="form-control powermail_field"
+					                 cols="20"
+					                 rows="5"
+					                 id="prf-project-denial-note"
+					                 property="denialNote" />
+				</div>
 			</div>
-		</div>
+		</f:then>
+		<f:else>
+			<f:form.hidden property="denialNote" value="" />
+		</f:else>
 	</f:if>
 
 	<div class="form-group">
 		<div class="powermail_fieldwrap">
-			<f:link.action action="list" class="btn btn-danger">Cancel</f:link.action>
+			<a href="javascript:history.back()" class="btn btn-danger"><f:translate id="button_cancel" /></a>
 			<button type="submit" class="btn btn-primary" data-loading-text="Processing your request... <i class='fa fa-circle-o-notch fa-fw fa-spin'></i>">
-				Confirm &nbsp;<i class="fa fa-angle-right"></i>
+				<f:translate id="button_confirm" /> &nbsp;<i class="fa fa-angle-right"></i>
 			</button>
 		</div>
 	</div>

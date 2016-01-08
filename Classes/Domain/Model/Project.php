@@ -53,6 +53,11 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $dateOfRequest = null;
 
     /**
+     * @var bool
+     */
+    protected $outdated = false;
+
+    /**
      * @var string
      * @validate NotEmpty
      */
@@ -184,9 +189,25 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @param \DateTime $dateOfRequest
      */
-    public function setDateOfRequest(\DateTime $dateOfRequest)
+    public function setDateOfRequest(\DateTime $dateOfRequest = null)
     {
-        $this->dateOfRequest = $dateOfRequest;
+        if ($dateOfRequest instanceof \DateTime) {
+            $this->dateOfRequest = $dateOfRequest;
+        }
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isOutdated()
+    {
+        $check = false;
+
+        if ($this->dateOfRequest instanceof \DateTime) {
+            $check = $this->dateOfRequest->diff(new \DateTime()) instanceof \DateInterval && $this->dateOfRequest->diff(new \DateTime())->days > 20;
+        }
+
+        return $check;
     }
 
     /**
@@ -216,9 +237,11 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @param \DateTime $estimatedPurchaseDate
      */
-    public function setEstimatedPurchaseDate(\DateTime $estimatedPurchaseDate)
+    public function setEstimatedPurchaseDate(\DateTime $estimatedPurchaseDate = null)
     {
-        $this->estimatedPurchaseDate = $estimatedPurchaseDate;
+        if ($estimatedPurchaseDate instanceof \DateTime) {
+            $this->estimatedPurchaseDate = $estimatedPurchaseDate;
+        }
     }
 
     /**
@@ -337,9 +360,9 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         if ($this->isVisible()) {
             if ($this->approved) {
-                return '<i class="fa fa-check-circle-o text-success fa-lg" title="' . LocalizationUtility::translate('state_1', 'project_registration') . '"></i>';
+                return '<i class="fa fa-check-circle-o text-success fa-lg fa-fw" title="' . LocalizationUtility::translate('state_1', 'project_registration') . '"></i>';
             } else {
-                return '<i class="fa fa-times-circle-o text-danger fa-lg" title="' . LocalizationUtility::translate('state_0', 'project_registration') . '"></i>';
+                return '<i class="fa fa-times-circle-o text-danger fa-lg fa-fw" title="' . LocalizationUtility::translate('state_0', 'project_registration') . '"></i>';
             }
         } else {
             return '';
@@ -405,7 +428,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public function addPropertyValue(\S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue $propertyValue = null)
     {
-        if ($propertyValue instanceof \S3b0\ProjectRegistration\Domain\Model\ProductValues && !$this->propertyValues->contains($propertyValue)) {
+        if ($propertyValue instanceof \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue && !$this->propertyValues->contains($propertyValue)) {
             if (!$this->propertyValues instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage) {
                 $this->propertyValues = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
             }
@@ -421,7 +444,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function removePropertyValue(
         \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue $propertyValueToRemove = null
     ) {
-        if ($propertyValueToRemove instanceof \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue && $this->propertyValues instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $this->propertyValues->contains($propertyValueToRemove)) {
+        if ($this->propertyValues instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $propertyValueToRemove instanceof \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue && $this->propertyValues->contains($propertyValueToRemove)) {
             $this->propertyValues->detach($propertyValueToRemove);
         }
     }
@@ -442,6 +465,42 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         if ($propertyValues instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage) {
             $this->propertyValues = $propertyValues;
         }
+    }
+
+    /**
+     * @param ProductProperty $property
+     *
+     * @return \ArrayObject|null
+     */
+    public function getPropertyValuesByProperty(\S3b0\ProjectRegistration\Domain\Model\ProductProperty $property)
+    {
+        $return = null;
+
+        if ($this->propertyValues instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage) {
+            $return = new \ArrayObject();
+            /** @var \S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue $propertyValue */
+            foreach ($this->propertyValues as $propertyValue) {
+                if ($propertyValue->getProperty() === $property) {
+                    $return->append($propertyValue->getTitle());
+                }
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * Returns this object as an array
+     *
+     * @return array The object
+     */
+    public function toArray() {
+        $array = array();
+        $vars = get_object_vars($this);
+        foreach ($vars as $property => $value) {
+            $array[$property] = $value;
+        }
+        return $array;
     }
 
 }
