@@ -15,12 +15,12 @@ if (!defined('TYPO3_MODE')) {
     'S3b0.' . $_EXTKEY,
     'Administration',
     [
-        'Project' => 'list, show, new, create, delete, confirmation, accept, reject, resetState, addInternalNote, addDenialNote, exportCSV',
+        'Project' => 'list, show, new, create, delete, confirmation, accept, reject, addInternalNote, addDenialNote, exportCSV',
         'Person' => 'show'
     ],
     // non-cacheable actions
     [
-        'Project' => 'create, delete, confirmation, accept, reject, resetState, exportCSV',
+        'Project' => 'create, delete, confirmation, accept, reject, exportCSV',
         'Person' => ''
     ]
 );

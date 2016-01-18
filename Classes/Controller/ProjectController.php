@@ -27,7 +27,7 @@ namespace S3b0\ProjectRegistration\Controller;
  ***************************************************************/
 use In2code\Powermail\Utility\SessionUtility;
 use S3b0\ProjectRegistration\Domain\Model;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility as Lang;
 use TYPO3\CMS\Core\Utility as CoreUtility;
 
 /**
@@ -35,6 +35,43 @@ use TYPO3\CMS\Core\Utility as CoreUtility;
  */
 class ProjectController extends RepositoryInjectionController
 {
+
+    /**
+     * @var int
+     */
+    protected $loggedInUserRole = 0;
+
+    /**
+     * @var array
+     */
+    protected $adminActions = [ 'accept', 'addInternalNote', 'confirmation', 'delete', 'reject' ];
+
+    /**
+     * Initializes the controller before invoking an action method.
+     *
+     * @return void
+     */
+    public function initializeAction()
+    {
+        if ($this->request->getPluginName() === 'Administration') {
+            if ($this->getTypoScriptFrontendController()->loginUser) {
+                if ((int)$this->settings[ 'investigator' ] === (int)$this->getTypoScriptFrontendController()->fe_user->user[ $this->getTypoScriptFrontendController()->fe_user->userid_column ]) {
+                    $this->loggedInUserRole = 1;
+                }
+                if ((int)$this->settings[ 'admin' ] === (int)$this->getTypoScriptFrontendController()->fe_user->user[ $this->getTypoScriptFrontendController()->fe_user->userid_column ]) {
+                    $this->loggedInUserRole = 2;
+                }
+            }
+
+            if ($this->loggedInUserRole < 1) {
+                // @todo activate on finish
+                #$this->getTypoScriptFrontendController()->pageNotFoundAndExit();
+            } elseif ($this->loggedInUserRole === 1 && in_array($this->request->getControllerActionName(), $this->adminActions)) {
+                $this->getTypoScriptFrontendController()->pageNotFoundAndExit();
+            }
+        }
+
+    }
 
     /**
      * action list
@@ -45,26 +82,11 @@ class ProjectController extends RepositoryInjectionController
     {
         $projects = $this->projectRepository->findAll();
         $addressees = $this->getAddressees();
-        $loggedInUserRole = 0;
-
-        if ($this->getTypoScriptFrontendController()->loginUser) {
-            if ((int)$this->settings[ 'investigator' ] === (int)$this->getTypoScriptFrontendController()->fe_user->user[ $this->getTypoScriptFrontendController()->fe_user->userid_column ]) {
-                $loggedInUserRole = 1;
-            }
-            if ((int)$this->settings[ 'admin' ] === (int)$this->getTypoScriptFrontendController()->fe_user->user[ $this->getTypoScriptFrontendController()->fe_user->userid_column ]) {
-                $loggedInUserRole = 2;
-            }
-        }
-
-        if ($loggedInUserRole < 1) {
-            // @todo activate on finish
-            #$this->getTypoScriptFrontendController()->pageNotFoundAndExit();
-        }
 
         $this->view->assignMultiple([
             'projects'         => $projects,
             'addressees'       => $addressees,
-            'loggedInUserRole' => $loggedInUserRole
+            'loggedInUserRole' => $this->loggedInUserRole
         ]);
     }
 
@@ -98,7 +120,7 @@ class ProjectController extends RepositoryInjectionController
         $newProject = new Model\Project();
         $newRegistrant = new Model\Person();
         $newEndUser = new Model\Person();
-        $addressees = $this->getAddressees();
+        $addressees = $this->getAddressees(false, null, false);
         if ($this->getTypoScriptFrontendController()->loginUser) {
             /** @var \Ecom\EcomToolbox\Domain\Model\User $feUser */
             $feUser = $this->frontendUserRepository->findByUid($this->getTypoScriptFrontendController()->fe_user->user[ $this->getTypoScriptFrontendController()->fe_user->userid_column ]);
@@ -148,16 +170,13 @@ class ProjectController extends RepositoryInjectionController
         // Add endUser to personRepository
         $this->personRepository->add($dto->getEndUser());
         // Add registrant to personRepository (if not existing feUser reference)
-        if ($dto->getRegistrant()
-                ->getFeUser() instanceof \Ecom\EcomToolbox\Domain\Model\User
+        if ($dto->getRegistrant()->getFeUser() instanceof \Ecom\EcomToolbox\Domain\Model\User
         ) {
-            $registrant = $this->personRepository->findOneByFeUser($dto->getRegistrant()
-                                                                       ->getFeUser());
+            $registrant = $this->personRepository->findOneByFeUser($dto->getRegistrant()->getFeUser());
             if ($registrant instanceof Model\Person) {
                 $dto->setRegistrant($registrant);
             } else {
-                $dto->setRegistrant(new Model\Person($dto->getRegistrant()
-                                                         ->getFeUser()));
+                $dto->setRegistrant(new Model\Person($dto->getRegistrant()->getFeUser()));
                 $this->personRepository->add($dto->getRegistrant());
             }
         } else {
@@ -165,6 +184,7 @@ class ProjectController extends RepositoryInjectionController
         }
         /**
          * Persist Persons in order to get corresponding uid to link to in Project
+         *
          * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager $persistenceManager
          */
         $persistenceManager = CoreUtility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager::class);
@@ -209,21 +229,21 @@ class ProjectController extends RepositoryInjectionController
          * Email to sender
          */
         $mailToSender->setFrom($noReply ?: $sender)
-                     ->setTo([
-                         $dto->getRegistrant()
-                             ->getEmail() => $dto->getRegistrant()
-                                                 ->getName()
-                     ])
-                     ->setSubject($this->settings[ 'mail' ][ 'projectRegisteredConfirmationSubject' ] ?: (LocalizationUtility::translate('mail_project_registered_confirmation_subject', $this->extensionName) ?: 'Your project registration request -- DEV!'))
-                     ->setBody($this->getStandAloneTemplate(
-                         CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectRegisteredConfirmation.html',
-                         [
-                             'settings'   => $this->settings,
-                             'submitted'  => $dto,
-                             'addressees' => $this->getAddressees()
-                         ]
-                     ))
-                     ->send();
+            ->setTo([
+                $dto->getRegistrant()
+                    ->getEmail() => $dto->getRegistrant()
+                    ->getName()
+            ])
+            ->setSubject($this->settings[ 'mail' ][ 'projectRegisteredConfirmationSubject' ] ?: (Lang::translate('mail_project_registered_confirmation_subject', $this->extensionName) ?: 'Your project registration request -- DEV!'))
+            ->setBody($this->getStandAloneTemplate(
+                CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectRegisteredConfirmation.html',
+                [
+                    'settings'   => $this->settings,
+                    'submitted'  => $dto,
+                    'addressees' => $this->getAddressees()
+                ]
+            ))
+            ->send();
 
         /** @var \TYPO3\CMS\Core\Mail\MailMessage $mailToSender */
         $mailToReceiver = CoreUtility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
@@ -233,25 +253,21 @@ class ProjectController extends RepositoryInjectionController
          * Email to receiver (notification mail)
          */
         $mailToReceiver->setTo($sender)
-                       ->setCc($carbonCopyReceivers)
-                       ->setFrom([
-                           $dto->getRegistrant()
-                               ->getEmail() => $dto->getRegistrant()
-                                                   ->getName()
-                       ])
-                       ->setSubject(($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (LocalizationUtility::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted -- DEV!')) . ($dto->getRegistrant()
-                                                                                                                                                                                                                                                           ->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $dto->getRegistrant()
-                                                                                                                                                                                                                                                                                                                                             ->getFeUserGroups()) ? ' » ' . LocalizationUtility::translate('user_certified', $this->extensionName) : ' » ' . LocalizationUtility::translate('user_default', $this->extensionName)))
-                       ->setBody($this->getStandAloneTemplate(
-                           CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectRegisteredInfo.html',
-                           [
-                               'settings'             => $this->settings,
-                               'submitted'            => $dto,
-                               'addressees'           => $this->getAddressees(),
-                               'marketingInformation' => SessionUtility::getMarketingInfos()
-                           ]
-                       ))
-                       ->send();
+            ->setCc($carbonCopyReceivers)
+            ->setFrom([
+                $dto->getRegistrant()->getEmail() => $dto->getRegistrant()->getName()
+            ])
+            ->setSubject(($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (Lang::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted -- DEV!')) . ($dto->getRegistrant()->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $dto->getRegistrant()->getFeUserGroups()) ? ' » ' . Lang::translate('user_certified', $this->extensionName) : ' » ' . Lang::translate('user_default', $this->extensionName)))
+            ->setBody($this->getStandAloneTemplate(
+                CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectRegisteredInfo.html',
+                [
+                    'settings'             => $this->settings,
+                    'submitted'            => $dto,
+                    'addressees'           => $this->getAddressees(),
+                    'marketingInformation' => SessionUtility::getMarketingInfos()
+                ]
+            ))
+            ->send();
         $this->internalRedirect('submitted', ['project' => $dto->getProject()]);
     }
 
@@ -273,7 +289,7 @@ class ProjectController extends RepositoryInjectionController
     public function submittedAction(Model\Project $project)
     {
         $this->view->assignMultiple([
-            'project'  => $project,
+            'project'    => $project,
             'addressees' => $this->getAddressees()
         ]);
     }
@@ -306,7 +322,7 @@ class ProjectController extends RepositoryInjectionController
         $this->view->assignMultiple([
             'receivers' => $receivers,
             'project'   => $project,
-            'action'     => $do
+            'action'    => $do
         ]);
     }
 
@@ -392,28 +408,6 @@ class ProjectController extends RepositoryInjectionController
     /**
      * @return void
      */
-    public function initializeResetStateNoteAction()
-    {
-        $this->manuallySetProjectArgument();
-    }
-
-    /**
-     * action resetState
-     *
-     * @return void
-     */
-    public function resetStateAction(Model\Project $project)
-    {
-        $project->setHidden(true);
-        $project->setApproved(false);
-        $this->updateRecord($project, "State of project #{$project->getUid()} was reset!", \TYPO3\CMS\Core\Messaging\AbstractMessage::WARNING, self::NEUTER_ARTICLE, true);
-
-        $this->internalRedirect('list');
-    }
-
-    /**
-     * @return void
-     */
     public function initializeAddInternalNoteAction()
     {
         $this->manuallySetProjectArgument();
@@ -449,73 +443,57 @@ class ProjectController extends RepositoryInjectionController
         $querySettings->setIgnoreEnableFields(true);
         $querySettings->setEnableFieldsToBeIgnored(['disabled']); // Disable hidden field
         $this->projectRepository->setDefaultQuerySettings($querySettings);
+        $this->projectRepository->setDefaultOrderings([
+            'hidden'          => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING,
+            'date_of_request' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
+        ]);
         $projects = $this->projectRepository->findAll();
         $deleted = $this->projectRepository->findByDeleted(1);
-        $properties = $this->productPropertyRepository->findAll();
         $csvArray = [];
 
         if ($projects && $projects instanceof \Countable) {
             /** @var Model\Project $project */
             foreach ($projects as $project) {
                 if ($project instanceof Model\Project) {
-                    $data = [];
-                    $status = $project->isHidden() ? LocalizationUtility::translate('state_2', $this->extensionName) : ($project->isAccepted() ? LocalizationUtility::translate('state_1', $this->extensionName) : LocalizationUtility::translate('state_0', $this->extensionName));
-                    if ($project->isOutdated()) {
-                        $status .= '/' . strtolower(LocalizationUtility::translate('outdated', $this->extensionName));
-                    }
-                    if ($deleted instanceof \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult && in_array($project, $deleted->toArray())) {
-                        $status .= '/' . strtolower(LocalizationUtility::translate('deleted', $this->extensionName));
-                    }
-                    $data[ LocalizationUtility::translate('status', $this->extensionName) ] = "<{$status}>";
-                    $data[ LocalizationUtility::translate('legend_project_id', $this->extensionName) ] = $project->getUid();
-                    $data[ LocalizationUtility::translate('date_of_request', $this->extensionName) ] = $project->getDateOfRequest()
-                                                                                                               ->format($this->settings[ 'formatDate' ] . ' h:i A');
-                    $data[ LocalizationUtility::translate('legend_project_region', $this->extensionName) ] = $this->getAddressees(false, $project->getAddressee());
-                    $data[ LocalizationUtility::translate('registrant', $this->extensionName) ] = $project->getRegistrant()
-                                                                                                          ->getName();
-                    $data[ LocalizationUtility::translate('company', $this->extensionName) ] = $project->getRegistrant()
-                                                                                                       ->getCompany();
-                    $data[ LocalizationUtility::translate('email', $this->extensionName) ] = $project->getRegistrant()
-                                                                                                     ->getEmail();
-                    $data[ LocalizationUtility::translate('phone', $this->extensionName) ] = $project->getRegistrant()
-                                                                                                     ->getPhone();
-                    $data[ LocalizationUtility::translate('legend_project_name', $this->extensionName) ] = $project->getTitle();
-                    $data[ LocalizationUtility::translate('product', $this->extensionName) ] = $project->getProduct() instanceof Model\Product ? $project->getProduct()
-                                                                                                                                                         ->getTitle() : '';
+                    $eN = $this->extensionName;
+                    $status = $project->isHidden() ? Lang::translate('state_2', $eN) : ($project->isAccepted() ? Lang::translate('state_1', $eN) : Lang::translate('state_0', $eN));
+                    $isOutdated = $project->isOutdated() ? 'X' : '';
+                    $isDeleted = $deleted instanceof \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult && in_array($project, $deleted->toArray()) ? 'X' : '';
+                    $data = [
+                        Lang::translate('status', $eN) => $status,
+                        'old' => $isOutdated,
+                        'del' => $isDeleted,
+                        Lang::translate('legend_project_id', $eN) => $project->getUid(),
+                        Lang::translate('date_of_request', $eN) => $project->getDateOfRequest()->format($this->settings[ 'formatDate' ] . ' h:i A'),
+                        Lang::translate('legend_project_region', $eN) => $this->getAddressees(false, $project->getAddressee()),
+                        Lang::translate('registrant', $eN) => $project->getRegistrant()->getName(),
+                        Lang::translate('company', $eN) => $project->getRegistrant()->getCompany(),
+                        Lang::translate('email', $eN) => $project->getRegistrant()->getEmail(),
+                        Lang::translate('phone', $eN) => $project->getRegistrant()->getPhone(),
+                        Lang::translate('legend_project_name', $eN) => $project->getTitle(),
+                        Lang::translate('product', $eN) => $project->getProduct() instanceof Model\Product ? $project->getProduct()->getTitle() : '',
+                        Lang::translate('application', $eN) => $project->getApplication(),
+                        Lang::translate('quantity', $eN) => $project->getQuantity(),
+                        Lang::translate('estimated_purchase_date', $eN) => $project->getEstimatedPurchaseDate()->format($this->settings[ 'formatDate' ]),
+                        Lang::translate('registration_notes', $eN) => $project->getRegistrationNotes(),
+                        Lang::translate('legend_enduser_company', $eN) => $project->getEndUser()->getCompany(),
+                        Lang::translate('contact', $eN) => $project->getEndUser()->getName(),
+                        Lang::translate('email', $eN) => $project->getEndUser()->getEmail(),
+                        Lang::translate('phone', $eN) => $project->getEndUser()->getPhone(),
+                        Lang::translate('city', $eN) => $project->getEndUser()->getCity(),
+                        Lang::translate('site', $eN) => $project->getEndUser()->getSite(),
+                        Lang::translate('country', $eN) => $project->getEndUser()->getCountry() instanceof \Ecom\EcomToolbox\Domain\Model\Region ? $project->getEndUser()->getCountry()->getTitle() : '',
+                        Lang::translate('state_province', $eN) => $project->getEndUser()->getState() instanceof \Ecom\EcomToolbox\Domain\Model\State ? $project->getEndUser()->getState()->getTitle() : '',
+                        Lang::translate('internal_note', $eN) => $project->getInternalNote(),
+                        Lang::translate('denial_note', $eN) => $project->getDenialNote()
+                    ];
                     /** @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage $values */
                     if ($values = $project->getPropertyValues()) {
                         /** @var Model\ProductPropertyValue $value */
                         foreach ($values as $value) {
-                            $data[ LocalizationUtility::translate('product', $this->extensionName) ] .= " | {$value->getProperty()->getTitle()}: {$value->getTitle()}";
+                            $data[ Lang::translate('product', $eN) ] .= " | {$value->getProperty()->getTitle()}: {$value->getTitle()}";
                         }
                     }
-                    $data[ LocalizationUtility::translate('application', $this->extensionName) ] = $project->getApplication();
-                    $data[ LocalizationUtility::translate('quantity', $this->extensionName) ] = $project->getQuantity();
-                    $data[ LocalizationUtility::translate('estimated_purchase_date', $this->extensionName) ] = $project->getEstimatedPurchaseDate()
-                                                                                                                       ->format($this->settings[ 'formatDate' ]);
-                    $data[ LocalizationUtility::translate('registration_notes', $this->extensionName) ] = $project->getRegistrationNotes();
-                    $data[ LocalizationUtility::translate('legend_enduser_company', $this->extensionName) ] = $project->getEndUser()
-                                                                                                                      ->getCompany();
-                    $data[ LocalizationUtility::translate('contact', $this->extensionName) ] = $project->getEndUser()
-                                                                                                       ->getName();
-                    $data[ LocalizationUtility::translate('email', $this->extensionName) ] = $project->getEndUser()
-                                                                                                     ->getEmail();
-                    $data[ LocalizationUtility::translate('phone', $this->extensionName) ] = $project->getEndUser()
-                                                                                                     ->getPhone();
-                    $data[ LocalizationUtility::translate('city', $this->extensionName) ] = $project->getEndUser()
-                                                                                                    ->getCity();
-                    $data[ LocalizationUtility::translate('site', $this->extensionName) ] = $project->getEndUser()
-                                                                                                    ->getSite();
-                    $data[ LocalizationUtility::translate('country', $this->extensionName) ] = $project->getEndUser()
-                                                                                                       ->getCountry() instanceof \Ecom\EcomToolbox\Domain\Model\Region ? $project->getEndUser()
-                                                                                                                                                                                 ->getCountry()
-                                                                                                                                                                                 ->getTitle() : '';
-                    $data[ LocalizationUtility::translate('state_province', $this->extensionName) ] = $project->getEndUser()
-                                                                                                              ->getState() instanceof \Ecom\EcomToolbox\Domain\Model\State ? $project->getEndUser()
-                                                                                                                                                                                     ->getState()
-                                                                                                                                                                                     ->getTitle() : '';
-                    $data[ LocalizationUtility::translate('internal_note', $this->extensionName) ] = $project->getInternalNote();
-                    $data[ LocalizationUtility::translate('denial_note', $this->extensionName) ] = $project->getDenialNote();
                     // Convert UTF-8 to ANSI for Excel
                     array_walk($data, create_function('&$val', '$val = iconv("UTF-8", "Windows-1252", $val);'));
                     $csvArray[] = $data;
@@ -595,22 +573,20 @@ class ProjectController extends RepositoryInjectionController
          * Email to sender
          */
         $mailToSender->setFrom($noReply ?: $sender)
-                     ->setTo([
-                         $project->getRegistrant()
-                                 ->getEmail() => $project->getRegistrant()
-                                                         ->getName()
-                     ])
-                     ->setCc($receivers)
-                     ->setSubject($this->settings[ 'mail' ][ 'projectStatusUpdateSubject' ] ?: (LocalizationUtility::translate('mail_project_status_update_subject', $this->extensionName) ?: 'Project status update -- DEV!'))
-                     ->setBody($this->getStandAloneTemplate(
-                         CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectStatusUpdated.html',
-                         [
-                             'settings' => $this->settings,
-                             'project'  => $project,
-                             'accepted' => $isAccepted
-                         ]
-                     ))
-                     ->send();
+            ->setTo([
+                $project->getRegistrant()->getEmail() => $project->getRegistrant()->getName()
+            ])
+            ->setCc($receivers)
+            ->setSubject($this->settings[ 'mail' ][ 'projectStatusUpdateSubject' ] ?: (Lang::translate('mail_project_status_update_subject', $this->extensionName) ?: 'Project status update -- DEV!'))
+            ->setBody($this->getStandAloneTemplate(
+                CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectStatusUpdated.html',
+                [
+                    'settings' => $this->settings,
+                    'project'  => $project,
+                    'accepted' => $isAccepted
+                ]
+            ))
+            ->send();
     }
 
     /**
@@ -643,21 +619,23 @@ class ProjectController extends RepositoryInjectionController
      * @param bool $returnMails     If set, mails will be returned, pre-formatted for use with
      *                              \TYPO3\CMS\Core\Mail\MailMessage
      * @param int  $returnArrayItem If set, a single array item will be returned
+     * @param bool $includeInactive
      *
      * @return array|string
      */
     private function getAddressees(
         $returnMails = false,
-        $returnArrayItem = null
+        $returnArrayItem = null,
+        $includeInactive = true
     ) {
         $return = [];
 
         if (is_array($this->settings[ 'addressees' ][ 'data' ]) && sizeof($this->settings[ 'addressees' ][ 'data' ])) {
             foreach ($this->settings[ 'addressees' ][ 'data' ] as $k => $addressee) {
-                if ($addressee[ 'inactive' ]) {
+                if ($includeInactive === false && $addressee[ 'inactive' ]) {
                     continue;
                 }
-                if (($label = LocalizationUtility::translate($addressee[ 'label' ], $this->extensionName)) && CoreUtility\GeneralUtility::validEmail($addressee[ 'mail' ])
+                if (($label = Lang::translate($addressee[ 'label' ], $this->extensionName)) && CoreUtility\GeneralUtility::validEmail($addressee[ 'mail' ])
                 ) {
                     $return[ $k ] = $returnMails ? ($addressee[ 'name' ] ? [$addressee[ 'mail' ] => $addressee[ 'name' ]] : [$addressee[ 'mail' ]]) : $label;
                 }

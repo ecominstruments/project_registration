@@ -89,12 +89,19 @@
 					</f:if>
 					<f:if condition="{project.hidden}">
 						<f:then>
-							<f:link.action action="confirmation" arguments="{project: project, do: 'accept'}" noCacheHash="1" title="{f:translate(id: 'state_1')}">
-								<i class="fa fa-check-circle-o fa-lg fa-fw"></i>
-							</f:link.action>
-							<f:link.action action="confirmation" arguments="{project: project, do: 'reject'}" noCacheHash="1" title="{f:translate(id: 'state_0')}">
-								<i class="fa fa-times-circle-o fa-lg fa-fw"></i>
-							</f:link.action>
+							<f:if condition="{loggedInUserRole} == 2">
+								<f:then>
+									<f:link.action action="confirmation" arguments="{project: project, do: 'accept'}" noCacheHash="1" title="{f:translate(id: 'state_1')}">
+										<i class="fa fa-check-circle-o fa-lg fa-fw"></i>
+									</f:link.action>
+									<f:link.action action="confirmation" arguments="{project: project, do: 'reject'}" noCacheHash="1" title="{f:translate(id: 'state_0')}">
+										<i class="fa fa-times-circle-o fa-lg fa-fw"></i>
+									</f:link.action>
+								</f:then>
+								<f:else>
+									<i class="fa fa-circle-o fa-lg fa-fw"></i>
+								</f:else>
+							</f:if>
 						</f:then>
 						<f:else>
 							{project.fontAwesomeStatus -> f:format.raw()}
@@ -114,15 +121,15 @@
 							</f:if>
 						</f:else>
 					</f:if>
-					<f:if condition="{project.internalNote}">
-						<f:then>
-							<f:link.action action="addInternalNote" arguments="{project: project}" title="Edit internal note"><i class="fa fa-sticky-note fa-fw"></i></f:link.action>
-						</f:then>
-						<f:else>
-							<f:link.action action="addInternalNote" arguments="{project: project}" title="Add internal note"><i class="fa fa-sticky-note-o fa-fw"></i></f:link.action>
-						</f:else>
-					</f:if>
 					<f:if condition="{loggedInUserRole} == 2">
+						<f:if condition="{project.internalNote}">
+							<f:then>
+								<f:link.action action="addInternalNote" arguments="{project: project}" title="Edit internal note"><i class="fa fa-file-text-o fa-fw"></i></f:link.action>
+							</f:then>
+							<f:else>
+								<f:link.action action="addInternalNote" arguments="{project: project}" title="Add internal note"><i class="fa fa-file-o fa-fw"></i></f:link.action>
+							</f:else>
+						</f:if>
 						<f:link.action action="delete" arguments="{project: project}" noCacheHash="1" title="{f:translate(id: 'button.delete', extensionName: 'recycler')}" additionalAttributes="{onclick: 'return confirm(\'{f:translate(id: \'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:deleteWarning\')}\');'}">
 							<i class="fa fa-trash-o fa-lg fa-fw"></i>
 						</f:link.action>
