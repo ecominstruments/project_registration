@@ -130,9 +130,11 @@
 								<f:link.action action="addInternalNote" arguments="{project: project}" title="Add internal note"><i class="fa fa-file-o fa-fw"></i></f:link.action>
 							</f:else>
 						</f:if>
-						<f:link.action action="delete" arguments="{project: project}" noCacheHash="1" title="{f:translate(id: 'button.delete', extensionName: 'recycler')}" additionalAttributes="{onclick: 'return confirm(\'{f:translate(id: \'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:deleteWarning\')}\');'}">
-							<i class="fa fa-trash-o fa-lg fa-fw"></i>
-						</f:link.action>
+						<f:if condition="{project.rejected}">
+							<f:link.action action="delete" arguments="{project: project}" noCacheHash="1" title="{f:translate(id: 'button.delete', extensionName: 'recycler')}" additionalAttributes="{onclick: 'return confirm(\'{f:translate(id: \'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:deleteWarning\')}\');'}">
+								<i class="fa fa-trash-o fa-lg fa-fw"></i>
+							</f:link.action>
+						</f:if>
 					</f:if>
 					</td>
 					<td>
