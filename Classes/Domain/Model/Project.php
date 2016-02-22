@@ -204,7 +204,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $check = false;
 
         if ($this->dateOfRequest instanceof \DateTime) {
-            $check = $this->dateOfRequest->diff(new \DateTime()) instanceof \DateInterval && $this->dateOfRequest->diff(new \DateTime())->days > 20;
+            $check = $this->dateOfRequest->diff(new \DateTime()) instanceof \DateInterval && $this->dateOfRequest->diff(new \DateTime())->days > 365;
         }
 
         return $check;
@@ -356,6 +356,9 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         return $this->isVisible() && !$this->approved;
     }
 
+    /**
+     * @return string
+     */
     public function getFontAwesomeStatus()
     {
         if ($this->isVisible()) {

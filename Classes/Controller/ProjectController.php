@@ -81,7 +81,7 @@ class ProjectController extends RepositoryInjectionController
     public function listAction()
     {
         $projects = $this->projectRepository->findAll();
-        $addressees = $this->getAddressees();
+        $addressees = $this->getAddressees(false, null, true, true);
 
         $this->view->assignMultiple([
             'projects'         => $projects,
@@ -620,13 +620,15 @@ class ProjectController extends RepositoryInjectionController
      *                              \TYPO3\CMS\Core\Mail\MailMessage
      * @param int  $returnArrayItem If set, a single array item will be returned
      * @param bool $includeInactive
+     * @param bool $useShortName
      *
      * @return array|string
      */
     private function getAddressees(
         $returnMails = false,
         $returnArrayItem = null,
-        $includeInactive = true
+        $includeInactive = true,
+        $useShortName = false
     ) {
         $return = [];
 
@@ -637,7 +639,8 @@ class ProjectController extends RepositoryInjectionController
                 }
                 if (($label = Lang::translate($addressee[ 'label' ], $this->extensionName)) && CoreUtility\GeneralUtility::validEmail($addressee[ 'mail' ])
                 ) {
-                    $return[ $k ] = $returnMails ? ($addressee[ 'name' ] ? [$addressee[ 'mail' ] => $addressee[ 'name' ]] : [$addressee[ 'mail' ]]) : $label;
+                    $shortName = Lang::translate($addressee[ 'shortName' ], $this->extensionName) ?: $label;
+                    $return[ $k ] = $returnMails ? ($addressee[ 'name' ] ? [$addressee[ 'mail' ] => $addressee[ 'name' ]] : [$addressee[ 'mail' ]]) : ($useShortName ? $shortName : $label);
                 }
             }
         }
