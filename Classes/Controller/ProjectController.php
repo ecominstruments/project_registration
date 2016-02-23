@@ -37,14 +37,19 @@ class ProjectController extends RepositoryInjectionController
 {
 
     /**
-     * @var int
+     * @var \S3b0\ProjectRegistration\Domain\Model\LoginUserRole
      */
-    protected $loggedInUserRole = 0;
+    protected $logInUserRole;
 
     /**
      * @var array
      */
-    protected $adminActions = [ 'accept', 'addInternalNote', 'confirmation', 'delete', 'reject' ];
+    protected $adminActions = [ 'addInternalNote', 'delete' ];
+
+    /**
+     * @var array
+     */
+    protected $actionsThatRequireProjectArgumentToBeSet = [ 'accept', 'addInternalNote', 'confirmation', 'delete', 'reject', 'resendRequestMail', 'show', 'submitted' ];
 
     /**
      * Initializes the controller before invoking an action method.
@@ -54,21 +59,25 @@ class ProjectController extends RepositoryInjectionController
     public function initializeAction()
     {
         if ($this->request->getPluginName() === 'Administration') {
+            $this->logInUserRole = new Model\LoginUserRole();
             if ($this->getTypoScriptFrontendController()->loginUser) {
                 if ((int)$this->settings[ 'investigator' ] === (int)$this->getTypoScriptFrontendController()->fe_user->user[ $this->getTypoScriptFrontendController()->fe_user->userid_column ]) {
-                    $this->loggedInUserRole = 1;
+                    $this->logInUserRole = new Model\LoginUserRole(Model\LoginUserRole::INVESTIGATOR);
                 }
                 if ((int)$this->settings[ 'admin' ] === (int)$this->getTypoScriptFrontendController()->fe_user->user[ $this->getTypoScriptFrontendController()->fe_user->userid_column ]) {
-                    $this->loggedInUserRole = 2;
+                    $this->logInUserRole = new Model\LoginUserRole(Model\LoginUserRole::ADMINISTRATOR);
                 }
             }
 
-            if ($this->loggedInUserRole < 1) {
-                // @todo activate on finish
-                #$this->getTypoScriptFrontendController()->pageNotFoundAndExit();
-            } elseif ($this->loggedInUserRole === 1 && in_array($this->request->getControllerActionName(), $this->adminActions)) {
+            if ($this->logInUserRole->isNotAuthorized()) {
+                $this->getTypoScriptFrontendController()->pageNotFoundAndExit();
+            } elseif ($this->logInUserRole->isInvestigator() && in_array($this->request->getControllerActionName(), $this->adminActions)) {
                 $this->getTypoScriptFrontendController()->pageNotFoundAndExit();
             }
+        }
+
+        if (in_array($this->request->getControllerActionName(), $this->actionsThatRequireProjectArgumentToBeSet)) {
+            $this->manuallySetProjectArgument();
         }
 
     }
@@ -86,13 +95,8 @@ class ProjectController extends RepositoryInjectionController
         $this->view->assignMultiple([
             'projects'         => $projects,
             'addressees'       => $addressees,
-            'loggedInUserRole' => $this->loggedInUserRole
+            'logInUserRole' => $this->logInUserRole
         ]);
-    }
-
-    public function initializeShowAction()
-    {
-        $this->manuallySetProjectArgument();
     }
 
     /**
@@ -234,7 +238,7 @@ class ProjectController extends RepositoryInjectionController
                     ->getEmail() => $dto->getRegistrant()
                     ->getName()
             ])
-            ->setSubject($this->settings[ 'mail' ][ 'projectRegisteredConfirmationSubject' ] ?: (Lang::translate('mail_project_registered_confirmation_subject', $this->extensionName) ?: 'Your project registration request -- DEV!'))
+            ->setSubject($this->settings[ 'mail' ][ 'projectRegisteredConfirmationSubject' ] ?: (Lang::translate('mail_project_registered_confirmation_subject', $this->extensionName) ?: 'Your project registration request'))
             ->setBody($this->getStandAloneTemplate(
                 CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectRegisteredConfirmation.html',
                 [
@@ -257,7 +261,7 @@ class ProjectController extends RepositoryInjectionController
             ->setFrom([
                 $dto->getRegistrant()->getEmail() => $dto->getRegistrant()->getName()
             ])
-            ->setSubject(($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (Lang::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted -- DEV!')) . ($dto->getRegistrant()->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $dto->getRegistrant()->getFeUserGroups()) ? ' » ' . Lang::translate('user_certified', $this->extensionName) : ' » ' . Lang::translate('user_default', $this->extensionName)))
+            ->setSubject(($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (Lang::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted')) . ($dto->getRegistrant()->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $dto->getRegistrant()->getFeUserGroups()) ? ' » ' . Lang::translate('user_certified', $this->extensionName) : ' » ' . Lang::translate('user_default', $this->extensionName)))
             ->setBody($this->getStandAloneTemplate(
                 CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectRegisteredInfo.html',
                 [
@@ -269,14 +273,6 @@ class ProjectController extends RepositoryInjectionController
             ))
             ->send();
         $this->internalRedirect('submitted', ['project' => $dto->getProject()]);
-    }
-
-    /**
-     * @return void
-     */
-    public function initializeSubmittedAction()
-    {
-        $this->manuallySetProjectArgument();
     }
 
     /**
@@ -292,14 +288,6 @@ class ProjectController extends RepositoryInjectionController
             'project'    => $project,
             'addressees' => $this->getAddressees()
         ]);
-    }
-
-    /**
-     * @return void
-     */
-    public function initializeConfirmationAction()
-    {
-        $this->manuallySetProjectArgument();
     }
 
     /**
@@ -327,14 +315,6 @@ class ProjectController extends RepositoryInjectionController
     }
 
     /**
-     * @return void
-     */
-    public function initializeDeleteAction()
-    {
-        $this->manuallySetProjectArgument();
-    }
-
-    /**
      * action delete
      *
      * @param \S3b0\ProjectRegistration\Domain\Model\Project $project
@@ -345,14 +325,6 @@ class ProjectController extends RepositoryInjectionController
     {
         $this->deleteRecord($project, "Project with #{$project->getUid()} was deleted!", \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR, self::NEUTER_ARTICLE, true);
         $this->internalRedirect('list');
-    }
-
-    /**
-     * @return void
-     */
-    public function initializeAcceptAction()
-    {
-        $this->manuallySetProjectArgument();
     }
 
     /**
@@ -377,14 +349,6 @@ class ProjectController extends RepositoryInjectionController
     }
 
     /**
-     * @return void
-     */
-    public function initializeRejectAction()
-    {
-        $this->manuallySetProjectArgument();
-    }
-
-    /**
      * action reject
      *
      * @param \S3b0\ProjectRegistration\Domain\Model\Project $project
@@ -406,14 +370,6 @@ class ProjectController extends RepositoryInjectionController
     }
 
     /**
-     * @return void
-     */
-    public function initializeAddInternalNoteAction()
-    {
-        $this->manuallySetProjectArgument();
-    }
-
-    /**
      * action addInternalNote
      *
      * @return void
@@ -425,6 +381,48 @@ class ProjectController extends RepositoryInjectionController
             $this->internalRedirect('list');
         }
         $this->view->assign('project', $project);
+    }
+
+    /**
+     * action resendRequestMail
+     *
+     * @param Model\Project $project
+     *
+     * @return void
+     */
+    public function resendRequestMailAction(Model\Project $project)
+    {
+        if (CoreUtility\GeneralUtility::validEmail($this->settings['adminEmail'])) {
+            /** @var \TYPO3\CMS\Core\Mail\MailMessage $mailToSender */
+            $mail = CoreUtility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
+            $mail->setContentType('text/html');
+
+            /**
+             * Email to receiver (notification mail)
+             */
+            $mail->setTo([ $this->settings['adminEmail'] ])
+                ->setFrom([
+                    $project->getRegistrant()->getEmail() => $project->getRegistrant()->getName()
+                ])
+                ->setSubject('RE-SUBMIT: ' . ($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (Lang::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted')) . ($project->getRegistrant()->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $project->getRegistrant()->getFeUserGroups()) ? ' » ' . Lang::translate('user_certified', $this->extensionName) : ' » ' . Lang::translate('user_default', $this->extensionName)))
+                ->setBody($this->getStandAloneTemplate(
+                    CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectRegisteredInfo.html',
+                    [
+                        'settings'             => $this->settings,
+                        'submitted'            => new Model\Dto\ProjectPersonsDto(
+                            $project, $project->getRegistrant(), $project->getEndUser()
+                        ),
+                        'addressees'           => $this->getAddressees(),
+                        'marketingInformation' => [ ]
+                    ]
+                ))
+                ->send();
+            $this->addFlashMessage("Mail for project #{$project->getUid()} ('{$project->getTitle()}') re-sent.");
+        } else {
+            $this->addFlashMessage('Invalid mail: ' . $this->settings['adminEmail'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+        }
+
+        $this->internalRedirect('list');
     }
 
     /**
@@ -577,7 +575,7 @@ class ProjectController extends RepositoryInjectionController
                 $project->getRegistrant()->getEmail() => $project->getRegistrant()->getName()
             ])
             ->setCc($receivers)
-            ->setSubject($this->settings[ 'mail' ][ 'projectStatusUpdateSubject' ] ?: (Lang::translate('mail_project_status_update_subject', $this->extensionName) ?: 'Project status update -- DEV!'))
+            ->setSubject($this->settings[ 'mail' ][ 'projectStatusUpdateSubject' ] ?: (Lang::translate('mail_project_status_update_subject', $this->extensionName) ?: 'Project status update'))
             ->setBody($this->getStandAloneTemplate(
                 CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectStatusUpdated.html',
                 [

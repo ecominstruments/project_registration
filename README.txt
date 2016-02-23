@@ -12,3 +12,4 @@ UPDATE NOTES 1.x -> 7.6
    You may move them to page where plugin is installed/running
 5. Use Database analyzer (Install Tool) to remove transfer table
    tx_projectregistration_domain_model_project_transfer
+6. Re-Install plugin to get scheduler task imported (autoload classes)

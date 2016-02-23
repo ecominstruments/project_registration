@@ -43,7 +43,7 @@
 			<tbody>
 			<f:for each="{projects}" as="project">
 				<tr>
-					<td>{project.uid}</td>
+					<td>{project.uid} <f:link.action action="resendRequestMail" arguments="{project: project}" title="Re-send original request"><i class="fa fa-paper-plane-o fa-fw"></i></f:link.action></td>
 					<td data-sort-value="{project.dateOfRequest -> f:format.date(format: 'U')}">
 						{project.dateOfRequest -> f:format.date(format: 'd-m-Y')}
 						<f:if condition="{project.outdated}">
@@ -89,7 +89,7 @@
 					</f:if>
 					<f:if condition="{project.hidden}">
 						<f:then>
-							<f:if condition="{loggedInUserRole} == 2">
+							<f:if condition="{logInUserRole.hasInvestigatorRights}">
 								<f:then>
 									<f:link.action action="confirmation" arguments="{project: project, do: 'accept'}" noCacheHash="1" title="{f:translate(id: 'state_1')}">
 										<i class="fa fa-check-circle-o fa-lg fa-fw"></i>
@@ -105,7 +105,7 @@
 						</f:then>
 						<f:else>
 							{project.fontAwesomeStatus -> f:format.raw()}
-							<f:if condition="{loggedInUserRole} == 2">
+							<f:if condition="{logInUserRole.hasInvestigatorRights}">
 								<f:if condition="{project.accepted}">
 									<f:then>
 										<f:link.action action="confirmation" arguments="{project: project, do: 'reject'}" noCacheHash="1" title="{f:translate(id: 'state_0')}" style="color: #ccc">
@@ -121,7 +121,7 @@
 							</f:if>
 						</f:else>
 					</f:if>
-					<f:if condition="{loggedInUserRole} == 2">
+					<f:if condition="{logInUserRole.hasAdministratorRights}">
 						<f:if condition="{project.internalNote}">
 							<f:then>
 								<f:link.action action="addInternalNote" arguments="{project: project}" title="Edit internal note"><i class="fa fa-file-text-o fa-fw"></i></f:link.action>
