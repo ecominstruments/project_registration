@@ -245,11 +245,19 @@ Your ecom sales person will get in contact with you shortly.]]></source>
 			</trans-unit>
 
 
-			<trans-unit id="task.name">
-				<source>Inform about projects almost outdated</source>
+			<trans-unit id="task.infoMail.name">
+				<source>Inform about projects going to expire</source>
 			</trans-unit>
-			<trans-unit id="task.description">
-				<source>Triggers an email for any project that has defined time left before getting invalid.</source>
+			<trans-unit id="task.infoMail.description">
+				<source>Triggers an email for any project that has defined time left before expiring.</source>
+			</trans-unit>
+			<trans-unit id="infomail.subject">
+				<source>Expiring projects</source>
+			</trans-unit>
+			<trans-unit id="infomail.message">
+				<source><![CDATA[<p>The following projects are going to expire in %1$s days:</p>
+<ul>%2$s</ul>
+<p>&nbsp;</p>]]></source>
 			</trans-unit>
 		</body>
 	</file>

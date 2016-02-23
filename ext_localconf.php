@@ -25,9 +25,9 @@ if (!defined('TYPO3_MODE')) {
     ]
 );
 
-$TYPO3_CONF_VARS['SC_OPTIONS']['scheduler']['tasks']['S3b0\ProjectRegistration\Scheduler\Task'] = array(
+$TYPO3_CONF_VARS['SC_OPTIONS']['scheduler']['tasks']['S3b0\ProjectRegistration\Scheduler\InfoMail\Task'] = [
     'extension' => 'project_registration',
-    'title' => 'LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:task.name',
-    'description' => 'LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:task.description',
-    'additionalFields' => 'S3b0\ProjectRegistration\Scheduler\AdditionalFieldProvider'
-);
+    'title' => 'LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:task.infoMail.name',
+    'description' => 'LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:task.infoMail.description',
+    'additionalFields' => 'S3b0\ProjectRegistration\Scheduler\InfoMail\AdditionalFieldProvider'
+];
