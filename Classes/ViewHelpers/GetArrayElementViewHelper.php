@@ -6,7 +6,7 @@ namespace S3b0\ProjectRegistration\ViewHelpers;
  *
  *  Copyright notice
  *
- *  (c) 2014 Sebastian Iffland <sebastian.iffland@ecom-ex.com>, ecom instruments GmbH
+ *  (c) 2014-2016 Sebastian Iffland <Sebastian.Iffland@ecom-ex.com>, ecom instruments GmbH
  *
  *  All rights reserved
  *

@@ -5,7 +5,7 @@ namespace S3b0\ProjectRegistration\Domain\Model\Dto;
  *
  *  Copyright notice
  *
- *  (c) 2015 Sebastian Iffland <Sebastian.Iffland@ecom-ex.com>, ecom instruments GmbH
+ *  (c) 2015-2016 Sebastian Iffland <Sebastian.Iffland@ecom-ex.com>, ecom instruments GmbH
  *
  *  All rights reserved
  *

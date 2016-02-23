@@ -96,10 +96,6 @@ class BusinessLogic
                 ->setBody($mailContent)
                 ->send();
         }
-        /*debug($upperLimit);*/
-        /*debug($lowerLimit);*/
-        /*debug($outdatedProjects);*/
-        /*debug($task->getExecution()->getInterval());*/
 
         return true;
     }

@@ -5,7 +5,7 @@ namespace S3b0\ProjectRegistration\Domain\Repository;
  *
  *  Copyright notice
  *
- *  (c) 2015 Sebastian Iffland <sebastian.iffland@ecom-ex.com>, ecom instruments GmbH
+ *  (c) 2015-2016 Sebastian Iffland <Sebastian.Iffland@ecom-ex.com>, ecom instruments GmbH
  *
  *  All rights reserved
  *
@@ -31,5 +31,16 @@ namespace S3b0\ProjectRegistration\Domain\Repository;
  */
 class ProductPropertyValueRepository extends \S3b0\ProjectRegistration\Domain\Repository\AbstractRepository
 {
+
+    /**
+     * Set repository wide settings
+     */
+    public function initializeObject()
+    {
+        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings */
+        $querySettings = $this->objectManager->get(\TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface::class);
+        $querySettings->setRespectStoragePage(false); // Disable storage pid
+        $this->setDefaultQuerySettings($querySettings);
+    }
 
 }

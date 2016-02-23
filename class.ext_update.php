@@ -215,6 +215,12 @@ class ext_update
                 'property_values' => $propertyValues
             ]);
         }
+
+        // Update pid´s of static import tables according to last project record fetched.
+        $this->databaseConnection->exec_UPDATEquery('tx_projectregistration_domain_model_product', '1=1', [ 'pid' => (int)$row['pid'] ]);
+        $this->databaseConnection->exec_UPDATEquery('tx_projectregistration_domain_model_productproperty', '1=1', [ 'pid' => (int)$row['pid'] ]);
+        $this->databaseConnection->exec_UPDATEquery('tx_projectregistration_domain_model_productpropertyvalue', '1=1', [ 'pid' => (int)$row['pid'] ]);
+
         $this->feedback .= $this->renderFlashMessage('Data has successfully transferred.', 'Data transferred!');
     }
 
@@ -295,7 +301,6 @@ class ext_update
             return (int)$checkForExistingRecord['uid'];
         } else {
             $this->databaseConnection->exec_INSERTquery('tx_projectregistration_domain_model_person', [
-                'pid' => $data['pid'],
                 'username' => $registrant['username'] ?: '',
                 'name' => $registrant['name'] ?: '',
                 'first_name' => $registrant['first_name'] ?: '',

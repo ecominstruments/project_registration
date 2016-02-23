@@ -3,7 +3,7 @@
  *
  *  Copyright notice
  *
- *  (c) 2015 Sebastian Iffland <Sebastian.Iffland@ecom-ex.com>, ecom instruments GmbH
+ *  (c) 2015-2016 Sebastian Iffland <Sebastian.Iffland@ecom-ex.com>, ecom instruments GmbH
  *
  *  All rights reserved
  *
@@ -27,7 +27,9 @@
 
 namespace S3b0\ProjectRegistration\ViewHelpers\Form;
 
-
+/**
+ * An own select viewHelper, to bring data-attributes into <option> -tags
+ */
 class SelectViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\SelectViewHelper
 {
 
