@@ -268,7 +268,7 @@ class ProjectController extends RepositoryInjectionController
             ->setFrom([
                 $dto->getRegistrant()->getEmail() => $dto->getRegistrant()->getName()
             ])
-            ->setSubject(($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (Lang::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted')) . ($dto->getRegistrant()->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $dto->getRegistrant()->getFeUserGroups()) ? ' » ' . Lang::translate('user_certified', $this->extensionName) : ' » ' . Lang::translate('user_default', $this->extensionName)))
+            ->setSubject(($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (Lang::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted')) . ($dto->getRegistrant()->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $dto->getRegistrant()->getFeUserGroups()) ? ' » ' . Lang::translate('user_certified', $this->extensionName) : ' » ' . Lang::translate('user_default', $this->extensionName)) . " #{$project->getUid()}")
             ->setBody($this->getStandAloneTemplate(
                 CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectRegisteredInfo.html',
                 [
@@ -411,7 +411,7 @@ class ProjectController extends RepositoryInjectionController
                 ->setFrom([
                     $project->getRegistrant()->getEmail() => $project->getRegistrant()->getName()
                 ])
-                ->setSubject('RE-SUBMIT: ' . ($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (Lang::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted')) . ($project->getRegistrant()->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $project->getRegistrant()->getFeUserGroups()) ? ' » ' . Lang::translate('user_certified', $this->extensionName) : ' » ' . Lang::translate('user_default', $this->extensionName)))
+                ->setSubject('RE-SUBMIT: ' . ($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (Lang::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted')) . ($project->getRegistrant()->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $project->getRegistrant()->getFeUserGroups()) ? ' » ' . Lang::translate('user_certified', $this->extensionName) : ' » ' . Lang::translate('user_default', $this->extensionName)) . " #{$project->getUid()}")
                 ->setBody($this->getStandAloneTemplate(
                     CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectRegisteredInfo.html',
                     [
@@ -452,7 +452,7 @@ class ProjectController extends RepositoryInjectionController
             'hidden'          => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING,
             'date_of_request' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
         ]);
-        $projects = $this->projectRepository->findAll(true);
+        $projects = $this->projectRepository->findAll(true, true);
         $deleted = $this->projectRepository->findByDeleted(1);
         $csvArray = [];
 
@@ -466,8 +466,8 @@ class ProjectController extends RepositoryInjectionController
                     $isDeleted = $deleted instanceof \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult && in_array($project, $deleted->toArray()) ? 'X' : '';
                     $data = [
                         Lang::translate('status', $eN) => $status,
-                        'old' => $isExpired,
-                        'del' => $isDeleted,
+                        Lang::translate('expired', $eN) => $isExpired,
+                        Lang::translate('deleted', $eN) => $isDeleted,
                         Lang::translate('legend_project_id', $eN) => $project->getUid(),
                         Lang::translate('date_of_request', $eN) => $project->getDateOfRequest()->format($this->settings[ 'formatDate' ] . ' h:i A'),
                         Lang::translate('legend_project_region', $eN) => $this->getAddressees(false, $project->getAddressee()),
@@ -582,7 +582,7 @@ class ProjectController extends RepositoryInjectionController
                 $project->getRegistrant()->getEmail() => $project->getRegistrant()->getName()
             ])
             ->setCc($receivers)
-            ->setSubject($this->settings[ 'mail' ][ 'projectStatusUpdateSubject' ] ?: (Lang::translate('mail_project_status_update_subject', $this->extensionName) ?: 'Project status update'))
+            ->setSubject(($this->settings[ 'mail' ][ 'projectStatusUpdateSubject' ] ?: (Lang::translate('mail_project_status_update_subject', $this->extensionName) ?: 'Project status update')) . " #{$project->getUid()}")
             ->setBody($this->getStandAloneTemplate(
                 CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectStatusUpdated.html',
                 [

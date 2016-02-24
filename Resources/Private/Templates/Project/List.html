@@ -9,7 +9,7 @@
 		<p style="text-align: right">
 			<label for="show-expired">
 				<f:form.checkbox id="show-expired"
-				                 additionalAttributes="{onclick: 'if (this.checked) { window.location = \'{f:uri.action(action: \'list\', arguments: {expired: 1})}\' } else { window.location = \'{f:uri.action(action: \'list\')}\' }'}"
+				                 additionalAttributes="{onclick: 'if (this.checked) { window.location = \'{f:uri.action(action: \'list\', arguments: {expired: 1})}\' } else { window.location = \'{f:uri.page()}\' }'}"
 				                 name="showExpired"
 				                 value="1"
 				                 checked="{display.expired}" />
