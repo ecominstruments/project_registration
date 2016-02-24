@@ -221,8 +221,8 @@
 			<trans-unit id="deleted">
 				<source>Deleted</source>
 			</trans-unit>
-			<trans-unit id="outdated">
-				<source>Outdated</source>
+			<trans-unit id="expired">
+				<source>Expired</source>
 			</trans-unit>
 
 			<trans-unit id="message_status_update_dear">

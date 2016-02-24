@@ -42,6 +42,11 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $hidden = false;
 
     /**
+     * @var bool
+     */
+    protected $deleted = false;
+
+    /**
      * @var string
      * @validate NotEmpty
      */
@@ -51,11 +56,6 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @var \DateTime
      */
     protected $dateOfRequest = null;
-
-    /**
-     * @var bool
-     */
-    protected $outdated = false;
 
     /**
      * @var string
@@ -155,6 +155,22 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
+     * @return boolean
+     */
+    public function isDeleted()
+    {
+        return $this->deleted;
+    }
+
+    /**
+     * @param boolean $deleted
+     */
+    public function setDeleted($deleted)
+    {
+        $this->deleted = $deleted;
+    }
+
+    /**
      * @return bool
      */
     public function isVisible()
@@ -199,12 +215,13 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @return boolean
      */
-    public function isOutdated()
+    public function isExpired()
     {
-        $check = false;
+        $check    = false;
+        $settings = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['project_registration']);
 
         if ($this->dateOfRequest instanceof \DateTime) {
-            $check = $this->dateOfRequest->diff(new \DateTime()) instanceof \DateInterval && $this->dateOfRequest->diff(new \DateTime())->days > 365;
+            $check = $this->dateOfRequest->diff(new \DateTime()) instanceof \DateInterval && $this->dateOfRequest->diff(new \DateTime())->days > $settings['daysToExpire'];
         }
 
         return $check;

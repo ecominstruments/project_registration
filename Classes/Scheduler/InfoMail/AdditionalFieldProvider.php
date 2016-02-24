@@ -51,19 +51,9 @@ class AdditionalFieldProvider implements \TYPO3\CMS\Scheduler\AdditionalFieldPro
                                    class="form-control"
                                    name="tx_scheduler[daysLeft]"
                                    value="' . ($task instanceof \S3b0\ProjectRegistration\Scheduler\InfoMail\Task ? $task->getDaysLeft() : 30) . '" />',
-                 'label' => 'Days left',
+                 'label' => 'Warn about expiring projects X days before',
                  'cshKey' => '',
-                 'cshLabel' => 'Amount of days left until project gets state \'outdated\', instantly inform admin!'
-             ],
-            'daysValid' => [
-                 'code' => '<input type="text"
-                                   id="tx_scheduler_days_to_outdated"
-                                   class="form-control"
-                                   name="tx_scheduler[daysValid]"
-                                   value="' . ($task instanceof \S3b0\ProjectRegistration\Scheduler\InfoMail\Task ? $task->getDaysValid() : 365) . '" />',
-                 'label' => 'Days to outdated',
-                 'cshKey' => '',
-                 'cshLabel' => 'Amount of days to be gone until project gets state \'outdated\''
+                 'cshLabel' => ''
              ],
             'senderAddress' => [
                  'code' => '<input type="email"
@@ -105,7 +95,6 @@ class AdditionalFieldProvider implements \TYPO3\CMS\Scheduler\AdditionalFieldPro
     public function saveAdditionalFields(array $submittedData, \TYPO3\CMS\Scheduler\Task\AbstractTask $task) {
         /** @var \S3b0\ProjectRegistration\Scheduler\InfoMail\Task $task */
         $task->setDaysLeft($submittedData['daysLeft']);
-        $task->setDaysValid($submittedData['daysValid']);
         $task->setSenderAddress($submittedData['senderAddress']);
         $task->setReceiverAddress($submittedData['receiverAddress']);
     }

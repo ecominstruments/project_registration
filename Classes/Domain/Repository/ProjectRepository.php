@@ -50,6 +50,40 @@ class ProjectRepository extends \S3b0\ProjectRegistration\Domain\Repository\Abst
     }
 
     /**
+     * Returns all objects of this repository.
+     *
+     * @param bool $expired
+     * @param bool $deleted
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array
+     */
+    public function findAll($expired = false, $deleted = false)
+    {
+        $query = $this->createQuery();
+
+        if ($deleted) {
+            $query->setQuerySettings($query->getQuerySettings()->setIncludeDeleted(true));
+        }
+
+        if ($expired === false) {
+            if ($records = $query->execute()) {
+                $return = [];
+                /** @var \S3b0\ProjectRegistration\Domain\Model\Project $record */
+                foreach ($records as $record) {
+                    if ($record->isExpired() === false) {
+                        $return[] = $record;
+                    }
+                }
+                return $return;
+            } else {
+                return [];
+            }
+        }
+
+        return $query->execute();
+    }
+
+    /**
      * Finds an object matching the given identifier.
      *
      * @param int $uid

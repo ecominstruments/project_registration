@@ -7,6 +7,15 @@
 
 	<section class="data">
 		<p style="text-align: right">
+			<label for="show-expired">
+				<f:form.checkbox id="show-expired"
+				                 additionalAttributes="{onclick: 'if (this.checked) { window.location = \'{f:uri.action(action: \'list\', arguments: {expired: 1})}\' } else { window.location = \'{f:uri.action(action: \'list\')}\' }'}"
+				                 name="showExpired"
+				                 value="1"
+				                 checked="{display.expired}" />
+				<f:translate id="show_expired" default="Include expired" />
+			</label>
+			&nbsp;//&nbsp;
 			<f:link.action action="exportCSV" id="csvExportLink"><f:translate id="csvExport" extensionName="lowlevel" /> <i class="fa fa-file-excel-o fa-fw"></i></f:link.action>
 			&nbsp;
 			<label for="js-csv-us-format">
@@ -46,9 +55,9 @@
 					<td>{project.uid} <f:link.action action="resendRequestMail" arguments="{project: project}" title="Re-send original request"><i class="fa fa-paper-plane-o fa-fw"></i></f:link.action></td>
 					<td data-sort-value="{project.dateOfRequest -> f:format.date(format: 'U')}">
 						{project.dateOfRequest -> f:format.date(format: 'd-m-Y')}
-						<f:if condition="{project.outdated}">
+						<f:if condition="{project.expired}">
 							&nbsp;
-							<i class="fa fa-calendar-times-o text-danger" title="{f:translate(id: 'outdated')}"></i>
+							<i class="fa fa-calendar-times-o text-danger" title="{f:translate(id: 'expired')}" style="cursor:help"></i>
 						</f:if>
 					</td>
 					<td>{project.registrant.name}

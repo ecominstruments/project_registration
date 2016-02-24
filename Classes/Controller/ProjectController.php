@@ -85,17 +85,24 @@ class ProjectController extends RepositoryInjectionController
     /**
      * action list
      *
+     * @param bool $expired
+     * @param bool $deleted
+     *
      * @return void
      */
-    public function listAction()
+    public function listAction($expired = false, $deleted = false)
     {
-        $projects = $this->projectRepository->findAll();
+        $projects = $this->projectRepository->findAll($expired, $deleted);
         $addressees = $this->getAddressees(false, null, true, true);
 
         $this->view->assignMultiple([
-            'projects'         => $projects,
-            'addressees'       => $addressees,
-            'logInUserRole' => $this->logInUserRole
+            'projects'      => $projects,
+            'addressees'    => $addressees,
+            'logInUserRole' => $this->logInUserRole,
+            'display'       => [
+                'expired'   => $expired,
+                'deleted'   => $deleted
+            ]
         ]);
     }
 
@@ -445,7 +452,7 @@ class ProjectController extends RepositoryInjectionController
             'hidden'          => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING,
             'date_of_request' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
         ]);
-        $projects = $this->projectRepository->findAll();
+        $projects = $this->projectRepository->findAll(true);
         $deleted = $this->projectRepository->findByDeleted(1);
         $csvArray = [];
 
@@ -455,11 +462,11 @@ class ProjectController extends RepositoryInjectionController
                 if ($project instanceof Model\Project) {
                     $eN = $this->extensionName;
                     $status = $project->isHidden() ? Lang::translate('state_2', $eN) : ($project->isAccepted() ? Lang::translate('state_1', $eN) : Lang::translate('state_0', $eN));
-                    $isOutdated = $project->isOutdated() ? 'X' : '';
+                    $isExpired = $project->isExpired() ? 'X' : '';
                     $isDeleted = $deleted instanceof \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult && in_array($project, $deleted->toArray()) ? 'X' : '';
                     $data = [
                         Lang::translate('status', $eN) => $status,
-                        'old' => $isOutdated,
+                        'old' => $isExpired,
                         'del' => $isDeleted,
                         Lang::translate('legend_project_id', $eN) => $project->getUid(),
                         Lang::translate('date_of_request', $eN) => $project->getDateOfRequest()->format($this->settings[ 'formatDate' ] . ' h:i A'),

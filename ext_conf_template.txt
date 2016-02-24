@@ -1,0 +1,2 @@
+# cat=project_registration//1; type=int+; label=Days to expire:Define days a project is valid, afterwards it´ll be marked expired
+daysToExpire = 365

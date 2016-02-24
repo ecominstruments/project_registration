@@ -27,7 +27,11 @@
 
 namespace S3b0\ProjectRegistration\Scheduler\InfoMail;
 
-
+/**
+ * Class BusinessLogic
+ *
+ * @package S3b0\ProjectRegistration\Scheduler\InfoMail
+ */
 class BusinessLogic
 {
 
@@ -48,10 +52,11 @@ class BusinessLogic
      */
     public function run(\S3b0\ProjectRegistration\Scheduler\InfoMail\Task $task)
     {
+        $settings   = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extensionName]);
         $upperLimit = new \DateTime();
         $lowerLimit = new \DateTime();
         $daysLeft   = $task->getDaysLeft();
-        $daysValid  = $task->getDaysValid();
+        $daysValid  = $settings['daysToExpire'];
         $sender     = [ $task->getSenderAddress() ];
         $receiver   = [ $task->getReceiverAddress() ];
         $subject    = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('infomail.subject', $this->extensionName);
@@ -62,15 +67,15 @@ class BusinessLogic
 
         $where = "date_of_request < '{$upperLimit->format('Y-m-d h:i:s')}' AND date_of_request > '{$lowerLimit->format('Y-m-d h:i:s')}'";
         if ($this->databaseConnection->exec_SELECTcountRows('*', 'tx_projectregistration_domain_model_project', $where)) {
-            $outdatedProjects = $this->databaseConnection->exec_SELECTgetRows(
+            $expiredProjects = $this->databaseConnection->exec_SELECTgetRows(
                 'project.*, registrant.name as registrant_name, registrant.company as registrant_company',
                 'tx_projectregistration_domain_model_project as project join tx_projectregistration_domain_model_person as registrant on project.registrant=registrant.uid',
                 $where);
 
             $list = [ ];
-            /** @var array $outdatedProject */
-            foreach ($outdatedProjects as $outdatedProject) {
-                $list[] = "#{$outdatedProject['uid']} - '{$outdatedProject['title']}' by {$outdatedProject['registrant_name']} ({$outdatedProject['registrant_company']})";
+            /** @var array $expiredProject */
+            foreach ($expiredProjects as $expiredProject) {
+                $list[] = "#{$expiredProject['uid']} - '{$expiredProject['title']}' by {$expiredProject['registrant_name']} ({$expiredProject['registrant_company']})";
             }
 
             $mailContent = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(

@@ -39,12 +39,6 @@ class Task extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     protected $daysLeft = 30;
 
     /**
-     * Amount of days to be gone until project expires
-     * @var int $daysValid
-     */
-    protected $daysValid = 365;
-
-    /**
      * The sender email address
      * @var string $senderAddress
      */
@@ -80,22 +74,6 @@ class Task extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     public function setDaysLeft($daysLeft)
     {
         $this->daysLeft = $daysLeft;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDaysValid()
-    {
-        return $this->daysValid;
-    }
-
-    /**
-     * @param int $daysValid
-     */
-    public function setDaysValid($daysValid)
-    {
-        $this->daysValid = $daysValid;
     }
 
     /**
