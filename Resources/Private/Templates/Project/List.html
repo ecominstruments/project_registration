@@ -5,9 +5,9 @@
 
 	<f:render partial="FlashMessages" arguments="{_all}"/>
 
-	<section class="data">
+	<section class="header">
 		<p style="text-align: right">
-			<label for="show-expired">
+			<label for="show-expired" style="font-weight:300">
 				<f:form.checkbox id="show-expired"
 				                 additionalAttributes="{onclick: 'if (this.checked) { window.location = \'{f:uri.action(action: \'list\', arguments: {expired: 1})}\' } else { window.location = \'{f:uri.page()}\' }'}"
 				                 name="showExpired"
@@ -16,7 +16,7 @@
 				<f:translate id="show_expired" default="Include expired projects" />
 			</label>
 			&nbsp; || &nbsp;
-			<label for="js-csv-us-format">
+			<label for="js-csv-us-format" style="font-weight:300">
 				<f:form.checkbox id="js-csv-us-format"
 				                 additionalAttributes="{onclick: 'toggleExportLink(this)'}"
 				                 name="usformat"
@@ -29,22 +29,24 @@
 		</p>
 		<input type="search" class="light-table-filter form-control" data-table="table" placeholder="Filter">
 		<p>&nbsp;</p>
+	</section>
+	<section class="data">
 		<table id="pradm-list" class="table table-striped table-hover">
 			<thead>
 			<tr>
-				<th class="sortable num" data-sort="int"><f:translate id="project" />#</th>
-				<th class="sortable amount sorting-desc" data-sort="int"><f:translate id="date_of_request" /></th>
-				<th class="sortable alpha" data-sort="string-ins"><f:translate id="registrant" /></th>
+				<th class="sortable num" data-sort="int" style="white-space:nowrap"><f:translate id="project" />#</th>
+				<th class="sortable amount sorting-desc" data-sort="int" style="white-space:nowrap"><f:translate id="date_of_request" /></th>
+				<th class="sortable alpha" data-sort="string-ins" style="white-space:nowrap"><f:translate id="registrant" /></th>
 				<th></th>
-				<th class="sortable alpha" data-sort="string-ins"><f:translate id="company" /></th>
-				<th class="sortable alpha" data-sort="string-ins"><f:translate id="legend_project_region" /></th>
-				<th class="sortable alpha" data-sort="string-ins"><f:translate id="legend_project_name" /></th>
-				<th class="sortable alpha" data-sort="string-ins"><f:translate id="legend_enduser_company" /></th>
-				<th class="sortable alpha" data-sort="string-ins"><f:translate id="legend_enduser_country" /></th>
-				<th class="sortable alpha" data-sort="string-ins"><f:translate id="product" /></th>
-				<th><f:translate id="quantity" /></th>
+				<th class="sortable alpha" data-sort="string-ins" style="white-space:nowrap"><f:translate id="company" /></th>
+				<th class="sortable alpha" data-sort="string-ins" style="white-space:nowrap"><f:translate id="legend_project_region" /></th>
+				<th class="sortable alpha" data-sort="string-ins" style="white-space:nowrap"><f:translate id="legend_project_name" /></th>
+				<th class="sortable alpha" data-sort="string-ins" style="white-space:nowrap"><f:translate id="legend_enduser_company" /></th>
+				<th class="sortable alpha" data-sort="string-ins" style="white-space:nowrap"><f:translate id="legend_enduser_country" /></th>
+				<th class="sortable alpha" data-sort="string-ins" style="white-space:nowrap"><f:translate id="product" /></th>
+				<th style="white-space:nowrap"><f:translate id="quantity" /></th>
 				<th class="sortable amount" data-sort="int"><f:translate id="estimated_purchase_date" /></th>
-				<th class="sortable amount" data-sort="int"><f:translate id="status" /></th>
+				<th class="sortable amount" data-sort="int" style="white-space:nowrap"><f:translate id="status" /></th>
 				<th></th>
 			</tr>
 			</thead>
@@ -60,7 +62,7 @@
 							<i class="fa fa-calendar-times-o text-danger" title="{f:translate(id: 'expired')}" style="cursor:help"></i>
 						</f:if>
 					</td>
-					<td>{project.registrant.name}
+					<td style="white-space:nowrap">{project.registrant.name}
 						<f:if condition="{f:ecom.inArray(haystack: project.registrant.feUserGroups, needle: settings.certifiedUsersUserGroup)}">
 							<f:then><span class="text-primary" title="Certified registrant"><i class="fa fa-star fa-fw"></i></span></f:then>
 							<f:else>
