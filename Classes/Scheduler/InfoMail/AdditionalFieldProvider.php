@@ -27,7 +27,6 @@ namespace S3b0\ProjectRegistration\Scheduler\InfoMail;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Class AdditionalFieldProvider
@@ -45,16 +44,6 @@ class AdditionalFieldProvider implements \TYPO3\CMS\Scheduler\AdditionalFieldPro
     public function getAdditionalFields(array &$taskInfo, $task, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $parentObject) {
         /** @var \S3b0\ProjectRegistration\Scheduler\InfoMail\Task $task */
         return [
-            'daysLeft' => [
-                 'code' => '<input type="text"
-                                   id="tx_scheduler_days_left"
-                                   class="form-control"
-                                   name="tx_scheduler[daysLeft]"
-                                   value="' . ($task instanceof \S3b0\ProjectRegistration\Scheduler\InfoMail\Task ? $task->getDaysLeft() : 30) . '" />',
-                 'label' => 'Warn about expiring projects X days before',
-                 'cshKey' => '',
-                 'cshLabel' => ''
-             ],
             'senderAddress' => [
                  'code' => '<input type="email"
                                    id="tx_scheduler_sender_address"
@@ -85,7 +74,7 @@ class AdditionalFieldProvider implements \TYPO3\CMS\Scheduler\AdditionalFieldPro
      * @return bool
      */
     public function validateAdditionalFields(array &$submittedData, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $parentObject) {
-        return MathUtility::canBeInterpretedAsInteger($submittedData['daysLeft']) && MathUtility::canBeInterpretedAsInteger($submittedData['daysValid']) && GeneralUtility::validEmail($submittedData['senderAddress']) && GeneralUtility::validEmail($submittedData['receiverAddress']);
+        return GeneralUtility::validEmail($submittedData['senderAddress']) && GeneralUtility::validEmail($submittedData['receiverAddress']);
     }
 
     /**
@@ -94,7 +83,6 @@ class AdditionalFieldProvider implements \TYPO3\CMS\Scheduler\AdditionalFieldPro
      */
     public function saveAdditionalFields(array $submittedData, \TYPO3\CMS\Scheduler\Task\AbstractTask $task) {
         /** @var \S3b0\ProjectRegistration\Scheduler\InfoMail\Task $task */
-        $task->setDaysLeft($submittedData['daysLeft']);
         $task->setSenderAddress($submittedData['senderAddress']);
         $task->setReceiverAddress($submittedData['receiverAddress']);
     }

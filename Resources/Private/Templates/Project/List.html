@@ -57,10 +57,14 @@
 					<td>{project.uid} <f:link.action action="resendRequestMail" arguments="{project: project}" title="Re-send original request"><i class="fa fa-paper-plane-o fa-fw"></i></f:link.action></td>
 					<td data-sort-value="{project.dateOfRequest -> f:format.date(format: 'U')}">
 						{project.dateOfRequest -> f:format.date(format: 'd-m-Y')}
-						<f:if condition="{project.expired}">
-							&nbsp;
-							<i class="fa fa-calendar-times-o text-danger" title="{f:translate(id: 'expired')}" style="cursor:help"></i>
+						&nbsp;
+						<f:if condition="{project.goingToExpire}">
+							<f:if condition="{project.expired}">
+								<f:then><i class="fa fa-calendar-times-o text-danger" title="{f:translate(id: 'validity.expired')}" style="cursor:help"></i></f:then>
+								<f:else><i class="fa fa-calendar-o text-warning" title="{f:translate(id: 'validity.expiring', arguments: {0: settings.warnXDaysBeforeExpireDate})}" style="cursor:help"></i></f:else>
+							</f:if>
 						</f:if>
+						<f:if condition="{project.active}"><i class="fa fa-calendar-check-o text-success" title="{f:translate(id: 'validity.active')}" style="cursor:help"></i></f:if>
 					</td>
 					<td style="white-space:nowrap">{project.registrant.name}
 						<f:if condition="{f:ecom.inArray(haystack: project.registrant.feUserGroups, needle: settings.certifiedUsersUserGroup)}">

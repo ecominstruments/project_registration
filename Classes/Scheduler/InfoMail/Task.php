@@ -33,12 +33,6 @@ class Task extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 {
 
     /**
-     * Amount of days left until project expires
-     * @var int $daysLeft
-     */
-    protected $daysLeft = 30;
-
-    /**
      * The sender email address
      * @var string $senderAddress
      */
@@ -58,22 +52,6 @@ class Task extends \TYPO3\CMS\Scheduler\Task\AbstractTask
         /** @var \S3b0\ProjectRegistration\Scheduler\InfoMail\BusinessLogic $businessLogic */
         $businessLogic = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\S3b0\ProjectRegistration\Scheduler\InfoMail\BusinessLogic::class);
         return $businessLogic->run($this);
-    }
-
-    /**
-     * @return int
-     */
-    public function getDaysLeft()
-    {
-        return $this->daysLeft;
-    }
-
-    /**
-     * @param int $daysLeft
-     */
-    public function setDaysLeft($daysLeft)
-    {
-        $this->daysLeft = $daysLeft;
     }
 
     /**

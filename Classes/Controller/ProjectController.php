@@ -80,6 +80,9 @@ class ProjectController extends RepositoryInjectionController
             }
         }
 
+        $settings = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['project_registration']);
+        $this->settings['warnXDaysBeforeExpireDate'] = $settings['warnXDaysBeforeExpireDate'];
+
         if (in_array($this->request->getControllerActionName(), $this->actionsThatRequireProjectArgumentToBeSet)) {
             $this->manuallySetProjectArgument();
         }

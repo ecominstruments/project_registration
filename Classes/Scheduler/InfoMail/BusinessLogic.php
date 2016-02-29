@@ -55,8 +55,8 @@ class BusinessLogic
         $settings   = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extensionName]);
         $upperLimit = new \DateTime();
         $lowerLimit = new \DateTime();
-        $daysLeft   = $task->getDaysLeft();
         $daysValid  = $settings['daysToExpire'];
+        $daysLeft   = $settings['warnXDaysBeforeExpireDate'];
         $sender     = [ $task->getSenderAddress() ];
         $receiver   = [ $task->getReceiverAddress() ];
         $subject    = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('infomail.subject', $this->extensionName);

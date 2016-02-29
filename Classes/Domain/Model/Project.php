@@ -215,6 +215,29 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @return boolean
      */
+    public function isActive()
+    {
+        return !($this->isGoingToExpire() || $this->isExpired());
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isGoingToExpire()
+    {
+        $check    = false;
+        $settings = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['project_registration']);
+
+        if ($this->dateOfRequest instanceof \DateTime) {
+            $check = $this->dateOfRequest->diff(new \DateTime()) instanceof \DateInterval && $this->dateOfRequest->diff(new \DateTime())->days > $settings['daysToExpire'] - $settings['warnXDaysBeforeExpireDate'];
+        }
+
+        return $check;
+    }
+
+    /**
+     * @return boolean
+     */
     public function isExpired()
     {
         $check    = false;
