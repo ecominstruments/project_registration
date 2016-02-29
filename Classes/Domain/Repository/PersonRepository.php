@@ -32,4 +32,25 @@ namespace S3b0\ProjectRegistration\Domain\Repository;
 class PersonRepository extends \S3b0\ProjectRegistration\Domain\Repository\AbstractRepository
 {
 
+    /**
+     * @param \S3b0\ProjectRegistration\Domain\Model\Person $person
+     *
+     * @return bool|\S3b0\ProjectRegistration\Domain\Model\Person
+     */
+    public function findOneByMandatoryFields(\S3b0\ProjectRegistration\Domain\Model\Person $person)
+    {
+        $query = $this->createQuery();
+
+        $result = $query->matching(
+            $query->logicalAnd([
+                $query->equals('name', $person->getName()),
+                $query->equals('company', $person->getCompany()),
+                $query->equals('email', $person->getEmail()),
+                $query->equals('phone', $person->getPhone())
+            ])
+        )->execute()->getFirst();
+
+        return $result instanceof \S3b0\ProjectRegistration\Domain\Model\Person ? $result : false;
+    }
+
 }

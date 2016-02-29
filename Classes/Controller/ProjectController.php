@@ -195,8 +195,13 @@ class ProjectController extends RepositoryInjectionController
                 $this->personRepository->add($dto->getRegistrant());
             }
         } else {
-            $this->personRepository->add($dto->getRegistrant());
+            if ($registrant = $this->personRepository->findOneByMandatoryFields($dto->getRegistrant())) {
+                $dto->setRegistrant($registrant);
+            } else {
+                $this->personRepository->add($dto->getRegistrant());
+            }
         }
+
         /**
          * Persist Persons in order to get corresponding uid to link to in Project
          *
