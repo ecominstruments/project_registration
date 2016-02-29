@@ -56,8 +56,8 @@ return [
             'label'   => 'LLL:EXT:project_registration/Resources/Private/Language/locallang_db.xlf:tx_projectregistration_domain_model_project.quantity',
             'config'  => [
                 'type' => 'input',
-                'size' => 4,
-                'eval' => 'int,required'
+                'size' => 30,
+                'eval' => 'trim,required'
             ]
         ],
         'estimated_purchase_date' => [

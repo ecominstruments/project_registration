@@ -64,7 +64,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $application = '';
 
     /**
-     * @var int
+     * @var string
      * @validate NotEmpty
      */
     protected $quantity = '';
@@ -278,7 +278,7 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getQuantity()
     {

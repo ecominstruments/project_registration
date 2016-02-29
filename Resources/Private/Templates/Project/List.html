@@ -13,11 +13,9 @@
 				                 name="showExpired"
 				                 value="1"
 				                 checked="{display.expired}" />
-				<f:translate id="show_expired" default="Include expired" />
+				<f:translate id="show_expired" default="Include expired projects" />
 			</label>
-			&nbsp;//&nbsp;
-			<f:link.action action="exportCSV" id="csvExportLink"><f:translate id="csvExport" extensionName="lowlevel" /> <i class="fa fa-file-excel-o fa-fw"></i></f:link.action>
-			&nbsp;
+			&nbsp; || &nbsp;
 			<label for="js-csv-us-format">
 				<f:form.checkbox id="js-csv-us-format"
 				                 additionalAttributes="{onclick: 'toggleExportLink(this)'}"
@@ -26,6 +24,8 @@
 				                 checked="1" />
 				<f:translate id="us_format" />
 			</label>
+			&nbsp;
+			<f:link.action action="exportCSV" id="csvExportLink" class="btn btn-success"><f:translate id="csvExport" extensionName="lowlevel" /> <i class="fa fa-file-excel-o fa-fw"></i></f:link.action>
 		</p>
 		<input type="search" class="light-table-filter form-control" data-table="table" placeholder="Filter">
 		<p>&nbsp;</p>
@@ -42,7 +42,7 @@
 				<th class="sortable alpha" data-sort="string-ins"><f:translate id="legend_enduser_company" /></th>
 				<th class="sortable alpha" data-sort="string-ins"><f:translate id="legend_enduser_country" /></th>
 				<th class="sortable alpha" data-sort="string-ins"><f:translate id="product" /></th>
-				<th class="sortable num" data-sort="int"><f:translate id="quantity" /></th>
+				<th><f:translate id="quantity" /></th>
 				<th class="sortable amount" data-sort="int"><f:translate id="estimated_purchase_date" /></th>
 				<th class="sortable amount" data-sort="int"><f:translate id="status" /></th>
 				<th></th>
@@ -68,7 +68,7 @@
 							</f:else>
 						</f:if>
 					</td>
-					<td>
+					<td style="white-space:nowrap">
 						<f:link.action action="show" controller="Person" arguments="{person: project.registrant}" title="Show registrant details"><i class="fa fa-user fa-fw"></i></f:link.action>
 						<f:link.typolink parameter="{project.registrant.email}"><i class="fa fa-envelope-o fa-fw"></i></f:link.typolink>
 						<a data-toggle="popover" title="Phone:" data-content="{project.registrant.phone}"><i class="fa fa-phone-square fa-fw"></i></a>
@@ -88,11 +88,11 @@
 					<td>{project.quantity}</td>
 					<td data-sort-value="{project.estimatedPurchaseDate -> f:format.date(format: 'U')}">{project.estimatedPurchaseDate -> f:format.date(format: 'd-m-Y')}</td>
 					<f:if condition="{project.hidden}">
-						<f:then><td data-sort-value="2"></f:then>
+						<f:then><td data-sort-value="2" style="white-space:nowrap"></f:then>
 						<f:else>
 							<f:if condition="{project.approved}">
-								<f:then><td data-sort-value="0"></f:then>
-								<f:else><td data-sort-value="1"></f:else>
+								<f:then><td data-sort-value="0" style="white-space:nowrap"></f:then>
+								<f:else><td data-sort-value="1" style="white-space:nowrap"></f:else>
 							</f:if>
 						</f:else>
 					</f:if>
@@ -139,11 +139,9 @@
 								<f:link.action action="addInternalNote" arguments="{project: project}" title="Add internal note"><i class="fa fa-file-o fa-fw"></i></f:link.action>
 							</f:else>
 						</f:if>
-						<f:if condition="{project.rejected}">
-							<f:link.action action="delete" arguments="{project: project}" noCacheHash="1" title="{f:translate(id: 'button.delete', extensionName: 'recycler')}" additionalAttributes="{onclick: 'return confirm(\'{f:translate(id: \'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:deleteWarning\')}\');'}">
-								<i class="fa fa-trash-o fa-lg fa-fw"></i>
-							</f:link.action>
-						</f:if>
+						<f:link.action action="delete" arguments="{project: project}" noCacheHash="1" title="{f:translate(id: 'button.delete', extensionName: 'recycler')}" additionalAttributes="{onclick: 'return confirm(\'{f:translate(id: \'LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:deleteWarning\')}\');'}">
+							<i class="fa fa-trash-o fa-fw text-danger" style="font-size:1.25em;line-height:.75em;vertical-align:-15%"></i>
+						</f:link.action>
 					</f:if>
 					</td>
 					<td>

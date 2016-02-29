@@ -9,7 +9,7 @@ CREATE TABLE tx_projectregistration_domain_model_project (
 	title varchar(255) DEFAULT '' NOT NULL,
 	date_of_request datetime DEFAULT '0000-00-00 00:00:00',
 	application varchar(255) DEFAULT '' NOT NULL,
-	quantity int(11) DEFAULT '0' NOT NULL,
+	quantity varchar(255) DEFAULT '' NOT NULL,
 	estimated_purchase_date date DEFAULT '0000-00-00',
 	registration_notes text NOT NULL,
 	internal_note text NOT NULL,

@@ -42,8 +42,8 @@ plugin.tx_projectregistration_registration {
 		}
 		certifiedUsersUserGroup = {$plugin.tx_projectregistration.settings.certifiedUsersUserGroup}
 		investigator = {$plugin.tx_projectregistration.settings.investigator}
-		admin = {$plugin.tx_projectregistration.settings.admin}
-		adminEmail = {$plugin.tx_projectregistration.settings.adminEmail}
+		administrator = {$plugin.tx_projectregistration.settings.administrator}
+		administratorEmail = {$plugin.tx_projectregistration.settings.administratorEmail}
 		formatDate = j M Y
 	}
 }

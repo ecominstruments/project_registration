@@ -27,10 +27,10 @@ plugin.tx_projectregistration {
 		#cat=project registration//15;type=int+;label=Certified Registrants (usergroup): The (FE-)usergroup of certified registrants
 		certifiedUsersUserGroup = 8
 		#cat=project registration//20;type=int+;label=Investigator: The investigator (FE-user) accepting/rejecting projects
-		investigator = 389
+		investigator = 0
 		#cat=project registration//25;type=int+;label=Administrator: The master chief (FE-user)
-		admin = 385
+		administrator = 385
 		#cat=project registration//30;type=string;label=Administrator email: Administrators email address
-		adminEmail = markus.nied@ecom-ex.com
+		administratorEmail = markus.nied@ecom-ex.com
 	}
 }

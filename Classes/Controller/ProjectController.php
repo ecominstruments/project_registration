@@ -61,10 +61,14 @@ class ProjectController extends RepositoryInjectionController
         if ($this->request->getPluginName() === 'Administration') {
             $this->logInUserRole = new Model\LoginUserRole();
             if ($this->getTypoScriptFrontendController()->loginUser) {
-                if ((int)$this->settings[ 'investigator' ] === (int)$this->getTypoScriptFrontendController()->fe_user->user[ $this->getTypoScriptFrontendController()->fe_user->userid_column ]) {
+                $investigators  = CoreUtility\GeneralUtility::intExplode(',', $this->settings[ 'investigator' ], true);
+                $administrators = CoreUtility\GeneralUtility::intExplode(',', $this->settings[ 'administrator' ], true);
+                // Check investigator access
+                if (in_array((int)$this->getTypoScriptFrontendController()->fe_user->user[ $this->getTypoScriptFrontendController()->fe_user->userid_column ], $investigators)) {
                     $this->logInUserRole = new Model\LoginUserRole(Model\LoginUserRole::INVESTIGATOR);
                 }
-                if ((int)$this->settings[ 'admin' ] === (int)$this->getTypoScriptFrontendController()->fe_user->user[ $this->getTypoScriptFrontendController()->fe_user->userid_column ]) {
+                // Check administrator access
+                if (in_array((int)$this->getTypoScriptFrontendController()->fe_user->user[ $this->getTypoScriptFrontendController()->fe_user->userid_column ], $administrators)) {
                     $this->logInUserRole = new Model\LoginUserRole(Model\LoginUserRole::ADMINISTRATOR);
                 }
             }
@@ -399,7 +403,7 @@ class ProjectController extends RepositoryInjectionController
      */
     public function resendRequestMailAction(Model\Project $project)
     {
-        if (CoreUtility\GeneralUtility::validEmail($this->settings['adminEmail'])) {
+        if (CoreUtility\GeneralUtility::validEmail($this->settings['administratorEmail'])) {
             /** @var \TYPO3\CMS\Core\Mail\MailMessage $mailToSender */
             $mail = CoreUtility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
             $mail->setContentType('text/html');
@@ -407,7 +411,7 @@ class ProjectController extends RepositoryInjectionController
             /**
              * Email to receiver (notification mail)
              */
-            $mail->setTo([ $this->settings['adminEmail'] ])
+            $mail->setTo([ $this->settings['administratorEmail'] ])
                 ->setFrom([
                     $project->getRegistrant()->getEmail() => $project->getRegistrant()->getName()
                 ])
@@ -426,7 +430,7 @@ class ProjectController extends RepositoryInjectionController
                 ->send();
             $this->addFlashMessage("Mail for project #{$project->getUid()} ('{$project->getTitle()}') re-sent.");
         } else {
-            $this->addFlashMessage('Invalid mail: ' . $this->settings['adminEmail'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+            $this->addFlashMessage('Invalid mail: ' . $this->settings['administratorEmail'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
         }
 
         $this->internalRedirect('list');
