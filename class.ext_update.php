@@ -209,9 +209,9 @@ class ext_update
                 'crdate' => $row['tstamp'],
                 'deleted' => $row['deleted'],
                 'addressee' => $addressee,
-                'registrant' => $registrant ?: null,
-                'end_user' => $endUser ?: null,
-                'product' => $product['uid'] ?: null,
+                'registrant' => abs((int)$registrant),
+                'end_user' => abs((int)$endUser),
+                'product' => abs((int)$product['uid']),
                 'property_values' => $propertyValues
             ]);
         }
@@ -310,14 +310,14 @@ class ext_update
                 'address' => $registrant['address'] ?: '',
                 'zip' => $registrant['zip'] ?: '',
                 'city' => $registrant['city'] ?: '',
-                'country' => (int)$registrant['ecom_toolbox_country'] ?: null,
-                'state' => (int)$registrant['ecom_toolbox_state'] ?: null,
+                'country' => abs((int)$registrant['ecom_toolbox_country']),
+                'state' => abs((int)$registrant['ecom_toolbox_state']),
                 'email' => $registrant['email'] ?: '',
                 'phone' => $registrant['telephone'] ?: '',
                 'fax' => $registrant['fax'] ?: '',
                 'title' => $registrant['title'] ?: '',
                 'www' => $registrant['www'] ?: '',
-                'fe_user' => (int)$data['registrant'] ?: null,
+                'fe_user' => abs((int)$data['registrant']),
             ]);
 
             return $uid;

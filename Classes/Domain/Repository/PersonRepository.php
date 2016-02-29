@@ -46,7 +46,11 @@ class PersonRepository extends \S3b0\ProjectRegistration\Domain\Repository\Abstr
                 $query->equals('name', $person->getName()),
                 $query->equals('company', $person->getCompany()),
                 $query->equals('email', $person->getEmail()),
-                $query->equals('phone', $person->getPhone())
+                $query->equals('phone', $person->getPhone()),
+                $query->equals('city', ''),
+                $query->equals('site', ''),
+                $query->equals('country', '0'),
+                $query->equals('state', '0')
             ])
         )->execute()->getFirst();
 
