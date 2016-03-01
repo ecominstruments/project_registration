@@ -208,7 +208,7 @@ class ext_update
                 'tstamp' => $row['tstamp'],
                 'crdate' => $row['tstamp'],
                 'deleted' => $row['deleted'],
-                'hidden' => (int)!$row['approved'],
+                'hidden' => (int)!$row['approval_confirmed'],
                 'addressee' => $addressee,
                 'registrant' => abs((int)$registrant),
                 'end_user' => abs((int)$endUser),
