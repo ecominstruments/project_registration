@@ -318,6 +318,7 @@ class ext_update
                 'title' => $registrant['title'] ?: '',
                 'www' => $registrant['www'] ?: '',
                 'fe_user' => abs((int)$data['registrant']),
+                'hidden' => abs(!$data['approved'])
             ]);
 
             return $uid;
