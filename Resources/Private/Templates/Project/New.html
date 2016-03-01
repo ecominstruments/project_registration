@@ -5,7 +5,7 @@
   <f:render partial="FlashMessages" arguments="{_all}" />
   <f:render partial="FormErrors" arguments="{object:Project}" />
 
-  <f:form action="create" class="tx-powermail" name="dto" object="{dto}" additionalAttributes="{data-validate: 'html5', data-parsley-validate: 'data-parsley-validate', novalidate: ''}">
+  <f:form action="create" class="tx-powermail powermail_form" name="dto" object="{dto}" additionalAttributes="{data-validate: 'html5', data-parsley-validate: 'data-parsley-validate', novalidate: ''}">
 
     <section>
       <h2><f:translate id="registrant_information" /></h2>
@@ -24,7 +24,7 @@
 
     <div class="form-group">
       <div class="powermail_fieldwrap">
-        <button type="submit" class="btn btn-primary morelink" data-loading-text="Processing your request... <i class='fa fa-circle-o-notch fa-fw fa-spin'></i>">
+        <button type="submit" class="btn btn-primary morelink powermail_submit" data-loading-text="Processing your request... <i class='fa fa-circle-o-notch fa-fw fa-spin'></i>">
           <f:translate id="button_send_request" />
         </button>
       </div>
