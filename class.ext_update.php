@@ -208,6 +208,7 @@ class ext_update
                 'tstamp' => $row['tstamp'],
                 'crdate' => $row['tstamp'],
                 'deleted' => $row['deleted'],
+                'hidden' => (int)!$row['approved'],
                 'addressee' => $addressee,
                 'registrant' => abs((int)$registrant),
                 'end_user' => abs((int)$endUser),
@@ -317,8 +318,7 @@ class ext_update
                 'fax' => $registrant['fax'] ?: '',
                 'title' => $registrant['title'] ?: '',
                 'www' => $registrant['www'] ?: '',
-                'fe_user' => abs((int)$data['registrant']),
-                'hidden' => abs(!$data['approved'])
+                'fe_user' => abs((int)$data['registrant'])
             ]);
 
             return $uid;
