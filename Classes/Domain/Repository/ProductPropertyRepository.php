@@ -33,6 +33,13 @@ class ProductPropertyRepository extends \S3b0\ProjectRegistration\Domain\Reposit
 {
 
     /**
+     * @var array
+     */
+    protected $defaultOrderings = [
+        'sorting' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
+    ];
+
+    /**
      * Set repository wide settings
      */
     public function initializeObject()

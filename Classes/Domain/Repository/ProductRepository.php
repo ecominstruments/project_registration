@@ -32,4 +32,11 @@ namespace S3b0\ProjectRegistration\Domain\Repository;
 class ProductRepository extends \S3b0\ProjectRegistration\Domain\Repository\AbstractRepository
 {
 
+    /**
+     * @var array
+     */
+    protected $defaultOrderings = [
+        'sorting' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
+    ];
+
 }

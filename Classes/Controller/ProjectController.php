@@ -275,11 +275,14 @@ class ProjectController extends RepositoryInjectionController
         /**
          * Email to receiver (notification mail)
          */
+        if ($this->settings[ 'mail' ][ 'noReplyEmail' ] && CoreUtility\GeneralUtility::validEmail($this->settings[ 'mail' ][ 'noReplyEmail' ])) {
+            $from = [$this->settings[ 'mail' ][ 'noReplyEmail' ] => ($this->settings[ 'mail' ][ 'noReplyName' ] ?: $this->settings[ 'mail' ][ 'senderName' ]) . ' - project registration'];
+        } else {
+            $from = ['noreply@ecom-ex.com' => 'ecom instruments GmbH - project registration'];
+        }
         $mailToReceiver->setTo($sender)
             ->setCc($carbonCopyReceivers)
-            ->setFrom([
-                $dto->getRegistrant()->getEmail() => $dto->getRegistrant()->getName()
-            ])
+            ->setFrom($from)
             ->setSubject(($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (Lang::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted')) . ($dto->getRegistrant()->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $dto->getRegistrant()->getFeUserGroups()) ? ' » ' . Lang::translate('user_certified', $this->extensionName) : ' » ' . Lang::translate('user_default', $this->extensionName)) . " #{$project->getUid()}")
             ->setBody($this->getStandAloneTemplate(
                 CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectRegisteredInfo.html',

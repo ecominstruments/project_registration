@@ -4,11 +4,6 @@ plugin.tx_projectregistration_registration {
 		partialRootPaths.0 = {$plugin.tx_projectregistration.view.partialRootPath}
 		layoutRootPaths.0 = {$plugin.tx_projectregistration.view.layoutRootPath}
 	}
-	email {
-		templateRootPaths.0 = {$plugin.tx_projectregistration.email.templateRootPath}
-		partialRootPaths.0 = {$plugin.tx_projectregistration.email.partialRootPath}
-		layoutRootPaths.0 = {$plugin.tx_projectregistration.email.layoutRootPath}
-	}
 	persistence {
 		storagePid = {$plugin.tx_projectregistration.persistence.storagePid}
 	}

@@ -7,14 +7,6 @@ plugin.tx_projectregistration {
 		# cat=project registration/file/1; type=string; label=Path to templates layouts (FE)
 		layoutRootPath = EXT:project_registration/Resources/Private/Layouts/
 	}
-	email {
-		# cat=project registration/file/2; type=string; label=Path to email templates root (FE): Currently not in use
-		templateRootPath = EXT:project_registration/Resources/Private/Templates/Email/
-		# cat=project registration/file/2; type=string; label=Path to email templates partials (FE): Currently not in use
-		partialRootPath = EXT:project_registration/Resources/Private/Partials/Email/
-		# cat=project registration/file/2; type=string; label=Path to email templates layouts (FE): Currently not in use
-		layoutRootPath = EXT:project_registration/Resources/Private/Layouts/Email/
-	}
 	persistence {
 		# cat=project registration//9999; type=string; label=Default storage PID: Currently not in use, projects are stored on root page (#0)
 		storagePid =
