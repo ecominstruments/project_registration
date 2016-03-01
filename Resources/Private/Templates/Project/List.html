@@ -9,7 +9,7 @@
 		<p style="text-align: right">
 			<label for="show-expired" style="font-weight:300">
 				<f:form.checkbox id="show-expired"
-				                 additionalAttributes="{onclick: 'if (this.checked) { window.location = \'{f:uri.action(action: \'list\', arguments: {expired: 1})}\' } else { window.location = \'{f:uri.page()}\' }'}"
+				                 additionalAttributes="{onclick: 'if (this.checked) { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {expired: 1})}\' } else { window.location = \'{f:uri.page(absolute: 1)}\' }'}"
 				                 name="showExpired"
 				                 value="1"
 				                 checked="{display.expired}" />
@@ -60,17 +60,26 @@
 						&nbsp;
 						<f:if condition="{project.goingToExpire}">
 							<f:if condition="{project.expired}">
-								<f:then><i class="fa fa-calendar-times-o text-danger" title="{f:translate(id: 'validity.expired')}" style="cursor:help"></i></f:then>
-								<f:else><i class="fa fa-calendar-o text-warning" title="{f:translate(id: 'validity.expiring', arguments: {0: settings.warnXDaysBeforeExpireDate})}" style="cursor:help"></i></f:else>
+								<f:then><i class="fa fa-calendar-times-o text-danger hover-title" title="{f:translate(id: 'validity.expired')}"></i></f:then>
+								<f:else><i class="fa fa-calendar-o text-warning hover-title" title="{f:translate(id: 'validity.expiring', arguments: {0: settings.warnXDaysBeforeExpireDate})}"></i></f:else>
 							</f:if>
 						</f:if>
-						<f:if condition="{project.active}"><i class="fa fa-calendar-check-o text-success" title="{f:translate(id: 'validity.active')}" style="cursor:help"></i></f:if>
+						<f:if condition="{project.active}"><i class="fa fa-calendar-check-o text-success hover-title" title="{f:translate(id: 'validity.active')}"></i></f:if>
 					</td>
 					<td style="white-space:nowrap">{project.registrant.name}
 						<f:if condition="{f:ecom.inArray(haystack: project.registrant.feUserGroups, needle: settings.certifiedUsersUserGroup)}">
-							<f:then><span class="text-primary" title="Certified registrant"><i class="fa fa-star fa-fw"></i></span></f:then>
+							<f:then><span class="hover-title golden-star" title="Certified registrant"><i class="fa fa-star fa-fw"></i></span></f:then>
 							<f:else>
-								<f:if condition="{project.registrant.feUser}"><i class="fa fa-star fa-fw" title="Registered user (NOT certified)"></i></f:if>
+								<f:if condition="{f:ecom.inArray(haystack: project.registrant.feUserGroups, needle: settings.partnerNetUsersUserGroup)}">
+									<f:then>
+										<span class="hover-title silver-star" title="Partner.Net user"><i class="fa fa-star fa-fw"></i></span>
+									</f:then>
+									<f:else>
+										<f:if condition="{project.registrant.feUser}">
+											<span class="hover-title bronze-star" title="Registered user (NOT certified)"><i class="fa fa-star fa-fw hover-title"></i>
+										</f:if>
+									</f:else>
+								</f:if>
 							</f:else>
 						</f:if>
 					</td>
@@ -94,11 +103,11 @@
 					<td>{project.quantity}</td>
 					<td data-sort-value="{project.estimatedPurchaseDate -> f:format.date(format: 'U')}">{project.estimatedPurchaseDate -> f:format.date(format: 'd-m-Y')}</td>
 					<f:if condition="{project.hidden}">
-						<f:then><td data-sort-value="2" style="white-space:nowrap"></f:then>
+						<f:then><td data-sort-value="0" style="white-space:nowrap"></f:then>
 						<f:else>
 							<f:if condition="{project.approved}">
-								<f:then><td data-sort-value="0" style="white-space:nowrap"></f:then>
-								<f:else><td data-sort-value="1" style="white-space:nowrap"></f:else>
+								<f:then><td data-sort-value="1" style="white-space:nowrap"></f:then>
+								<f:else><td data-sort-value="2" style="white-space:nowrap"></f:else>
 							</f:if>
 						</f:else>
 					</f:if>

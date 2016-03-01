@@ -24,11 +24,13 @@ plugin.tx_projectregistration {
 			# cat=project registration//30; type=string; label=Addressee label: <label> for addressee field in form
 			label = LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:addressees_label
 		}
-		#cat=project registration//15;type=int+;label=Certified Registrants (usergroup): The (FE-)usergroup of certified registrants
+		#cat=project registration//15;type=int+;label=Certified Registrants (usergroup): The (FE-)usergroup for certified registrants
 		certifiedUsersUserGroup = 8
-		#cat=project registration//20;type=int+;label=Investigator: The investigator (FE-user) accepting/rejecting projects
+		#cat=project registration//16;type=int+;label=Partner.Net users (usergroup): The (FE-)usergroup for Partner.Net users
+		partnerNetUsersUserGroup = 5
+		#cat=project registration//20;type=string;label=Investigator: The investigator (FE-user) accepting/rejecting projects
 		investigator = 0
-		#cat=project registration//25;type=int+;label=Administrator: The master chief (FE-user)
+		#cat=project registration//25;type=string;label=Administrator: The master chief (FE-user)
 		administrator = 385
 		#cat=project registration//30;type=string;label=Administrator email: Administrators email address
 		administratorEmail = markus.nied@ecom-ex.com

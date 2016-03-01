@@ -41,6 +41,7 @@ plugin.tx_projectregistration_registration {
 			carbonCopy = markus.nied@ecom-ex.com Markus Nied,lothar.berger@ecom-ex.com Lothar Berger,christian.uhl@ecom-ex.com Christian Uhl
 		}
 		certifiedUsersUserGroup = {$plugin.tx_projectregistration.settings.certifiedUsersUserGroup}
+		partnerNetUsersUserGroup = {$plugin.tx_projectregistration.settings.partnerNetUsersUserGroup}
 		investigator = {$plugin.tx_projectregistration.settings.investigator}
 		administrator = {$plugin.tx_projectregistration.settings.administrator}
 		administratorEmail = {$plugin.tx_projectregistration.settings.administratorEmail}

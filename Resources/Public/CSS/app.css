@@ -4,30 +4,14 @@ section.tx-project-registration-list-view {
 	padding: 0 !important;
 }
 
-th.sortable {
-	cursor: pointer;
-}
-th.sortable:after {
-	content: "\f0dc";
-}
-th.sortable.alpha.sorting-asc:after {
-	content: "\f15d";
-}
-th.sortable.alpha.sorting-desc:after {
-	content: "\f15e";
-}
-th.sortable.num.sorting-asc:after {
-	content: "\f162";
-}
-th.sortable.num.sorting-desc:after {
-	content: "\f163";
-}
-th.sortable.amount.sorting-asc:after {
-	content: "\f160";
-}
-th.sortable.amount.sorting-desc:after {
-	content: "\f161";
-}
+th.sortable { cursor: pointer }
+th.sortable:after { content: "\f0dc" }
+th.sortable.alpha.sorting-asc:after { content: "\f15d" }
+th.sortable.alpha.sorting-desc:after { content: "\f15e" }
+th.sortable.num.sorting-asc:after { content: "\f162" }
+th.sortable.num.sorting-desc:after { content: "\f163" }
+th.sortable.amount.sorting-asc:after { content: "\f160" }
+th.sortable.amount.sorting-desc:after { content: "\f161" }
 
 th.sortable:after {
 	font-family: 'FontAwesome';
@@ -46,10 +30,18 @@ th.sortable:after {
 }
 
 /* Ensure that even links without href showing cursor pointer on hover */
-a {
-	cursor: pointer;
+a { cursor: pointer }
+
+a[aria-describedby] { color: #0083cb }
+
+span.golden-star,
+span.silver-star,
+span.bronze-star {
+	color: #ffd700;
+	text-shadow: 0 0 1px #000;
 }
 
-a[aria-describedby] {
-	color: #0083cb;
-}
+span.silver-star { color: #c0c0c0 }
+span.bronze-star { color: #cd7f32 }
+
+.hover-title { cursor: help }
