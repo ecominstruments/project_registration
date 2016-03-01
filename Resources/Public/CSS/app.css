@@ -1,5 +1,5 @@
 /** Overwrite website CSS (merged) */
-section {
+section.tx-project-registration-list-view {
 	margin: 0 !important;
 	padding: 0 !important;
 }
