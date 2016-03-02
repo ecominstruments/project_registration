@@ -9,12 +9,18 @@ plugin.tx_projectregistration_registration {
 	}
 	settings {
 		addressees {
+			# Label for drop-down
 			label = {$plugin.tx_projectregistration.settings.addressees.label}
 			data {
+				# Label for drop-down elements/mails, e.g. Asia Pacific
 				10.label = LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:addressees_I_0
+				# Short name for list view (administration plugin), e.g. APAC
 				10.shortName = LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:addressees_I_0_short
+				# Name of email receiver (optional), comma-separated list
 				10.name = Warren Rainer
+				# Email receiver address(es), comma-separated list
 				10.mail = warren.rainer@ecom-ex.com
+				# State of addressee, if any receiver retires set this inactive and create a new one instead
 				10.inactive = 0
 
 				20.label = LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:addressees_I_1

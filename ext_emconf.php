@@ -21,10 +21,10 @@ $EM_CONF['project_registration'] = [
     'uploadfolder' => '0',
     'createDirs' => '',
     'clearCacheOnLoad' => 0,
-    'version' => '7.6.15',
+    'version' => '7.6.16',
     'constraints' => [
         'depends' => [
-            'typo3' => '7.6.4-7.6.99',
+            'typo3' => '7.6.0-7.6.99',
             't3ecom' => '',
             'ecom_toolbox' => '',
         ],

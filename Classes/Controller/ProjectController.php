@@ -44,12 +44,21 @@ class ProjectController extends RepositoryInjectionController
     /**
      * @var array
      */
-    protected $adminActions = [ 'addInternalNote', 'delete' ];
+    protected $adminActions = ['addInternalNote', 'delete'];
 
     /**
      * @var array
      */
-    protected $actionsThatRequireProjectArgumentToBeSet = [ 'accept', 'addInternalNote', 'confirmation', 'delete', 'reject', 'resendRequestMail', 'show', 'submitted' ];
+    protected $actionsThatRequireProjectArgumentToBeSet = [
+        'accept',
+        'addInternalNote',
+        'confirmation',
+        'delete',
+        'reject',
+        'resendRequestMail',
+        'show',
+        'submitted'
+    ];
 
     /**
      * Initializes the controller before invoking an action method.
@@ -61,7 +70,7 @@ class ProjectController extends RepositoryInjectionController
         if ($this->request->getPluginName() === 'Administration') {
             $this->logInUserRole = new Model\LoginUserRole();
             if ($this->getTypoScriptFrontendController()->loginUser) {
-                $investigators  = CoreUtility\GeneralUtility::intExplode(',', $this->settings[ 'investigator' ], true);
+                $investigators = CoreUtility\GeneralUtility::intExplode(',', $this->settings[ 'investigator' ], true);
                 $administrators = CoreUtility\GeneralUtility::intExplode(',', $this->settings[ 'administrator' ], true);
                 // Check investigator access
                 if (in_array((int)$this->getTypoScriptFrontendController()->fe_user->user[ $this->getTypoScriptFrontendController()->fe_user->userid_column ], $investigators)) {
@@ -80,8 +89,8 @@ class ProjectController extends RepositoryInjectionController
             }
         }
 
-        $settings = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['project_registration']);
-        $this->settings['warnXDaysBeforeExpireDate'] = $settings['warnXDaysBeforeExpireDate'];
+        $settings = unserialize($GLOBALS[ 'TYPO3_CONF_VARS' ][ 'EXT' ][ 'extConf' ][ 'project_registration' ]);
+        $this->settings[ 'warnXDaysBeforeExpireDate' ] = $settings[ 'warnXDaysBeforeExpireDate' ];
 
         if (in_array($this->request->getControllerActionName(), $this->actionsThatRequireProjectArgumentToBeSet)) {
             $this->manuallySetProjectArgument();
@@ -107,8 +116,8 @@ class ProjectController extends RepositoryInjectionController
             'addressees'    => $addressees,
             'logInUserRole' => $this->logInUserRole,
             'display'       => [
-                'expired'   => $expired,
-                'deleted'   => $deleted
+                'expired' => $expired,
+                'deleted' => $deleted
             ]
         ]);
     }
@@ -233,7 +242,7 @@ class ProjectController extends RepositoryInjectionController
         if ($this->settings[ 'mail' ][ 'noReplyEmail' ] && CoreUtility\GeneralUtility::validEmail($this->settings[ 'mail' ][ 'noReplyEmail' ])) {
             $noReply = [$this->settings[ 'mail' ][ 'noReplyEmail' ] => $this->settings[ 'mail' ][ 'noReplyName' ] ?: $this->settings[ 'mail' ][ 'senderName' ]];
         }
-        $sender = $this->getAddressees(true, $project->getAddressee()) ?: CoreUtility\MailUtility::getSystemFrom();
+        $addressees = $this->getAddressees(true, $project->getAddressee()) ?: CoreUtility\MailUtility::getSystemFrom();
         $carbonCopyReceivers = [];
         if ($this->settings[ 'mail' ][ 'carbonCopy' ]) {
             foreach (explode(',', $this->settings[ 'mail' ][ 'carbonCopy' ]) as $carbonCopyReceiver) {
@@ -251,7 +260,7 @@ class ProjectController extends RepositoryInjectionController
         /**
          * Email to sender
          */
-        $mailToSender->setFrom($noReply ?: $sender)
+        $mailToSender->setFrom($noReply ?: CoreUtility\MailUtility::getSystemFrom())
             ->setTo([
                 $dto->getRegistrant()
                     ->getEmail() => $dto->getRegistrant()
@@ -280,10 +289,12 @@ class ProjectController extends RepositoryInjectionController
         } else {
             $from = ['noreply@ecom-ex.com' => 'ecom instruments GmbH - project registration'];
         }
-        $mailToReceiver->setTo($sender)
+        $mailToReceiver->setTo($addressees)
             ->setCc($carbonCopyReceivers)
             ->setFrom($from)
-            ->setSubject(($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (Lang::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted')) . ($dto->getRegistrant()->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $dto->getRegistrant()->getFeUserGroups()) ? ' » ' . Lang::translate('user_certified', $this->extensionName) : ' » ' . Lang::translate('user_default', $this->extensionName)) . " #{$project->getUid()}")
+            ->setSubject(
+                ($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (Lang::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted')) . ($dto->getRegistrant()->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $dto->getRegistrant()->getFeUserGroups()) ? ' » ' . Lang::translate('user_certified', $this->extensionName) : ' » ' . Lang::translate('user_default', $this->extensionName)) . " #{$project->getUid()}"
+            )
             ->setBody($this->getStandAloneTemplate(
                 CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectRegisteredInfo.html',
                 [
@@ -414,7 +425,7 @@ class ProjectController extends RepositoryInjectionController
      */
     public function resendRequestMailAction(Model\Project $project)
     {
-        if (CoreUtility\GeneralUtility::validEmail($this->settings['administratorEmail'])) {
+        if (CoreUtility\GeneralUtility::validEmail($this->settings[ 'administratorEmail' ])) {
             /** @var \TYPO3\CMS\Core\Mail\MailMessage $mailToSender */
             $mail = CoreUtility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
             $mail->setContentType('text/html');
@@ -427,9 +438,11 @@ class ProjectController extends RepositoryInjectionController
             } else {
                 $from = ['noreply@ecom-ex.com' => 'ecom instruments GmbH - project registration'];
             }
-            $mail->setTo([ $this->settings['administratorEmail'] ])
+            $mail->setTo([$this->settings[ 'administratorEmail' ]])
                 ->setFrom($from)
-                ->setSubject('RE-SUBMIT: ' . ($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (Lang::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted')) . ($project->getRegistrant()->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $project->getRegistrant()->getFeUserGroups()) ? ' » ' . Lang::translate('user_certified', $this->extensionName) : ' » ' . Lang::translate('user_default', $this->extensionName)) . " #{$project->getUid()}")
+                ->setSubject(
+                    "RE-SUBMIT: " . ($this->settings[ 'mail' ][ 'projectRegisteredInfoSubject' ] ?: (Lang::translate('mail_project_registered_info_subject', $this->extensionName) ?: 'New project registration submitted')) . ($project->getRegistrant()->getFeUserGroups() && in_array($this->settings[ 'certifiedUsersUserGroup' ], $project->getRegistrant()->getFeUserGroups()) ? ' » ' . Lang::translate('user_certified', $this->extensionName) : ' » ' . Lang::translate('user_default', $this->extensionName)) . " #{$project->getUid()}"
+                )
                 ->setBody($this->getStandAloneTemplate(
                     CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectRegisteredInfo.html',
                     [
@@ -438,13 +451,13 @@ class ProjectController extends RepositoryInjectionController
                             $project, $project->getRegistrant(), $project->getEndUser()
                         ),
                         'addressees'           => $this->getAddressees(),
-                        'marketingInformation' => [ ]
+                        'marketingInformation' => []
                     ]
                 ))
                 ->send();
             $this->addFlashMessage("Mail for project #{$project->getUid()} ('{$project->getTitle()}') re-sent.");
         } else {
-            $this->addFlashMessage('Invalid mail: ' . $this->settings['administratorEmail'], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
+            $this->addFlashMessage('Invalid mail: ' . $this->settings[ 'administratorEmail' ], '', \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR);
         }
 
         $this->internalRedirect('list');
@@ -483,32 +496,32 @@ class ProjectController extends RepositoryInjectionController
                     $isExpired = $project->isExpired() ? 'X' : '';
                     $isDeleted = $deleted instanceof \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult && in_array($project, $deleted->toArray()) ? 'X' : '';
                     $data = [
-                        Lang::translate('status', $eN) => $status,
-                        Lang::translate('expired', $eN) => $isExpired,
-                        Lang::translate('deleted', $eN) => $isDeleted,
-                        Lang::translate('legend_project_id', $eN) => $project->getUid(),
-                        Lang::translate('date_of_request', $eN) => $project->getDateOfRequest()->format($this->settings[ 'formatDate' ] . ' h:i A'),
-                        Lang::translate('legend_project_region', $eN) => $this->getAddressees(false, $project->getAddressee()),
-                        Lang::translate('registrant', $eN) => $project->getRegistrant()->getName(),
-                        Lang::translate('company', $eN) => $project->getRegistrant()->getCompany(),
-                        Lang::translate('email', $eN) => $project->getRegistrant()->getEmail(),
-                        Lang::translate('phone', $eN) => $project->getRegistrant()->getPhone(),
-                        Lang::translate('legend_project_name', $eN) => $project->getTitle(),
-                        Lang::translate('product', $eN) => $project->getProduct() instanceof Model\Product ? $project->getProduct()->getTitle() : '',
-                        Lang::translate('application', $eN) => $project->getApplication(),
-                        Lang::translate('quantity', $eN) => $project->getQuantity(),
+                        Lang::translate('status', $eN)                  => $status,
+                        Lang::translate('expired', $eN)                 => $isExpired,
+                        Lang::translate('deleted', $eN)                 => $isDeleted,
+                        Lang::translate('legend_project_id', $eN)       => $project->getUid(),
+                        Lang::translate('date_of_request', $eN)         => $project->getDateOfRequest()->format($this->settings[ 'formatDate' ] . ' h:i A'),
+                        Lang::translate('legend_project_region', $eN)   => $this->getAddressees(false, $project->getAddressee()),
+                        Lang::translate('registrant', $eN)              => $project->getRegistrant()->getName(),
+                        Lang::translate('company', $eN)                 => $project->getRegistrant()->getCompany(),
+                        Lang::translate('email', $eN)                   => $project->getRegistrant()->getEmail(),
+                        Lang::translate('phone', $eN)                   => $project->getRegistrant()->getPhone(),
+                        Lang::translate('legend_project_name', $eN)     => $project->getTitle(),
+                        Lang::translate('product', $eN)                 => $project->getProduct() instanceof Model\Product ? $project->getProduct()->getTitle() : '',
+                        Lang::translate('application', $eN)             => $project->getApplication(),
+                        Lang::translate('quantity', $eN)                => $project->getQuantity(),
                         Lang::translate('estimated_purchase_date', $eN) => $project->getEstimatedPurchaseDate()->format($this->settings[ 'formatDate' ]),
-                        Lang::translate('registration_notes', $eN) => $project->getRegistrationNotes(),
-                        Lang::translate('legend_enduser_company', $eN) => $project->getEndUser()->getCompany(),
-                        Lang::translate('contact', $eN) => $project->getEndUser()->getName(),
-                        Lang::translate('email', $eN) => $project->getEndUser()->getEmail(),
-                        Lang::translate('phone', $eN) => $project->getEndUser()->getPhone(),
-                        Lang::translate('city', $eN) => $project->getEndUser()->getCity(),
-                        Lang::translate('site', $eN) => $project->getEndUser()->getSite(),
-                        Lang::translate('country', $eN) => $project->getEndUser()->getCountry() instanceof \Ecom\EcomToolbox\Domain\Model\Region ? $project->getEndUser()->getCountry()->getTitle() : '',
-                        Lang::translate('state_province', $eN) => $project->getEndUser()->getState() instanceof \Ecom\EcomToolbox\Domain\Model\State ? $project->getEndUser()->getState()->getTitle() : '',
-                        Lang::translate('internal_note', $eN) => $project->getInternalNote(),
-                        Lang::translate('denial_note', $eN) => $project->getDenialNote()
+                        Lang::translate('registration_notes', $eN)      => $project->getRegistrationNotes(),
+                        Lang::translate('legend_enduser_company', $eN)  => $project->getEndUser()->getCompany(),
+                        Lang::translate('contact', $eN)                 => $project->getEndUser()->getName(),
+                        Lang::translate('email', $eN)                   => $project->getEndUser()->getEmail(),
+                        Lang::translate('phone', $eN)                   => $project->getEndUser()->getPhone(),
+                        Lang::translate('city', $eN)                    => $project->getEndUser()->getCity(),
+                        Lang::translate('site', $eN)                    => $project->getEndUser()->getSite(),
+                        Lang::translate('country', $eN)                 => $project->getEndUser()->getCountry() instanceof \Ecom\EcomToolbox\Domain\Model\Region ? $project->getEndUser()->getCountry()->getTitle() : '',
+                        Lang::translate('state_province', $eN)          => $project->getEndUser()->getState() instanceof \Ecom\EcomToolbox\Domain\Model\State ? $project->getEndUser()->getState()->getTitle() : '',
+                        Lang::translate('internal_note', $eN)           => $project->getInternalNote(),
+                        Lang::translate('denial_note', $eN)             => $project->getDenialNote()
                     ];
                     /** @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage $values */
                     if ($values = $project->getPropertyValues()) {
@@ -551,7 +564,7 @@ class ProjectController extends RepositoryInjectionController
      */
     private function array2csv(array &$array, $noUSFormat = false)
     {
-        if (count($array) == 0) {
+        if (sizeof($array) === 0) {
             return null;
         }
         ob_start();
@@ -577,7 +590,6 @@ class ProjectController extends RepositoryInjectionController
         if ($this->settings[ 'mail' ][ 'noReplyEmail' ] && CoreUtility\GeneralUtility::validEmail($this->settings[ 'mail' ][ 'noReplyEmail' ])) {
             $noReply = [$this->settings[ 'mail' ][ 'noReplyEmail' ] => $this->settings[ 'mail' ][ 'noReplyName' ] ?: $this->settings[ 'mail' ][ 'senderName' ]];
         }
-        $sender = $this->getAddressees(true, $project->getAddressee()) ?: CoreUtility\MailUtility::getSystemFrom();
         $carbonCopyReceivers = [];
         if ($this->settings[ 'mail' ][ 'carbonCopy' ]) {
             foreach (explode(',', $this->settings[ 'mail' ][ 'carbonCopy' ]) as $carbonCopyReceiver) {
@@ -595,7 +607,7 @@ class ProjectController extends RepositoryInjectionController
         /**
          * Email to sender
          */
-        $mailToSender->setFrom($noReply ?: $sender)
+        $mailToSender->setFrom($noReply ?: CoreUtility\MailUtility::getSystemFrom())
             ->setTo([
                 $project->getRegistrant()->getEmail() => $project->getRegistrant()->getName()
             ])
@@ -660,10 +672,27 @@ class ProjectController extends RepositoryInjectionController
                 if ($includeInactive === false && $addressee[ 'inactive' ]) {
                     continue;
                 }
-                if (($label = Lang::translate($addressee[ 'label' ], $this->extensionName)) && CoreUtility\GeneralUtility::validEmail($addressee[ 'mail' ])
-                ) {
+                if ($label = Lang::translate($addressee[ 'label' ], $this->extensionName)) {
                     $shortName = Lang::translate($addressee[ 'shortName' ], $this->extensionName) ?: $label;
-                    $return[ $k ] = $returnMails ? ($addressee[ 'name' ] ? [$addressee[ 'mail' ] => $addressee[ 'name' ]] : [$addressee[ 'mail' ]]) : ($useShortName ? $shortName : $label);
+                    if ($returnMails) {
+                        $names = CoreUtility\GeneralUtility::trimExplode(',', $addressee[ 'name' ]);
+                        $mails = CoreUtility\GeneralUtility::trimExplode(',', $addressee[ 'mail' ]);
+                        if (sizeof($mails) > 1) {
+                            if (sizeof($names) === sizeof($mails)) {
+                                for ($i = 0; $i < sizeof($mails); $i++) {
+                                    if (CoreUtility\GeneralUtility::validEmail($mails[ $i ])) {
+                                        $return[ $k ][ $mails[ $i ] ] = $names[ $i ];
+                                    }
+                                }
+                            } else {
+                                $return[ $k ] = $mails;
+                            }
+                        } elseif (sizeof($mails) === 1) {
+                            $return[ $k ] = $names[ 0 ] ? [$mails[ 0 ] => $names[ 0 ]] : [$mails[ 0 ]];
+                        }
+                    } else {
+                        $return[ $k ] = $useShortName ? $shortName : $label;
+                    }
                 }
             }
         }
