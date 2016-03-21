@@ -39,6 +39,9 @@
 			<trans-unit id="date_of_request">
 				<source>Date Of Request</source>
 			</trans-unit>
+			<trans-unit id="date_of_expiry">
+				<source>Date Of Expiry</source>
+			</trans-unit>
 			<trans-unit id="application">
 				<source>Application</source>
 			</trans-unit>

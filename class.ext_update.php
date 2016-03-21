@@ -22,6 +22,12 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
  */
 class ext_update
 {
+
+    /**
+     * @var integer
+     */
+    protected $defaultExpiry = 365;
+
     /**
      * @var string
      */
@@ -198,6 +204,7 @@ class ext_update
                 'pid' => $row['pid'],
                 'title' => $row['title'],
                 'date_of_request' => $row['date_of_request'],
+                'date_of_expiry' => date("Y-m-d H:i:s", strtotime($row['date_of_request']) + ($this->defaultExpiry * 86400)),
                 'application' => $row['application'],
                 'quantity' => $row['quantity'],
                 'estimated_purchase_date' => $row['estimated_rollout'],

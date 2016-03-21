@@ -26,6 +26,15 @@
         <td>{project.dateOfRequest -> f:format.date(format: 'r')}</td>
       </tr>
       <tr>
+        <td><f:translate id="date_of_expiry" /> :</td>
+        <td>
+          <span class="{f:if(condition: project.active, then: 'text-success')}{f:if(condition: project.goingToExpire, then: 'text-warning')}{f:if(condition: project.expired, then: 'text-danger')}">
+            {project.dateOfExpiry -> f:format.date(format: 'r')}
+            <f:if condition="{project.daysToExpiry}">(<f:translate id="daysLeft" default="%1$s days left" arguments="{0: project.daysToExpiry}" />)</f:if>
+          </span>
+        </td>
+      </tr>
+      <tr>
         <td><f:translate id="product" /> :</td>
         <td>{project.product.title}</td>
       </tr>

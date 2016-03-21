@@ -9,11 +9,11 @@ return [
         'dividers2tabs' => true,
         'delete'        => 'deleted',
         'enablecolumns' => ['disabled' => 'hidden'],
-        'searchFields'  => 'title,date_of_request,application,quantity,estimated_purchase_date,registration_notes,internal_note,denial_note,approved,registrant,end_user,product',
+        'searchFields'  => 'title,date_of_request,date_of_expiry,application,quantity,estimated_purchase_date,registration_notes,internal_note,denial_note,approved,registrant,end_user,product',
         'iconfile'      => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('project_registration') . 'Resources/Public/Icons/tx_projectregistration_domain_model_project.gif'
     ],
-    'interface' => ['showRecordFieldList' => 'hidden, title, date_of_request, application, quantity, estimated_purchase_date, registration_notes, internal_note, denial_note, addressee, approved, registrant, end_user, product, property_values'],
-    'types'     => ['1' => ['showitem' => 'hidden;;1, title, date_of_request, application, quantity, estimated_purchase_date, registration_notes, internal_note, denial_note, approved, registrant, end_user, product, property_values']],
+    'interface' => ['showRecordFieldList' => 'hidden, title, date_of_request, date_of_expiry, application, quantity, estimated_purchase_date, registration_notes, internal_note, denial_note, addressee, approved, registrant, end_user, product, property_values'],
+    'types'     => ['1' => ['showitem' => 'hidden;;1, title, date_of_request, date_of_expiry, application, quantity, estimated_purchase_date, registration_notes, internal_note, denial_note, approved, registrant, end_user, product, property_values']],
     'palettes'  => ['1' => ['showitem' => '']],
     'columns'   => [
         'hidden'                  => [
@@ -33,6 +33,18 @@ return [
         'date_of_request'         => [
             'exclude' => 0,
             'label'   => 'LLL:EXT:project_registration/Resources/Private/Language/locallang_db.xlf:tx_projectregistration_domain_model_project.date_of_request',
+            'config'  => [
+                'dbType'   => 'datetime',
+                'type'     => 'input',
+                'size'     => 12,
+                'eval'     => 'datetime,required',
+                'checkbox' => 0,
+                'default'  => '0000-00-00 00:00:00'
+            ]
+        ],
+        'date_of_expiry'          => [
+            'exclude' => 0,
+            'label'   => 'LLL:EXT:project_registration/Resources/Private/Language/locallang_db.xlf:tx_projectregistration_domain_model_project.date_of_expiry',
             'config'  => [
                 'dbType'   => 'datetime',
                 'type'     => 'input',

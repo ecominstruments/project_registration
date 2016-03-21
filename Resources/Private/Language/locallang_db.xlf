@@ -12,6 +12,9 @@
 			<trans-unit id="tx_projectregistration_domain_model_project.date_of_request">
 				<source>Date Of Request</source>
 			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_project.date_of_expiry">
+				<source>Date Of Expiry</source>
+			</trans-unit>
 			<trans-unit id="tx_projectregistration_domain_model_project.application">
 				<source>Application</source>
 			</trans-unit>

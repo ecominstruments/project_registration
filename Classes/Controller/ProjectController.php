@@ -231,6 +231,7 @@ class ProjectController extends RepositoryInjectionController
             }
         }
         $project = $dto->getProject();
+        $project->setDateOfExpiry();
         $project->setRegistrant($dto->getRegistrant());
         $project->setEndUser($dto->getEndUser());
         $project->setPropertyValues($propertyValues);

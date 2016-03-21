@@ -53,18 +53,20 @@
 
 			<tbody>
 			<f:for each="{projects}" as="project">
-				<tr>
+				<tr class="{f:if(condition: project.accepted, then: 'success')}{f:if(condition: project.rejected, then: 'danger')}">
 					<td>{project.uid} <f:link.action action="resendRequestMail" arguments="{project: project}" title="Re-send original request"><i class="fa fa-paper-plane-o fa-fw"></i></f:link.action></td>
 					<td data-sort-value="{project.dateOfRequest -> f:format.date(format: 'U')}">
 						{project.dateOfRequest -> f:format.date(format: 'd-m-Y')}
 						&nbsp;
-						<f:if condition="{project.goingToExpire}">
-							<f:if condition="{project.expired}">
-								<f:then><i class="fa fa-calendar-times-o text-danger hover-title" title="{f:translate(id: 'validity.expired')}"></i></f:then>
-								<f:else><i class="fa fa-calendar-o text-warning hover-title" title="{f:translate(id: 'validity.expiring', arguments: {0: settings.warnXDaysBeforeExpireDate})}"></i></f:else>
-							</f:if>
+						<f:if condition="{project.active}">
+							<f:then><i class="fa fa-calendar-check-o text-success hover-title" title="{f:translate(id: 'validity.active')}"></i></f:then>
+							<f:else>
+								<f:if condition="{project.expired}">
+									<f:then><i class="fa fa-calendar-times-o text-danger hover-title" title="{f:translate(id: 'validity.expired')}"></i></f:then>
+									<f:else><i class="fa fa-calendar-o text-warning hover-title" title="{f:translate(id: 'validity.expiring', arguments: {0: settings.warnXDaysBeforeExpireDate})}"></i></f:else>
+								</f:if>
+							</f:else>
 						</f:if>
-						<f:if condition="{project.active}"><i class="fa fa-calendar-check-o text-success hover-title" title="{f:translate(id: 'validity.active')}"></i></f:if>
 					</td>
 					<td style="white-space:nowrap">{project.registrant.name}
 						<f:if condition="{f:ecom.inArray(haystack: project.registrant.feUserGroups, needle: settings.certifiedUsersUserGroup)}">

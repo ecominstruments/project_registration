@@ -58,6 +58,11 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $dateOfRequest = null;
 
     /**
+     * @var \DateTime
+     */
+    protected $dateOfExpiry = null;
+
+    /**
      * @var string
      * @validate NotEmpty
      */
@@ -213,6 +218,25 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getDateOfExpiry()
+    {
+        return $this->dateOfExpiry;
+    }
+
+    /**
+     * @return void
+     */
+    public function setDateOfExpiry()
+    {
+        if ($this->dateOfRequest instanceof \DateTime) {
+            $settings = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['project_registration']);
+            $this->dateOfExpiry = new \DateTime(date("Y-m-d H:i:s", ($this->dateOfRequest->getTimestamp() + ((int)$settings['daysToExpire'] * 86400))));
+        }
+    }
+
+    /**
      * @return boolean
      */
     public function isActive()
@@ -228,11 +252,23 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $check    = false;
         $settings = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['project_registration']);
 
-        if ($this->dateOfRequest instanceof \DateTime) {
-            $check = $this->dateOfRequest->diff(new \DateTime()) instanceof \DateInterval && $this->dateOfRequest->diff(new \DateTime())->days >= $settings['daysToExpire'] - $settings['warnXDaysBeforeExpireDate'];
+        if ($this->isExpired() === false && $this->dateOfExpiry instanceof \DateTime) {
+            $check = $this->dateOfExpiry->diff(new \DateTime())->days <= $settings['warnXDaysBeforeExpireDate'];
         }
 
         return $check;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getDaysToExpiry()
+    {
+        if ($this->isExpired() === false && $this->dateOfExpiry instanceof \DateTime) {
+            return (int)$this->dateOfExpiry->diff(new \DateTime())->days;
+        }
+
+        return 0;
     }
 
     /**
@@ -240,11 +276,10 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public function isExpired()
     {
-        $check    = false;
-        $settings = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['project_registration']);
+        $check = false;
 
-        if ($this->dateOfRequest instanceof \DateTime) {
-            $check = $this->dateOfRequest->diff(new \DateTime()) instanceof \DateInterval && $this->dateOfRequest->diff(new \DateTime())->days > $settings['daysToExpire'];
+        if ($this->dateOfExpiry instanceof \DateTime) {
+            $check = new \DateTime() > $this->dateOfExpiry;
         }
 
         return $check;
