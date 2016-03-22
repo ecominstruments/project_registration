@@ -202,6 +202,7 @@ class ProjectController extends RepositoryInjectionController
         ) {
             $registrant = $this->personRepository->findOneByFeUser($dto->getRegistrant()->getFeUser());
             if ($registrant instanceof Model\Person) {
+                $this->updateRegistrantIfFeUserRecordDiffers($registrant);
                 $dto->setRegistrant($registrant);
             } else {
                 $dto->setRegistrant(new Model\Person($dto->getRegistrant()->getFeUser()));
@@ -675,6 +676,16 @@ class ProjectController extends RepositoryInjectionController
                 }
                 $this->request->setArgument('project', $project);
             }
+        }
+    }
+
+    /**
+     * @param Model\Person $registrant
+     */
+    private function updateRegistrantIfFeUserRecordDiffers(Model\Person $registrant)
+    {
+        if ($registrant->getFeUser() instanceof \Ecom\EcomToolbox\Domain\Model\User && $registrant->hasUpdatedFeRecord()) {
+            $this->personRepository->update($registrant);
         }
     }
 

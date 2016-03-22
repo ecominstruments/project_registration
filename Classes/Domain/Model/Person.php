@@ -441,4 +441,39 @@ class Person extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         return $this->feUser instanceof \Ecom\EcomToolbox\Domain\Model\User ? $this->feUser->getFeUserGroups() : null;
     }
 
+    /**
+     * @return bool
+     */
+    public function hasUpdatedFeRecord()
+    {
+        $update = false;
+        if ($this->feUser instanceof \Ecom\EcomToolbox\Domain\Model\User) {
+            $properties = [
+                'name' => 'name',
+                'firstName' => 'firstName',
+                'middleName' => 'middleName',
+                'lastName' => 'lastName',
+                'title' => 'title',
+                'company' => 'company',
+                'address' => 'address',
+                'email' => 'email',
+                'www' => 'www',
+                'fax' => 'fax',
+                'zip' => 'zip',
+                'city' => 'city',
+                'phone' => 'telephone',
+                'country' => 'ecomToolboxCountry',
+                'state' => 'ecomToolboxState'
+            ];
+            foreach ($properties as $propertyLocal => $propertyForeign) {
+                if ($this->{$propertyLocal} != $this->feUser->_getProperty($propertyForeign)) {
+                    $this->_setProperty($propertyLocal, $this->feUser->_getProperty($propertyForeign));
+                    $update = true;
+                }
+            }
+        }
+
+        return $update;
+    }
+
 }
