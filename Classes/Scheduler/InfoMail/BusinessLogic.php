@@ -55,17 +55,18 @@ class BusinessLogic
         $settings   = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extensionName]);
         $upperLimit = new \DateTime();
         $lowerLimit = new \DateTime();
-        $daysValid  = $settings['daysToExpire'];
         $daysLeft   = $settings['warnXDaysBeforeExpireDate'];
         $sender     = [ $task->getSenderAddress() ];
         $receiver   = [ $task->getReceiverAddress() ];
         $subject    = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('infomail.subject', $this->extensionName);
 
         $this->databaseConnection = $GLOBALS['TYPO3_DB'];
-        $upperLimit->setTimestamp($upperLimit->getTimestamp() - ($daysValid * 86400) + ($daysLeft * 86400));
-        $lowerLimit->setTimestamp($lowerLimit->getTimestamp() - ($daysValid * 86400) + ($daysLeft * 86400) - $task->getExecution()->getInterval());
+        // Upper limit (expiry) = Current date + Days left
+        $upperLimit->setTimestamp($upperLimit->getTimestamp() + ($daysLeft * 86400));
+        // Lower limit (expiry) = Current date + Days left - Scheduler frequency
+        $lowerLimit->setTimestamp($lowerLimit->getTimestamp() + ($daysLeft * 86400) - $task->getExecution()->getInterval());
 
-        $where = "date_of_request < '{$upperLimit->format('Y-m-d h:i:s')}' AND date_of_request > '{$lowerLimit->format('Y-m-d h:i:s')}'";
+        $where = "date_of_expiry > '{$lowerLimit->format('Y-m-d h:i:s')}' AND date_of_expiry < '{$upperLimit->format('Y-m-d h:i:s')}'";
         if ($this->databaseConnection->exec_SELECTcountRows('*', 'tx_projectregistration_domain_model_project', $where)) {
             $expiredProjects = $this->databaseConnection->exec_SELECTgetRows(
                 'project.*, registrant.name as registrant_name, registrant.company as registrant_company',
