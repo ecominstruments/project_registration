@@ -226,11 +226,11 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return void
+     * @param \DateTime $dateOfExpiry
      */
-    public function setDateOfExpiry()
+    public function setDateOfExpiry(\DateTime $dateOfExpiry = null)
     {
-        if ($this->dateOfRequest instanceof \DateTime) {
+        if ($dateOfExpiry === null && $this->dateOfRequest instanceof \DateTime) {
             $settings = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['project_registration']);
             $this->dateOfExpiry = new \DateTime(date("Y-m-d H:i:s", ($this->dateOfRequest->getTimestamp() + ((int)$settings['daysToExpire'] * 86400))));
         }

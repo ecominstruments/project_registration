@@ -35,7 +35,8 @@
 			<thead>
 			<tr>
 				<th class="sortable num" data-sort="int" style="white-space:nowrap"><f:translate id="project" />#</th>
-				<th class="sortable amount sorting-desc" data-sort="int" style="white-space:nowrap"><f:translate id="date_of_request" /></th>
+				<th class="sortable amount" data-sort="int" style="white-space:nowrap"><f:translate id="date_of_request" /></th>
+				<th class="sortable amount sorting-desc" data-sort="int" style="white-space:nowrap"><f:translate id="date_of_expiry" /></th>
 				<th class="sortable alpha" data-sort="string-ins" style="white-space:nowrap"><f:translate id="registrant" /></th>
 				<th></th>
 				<th class="sortable alpha" data-sort="string-ins" style="white-space:nowrap"><f:translate id="company" /></th>
@@ -57,15 +58,23 @@
 					<td>{project.uid} <f:link.action action="resendRequestMail" arguments="{project: project}" title="Re-send original request"><i class="fa fa-paper-plane-o fa-fw"></i></f:link.action></td>
 					<td data-sort-value="{project.dateOfRequest -> f:format.date(format: 'U')}">
 						{project.dateOfRequest -> f:format.date(format: 'd-m-Y')}
+					</td>
+					<td data-sort-value="{project.dateOfExpiry -> f:format.date(format: 'U')}" style="white-space:nowrap">
+						{project.dateOfExpiry -> f:format.date(format: 'd-m-Y')}
 						&nbsp;
 						<f:if condition="{project.active}">
-							<f:then><i class="fa fa-calendar-check-o text-success hover-title" title="{f:translate(id: 'validity.active')}"></i></f:then>
-							<f:else>
-								<f:if condition="{project.expired}">
-									<f:then><i class="fa fa-calendar-times-o text-danger hover-title" title="{f:translate(id: 'validity.expired')}"></i></f:then>
-									<f:else><i class="fa fa-calendar-o text-warning hover-title" title="{f:translate(id: 'validity.expiring', arguments: {0: settings.warnXDaysBeforeExpireDate})}"></i></f:else>
-								</f:if>
-							</f:else>
+							<i class="fa fa-calendar-check-o text-success hover-title" title="{f:translate(id: 'validity.active')}"></i>
+						</f:if>
+						<f:if condition="{project.goingToExpire}">
+							<i class="fa fa-calendar-o text-warning hover-title" title="{f:translate(id: 'validity.expiring', arguments: {0: settings.warnXDaysBeforeExpireDate})}"></i>
+						</f:if>
+						<f:if condition="{project.expired}">
+							<i class="fa fa-calendar-times-o text-danger hover-title" title="{f:translate(id: 'validity.expired')}"></i>
+						</f:if>
+						<f:if condition="{project.active} == 0">
+							<f:link.action action="extendExpiry" arguments="{project: project}" title="Extend expiry">
+								<i class="fa fa-calendar-plus-o fa-fw" title="{f:translate(id: 'validity.extend')}"></i>
+							</f:link.action>
 						</f:if>
 					</td>
 					<td style="white-space:nowrap">{project.registrant.name}

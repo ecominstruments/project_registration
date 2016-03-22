@@ -228,10 +228,13 @@
 				<source>Expired</source>
 			</trans-unit>
 			<trans-unit id="validity.expiring">
-				<source>Expires within the next %1$d days. (upper limit)</source>
+				<source>Expires within the next %1$d days, see detail view.</source>
 			</trans-unit>
 			<trans-unit id="validity.active">
 				<source>Active project</source>
+			</trans-unit>
+			<trans-unit id="validity.extend">
+				<source>Extend expiry</source>
 			</trans-unit>
 
 			<trans-unit id="message_status_update_dear">

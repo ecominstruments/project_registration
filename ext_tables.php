@@ -4,18 +4,18 @@ if (!defined('TYPO3_MODE')) {
 }
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'S3b0.' . $_EXTKEY,
+    'S3b0.ProjectRegistration',
     'Registration',
     'Project Registration'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'S3b0.' . $_EXTKEY,
+    'S3b0.ProjectRegistration',
     'Administration',
     'Project Registration - Administration'
 );
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Resources/Private/TypoScript/Main', 'Project Registration');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('project_registration', 'Resources/Private/TypoScript/Main', 'Project Registration');
 
 /** Allow tables on standard pages */
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_projectregistration_domain_model_product');

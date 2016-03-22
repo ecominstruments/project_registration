@@ -1,0 +1,50 @@
+<f:layout name="Default" />
+
+<f:section name="main">
+
+  <f:render partial="FlashMessages" arguments="{_all}" />
+  <f:render partial="FormErrors" arguments="{object:Project}" />
+
+  <h2>Update Expiry for project '{project.title}' (#{project.uid}) by {project.registrant.name} from {project.registrant.company} ({project.registrant.country.title})</h2>
+
+  <f:form action="update" class="tx-powermail powermail_form" name="project" object="{project}" additionalAttributes="{data-validate: 'html5', data-parsley-validate: 'data-parsley-validate', novalidate: ''}">
+
+    <div class="form-group">
+      <div class="powermail_fieldwrap">
+        <label for="prf-expiry" class="powermail_label">
+          <f:translate id="date_of_expiry"/>
+          <span class="mandatory">*</span></label>
+        <f:form.textfield property="dateOfExpiry"
+                          data="{parsley-pattern: '[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])'}"
+                          id="prf-expiry"
+                          class="form-control powermail_field"
+                          value="{project.dateOfExpiry -> f:format.date(format:'Y-m-d')}" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="powermail_fieldwrap">
+        <a href="javascript:history.back()" class="btn btn-danger"><f:translate id="button_cancel" /></a>
+        <button type="submit" class="btn btn-primary" data-loading-text="Processing your request... <i class='fa fa-circle-o-notch fa-fw fa-spin'></i>">
+          <f:translate id="button_confirm" /> &nbsp;<i class="fa fa-angle-right"></i>
+        </button>
+      </div>
+    </div>
+  </f:form>
+
+  <script type="text/javascript">
+    <![CDATA[$(function() {
+      jQuery('#prf-expiry').datepicker({
+         minDate: new Date("]]>{project.dateOfExpiry -> f:format.date(format:'Y-m-d')}<![CDATA["),
+         dateFormat: 'yy-mm-dd',
+         showAnim: 'slideDown',
+         showButtonPanel: true
+       }).attr({
+         'autocomplete':'off',
+         'data-parsley-pattern': '[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])',
+         'data-parsley-pattern-message': 'Date format: YYYY-MM-DD',
+         'readonly':'readonly'
+       });
+    });]]>
+  </script>
+</f:section>

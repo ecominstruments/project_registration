@@ -53,6 +53,7 @@ class ProjectController extends RepositoryInjectionController
         'accept',
         'addInternalNote',
         'confirmation',
+        'update',
         'delete',
         'reject',
         'resendRequestMail',
@@ -310,6 +311,18 @@ class ProjectController extends RepositoryInjectionController
     }
 
     /**
+     * action extendExpiry
+     *
+     * @param Model\Project $project
+     *
+     * @return void
+     */
+    public function extendExpiryAction(Model\Project $project)
+    {
+        $this->view->assign('project', $project);
+    }
+
+    /**
      * action submitted
      *
      * @param Model\Project $project
@@ -346,6 +359,19 @@ class ProjectController extends RepositoryInjectionController
             'project'   => $project,
             'action'    => $do
         ]);
+    }
+
+    /**
+     * action update
+     *
+     * @param Model\Project $project
+     *
+     * @return void
+     */
+    public function updateAction(Model\Project $project)
+    {
+        $this->updateRecord($project, "Project with #{$project->getUid()} was updated!", \TYPO3\CMS\Core\Messaging\AbstractMessage::INFO, self::NEUTER_ARTICLE, true);
+        $this->internalRedirect('list');
     }
 
     /**
@@ -502,6 +528,7 @@ class ProjectController extends RepositoryInjectionController
                         Lang::translate('deleted', $eN)                 => $isDeleted,
                         Lang::translate('legend_project_id', $eN)       => $project->getUid(),
                         Lang::translate('date_of_request', $eN)         => $project->getDateOfRequest()->format($this->settings[ 'formatDate' ] . ' h:i A'),
+                        Lang::translate('date_of_expiry', $eN)          => $project->getDateOfExpiry()->format($this->settings[ 'formatDate' ]),
                         Lang::translate('legend_project_region', $eN)   => $this->getAddressees(false, $project->getAddressee()),
                         Lang::translate('registrant', $eN)              => $project->getRegistrant()->getName(),
                         Lang::translate('company', $eN)                 => $project->getRegistrant()->getCompany(),

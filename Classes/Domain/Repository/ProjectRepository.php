@@ -36,7 +36,7 @@ class ProjectRepository extends \S3b0\ProjectRegistration\Domain\Repository\Abst
      * @var array
      */
     protected $defaultOrderings = [
-        'date_of_request' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
+        'date_of_expiry' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
     ];
 
     /**
