@@ -363,6 +363,20 @@ class ProjectController extends RepositoryInjectionController
     }
 
     /**
+     * action gainedProject
+     *
+     * @param Model\Project $project
+     *
+     * @return void
+     */
+    public function gainedProjectAction(Model\Project $project)
+    {
+        $project->setGotten(true);
+        $this->updateRecord($project, "Project '{$project->getTitle()}' (#{$project->getUid()}) has won the race ;-)", \TYPO3\CMS\Core\Messaging\AbstractMessage::OK, self::NEUTER_ARTICLE, true);
+        $this->internalRedirect('list');
+    }
+
+    /**
      * action update
      *
      * @param Model\Project $project

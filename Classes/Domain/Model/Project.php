@@ -107,6 +107,11 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $approved = false;
 
     /**
+     * @var bool
+     */
+    protected $gotten = false;
+
+    /**
      * @var \S3b0\ProjectRegistration\Domain\Model\Person
      */
     protected $registrant = null;
@@ -413,6 +418,22 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function setApproved($approved)
     {
         $this->approved = $approved;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGotten()
+    {
+        return $this->gotten;
+    }
+
+    /**
+     * @param bool $gotten
+     */
+    public function setGotten($gotten)
+    {
+        $this->gotten = $gotten;
     }
 
     /**

@@ -36,6 +36,9 @@
 			<trans-unit id="tx_projectregistration_domain_model_project.approved">
 				<source>Approved</source>
 			</trans-unit>
+			<trans-unit id="tx_projectregistration_domain_model_project.gotten">
+				<source>Project gained</source>
+			</trans-unit>
 			<trans-unit id="tx_projectregistration_domain_model_project.registrant">
 				<source>Registrant</source>
 			</trans-unit>

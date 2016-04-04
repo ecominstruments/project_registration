@@ -2,7 +2,9 @@
 
 <f:section name="main">
 
-  <h1>{project.title} [#{project.uid}] &nbsp;{project.fontAwesomeStatus -> f:format.raw()}</h1>
+  <h1>{project.title} [#{project.uid}] &nbsp;{project.fontAwesomeStatus -> f:format.raw()}
+    <f:if condition="{project.gotten}"><i class="fa fa-trophy fa-lg fa-fw" title="{f:translate(id: 'gotten')}" style="color:#ffd700;text-shadow:0 0 1px #000"></i></f:if>
+  </h1>
 
   <table class="table table-striped">
     <tbody>

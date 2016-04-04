@@ -169,6 +169,9 @@
 			<trans-unit id="state_2">
 				<source>needs action</source>
 			</trans-unit>
+			<trans-unit id="gotten">
+				<source>gained project</source>
+			</trans-unit>
 			<trans-unit id="button_send_request">
 				<source>Send request</source>
 			</trans-unit>

@@ -17,9 +17,9 @@ plugin.tx_projectregistration_registration {
 				# Short name for list view (administration plugin), e.g. APAC
 				10.shortName = LLL:EXT:project_registration/Resources/Private/Language/locallang.xlf:addressees_I_0_short
 				# Name of email receiver (optional), comma-separated list
-				10.name = Warren Rainer
+				10.name = Jason Schexnayder
 				# Email receiver address(es), comma-separated list
-				10.mail = warren.rainer@ecom-ex.com
+				10.mail = jason.schexnayder@ecom-ex.com
 				# State of addressee, if any receiver retires set this inactive and create a new one instead
 				10.inactive = 0
 
