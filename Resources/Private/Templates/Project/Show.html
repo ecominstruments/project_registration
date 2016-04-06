@@ -3,7 +3,8 @@
 <f:section name="main">
 
   <h1>{project.title} [#{project.uid}] &nbsp;{project.fontAwesomeStatus -> f:format.raw()}
-    <f:if condition="{project.gotten}"><i class="fa fa-trophy fa-lg fa-fw" title="{f:translate(id: 'gotten')}" style="color:#ffd700;text-shadow:0 0 1px #000"></i></f:if>
+    <f:if condition="{project.won}"><i class="fa fa-thumbs-up fa-lg fa-fw" title="{f:translate(id: 'won')}" style="color:#ffd700;text-shadow:0 0 1px #000"></i></f:if>
+    <f:if condition="{project.lost}"><i class="fa fa-thumbs-down fa-lg fa-fw text-muted" title="{f:translate(id: 'lost')}"></i></f:if>
   </h1>
 
   <table class="table table-striped">

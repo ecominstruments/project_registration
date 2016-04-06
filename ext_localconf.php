@@ -15,12 +15,12 @@ if (!defined('TYPO3_MODE')) {
     'S3b0.ProjectRegistration',
     'Administration',
     [
-        'Project' => 'list, show, new, create, update, delete, confirmation, accept, reject, gainedProject, addInternalNote, addDenialNote, extendExpiry, exportCSV, resendRequestMail',
+        'Project' => 'list, show, new, create, update, delete, confirmation, accept, reject, winLose, trash, addInternalNote, addDenialNote, extendExpiry, exportCSV, resendRequestMail',
         'Person' => 'show'
     ],
     // non-cacheable actions
     [
-        'Project' => 'create, update, delete, confirmation, accept, reject, gainedProject, exportCSV, resendRequestMail',
+        'Project' => 'create, update, delete, confirmation, accept, reject, winLose, trash, exportCSV, resendRequestMail',
         'Person' => ''
     ]
 );

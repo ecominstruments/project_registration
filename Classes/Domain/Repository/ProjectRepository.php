@@ -25,6 +25,7 @@ namespace S3b0\ProjectRegistration\Domain\Repository;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The repository for Projects
@@ -56,34 +57,57 @@ class ProjectRepository extends \S3b0\ProjectRegistration\Domain\Repository\Abst
      * Returns all objects of this repository.
      *
      * @param bool $expired
+     * @param bool $won
+     * @param bool $lost
      * @param bool $deleted
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array
+     * @return array
      */
-    public function findAll($expired = false, $deleted = false)
+    public function findAll($expired = false, $won = false, $lost = false, $deleted = false)
     {
         $query = $this->createQuery();
 
-        if ($deleted) {
-            $query->setQuerySettings($query->getQuerySettings()->setIncludeDeleted(true));
-        }
+        $query->setQuerySettings($query->getQuerySettings()->setIncludeDeleted($deleted));
 
-        if ($expired === false) {
-            if ($records = $query->execute()) {
-                $return = [];
-                /** @var \S3b0\ProjectRegistration\Domain\Model\Project $record */
-                foreach ($records as $record) {
-                    if ($record->isExpired() === false) {
-                        $return[] = $record;
+        $records = $query->execute()->toArray();
+        self::excludeByProperties($records, [
+            'expired' => $expired,
+            'won'     => $won,
+            'lost'    => $lost
+        ]);
+
+        return $records;
+    }
+
+    /**
+     * Remove records off the array, by various properties.
+     * Property getters MUST provide booleans as return values!
+     *
+     * @param array $records
+     * @param array $properties
+     */
+    private static function excludeByProperties(array &$records, array $properties = [])
+    {
+        if (sizeof($properties)) {
+            /** @var \S3b0\ProjectRegistration\Domain\Model\Project $record */
+            foreach ($records as $k => $record) {
+                $unset = false;
+                foreach ($properties as $property => $check) {
+                    $caller = 'is' . GeneralUtility::underscoredToUpperCamelCase($property);
+                    if (method_exists($record, $caller) === false) {
+                        $caller = 'get' . GeneralUtility::underscoredToUpperCamelCase($property);
+                    }
+                    if ($check === false && method_exists($record, $caller)) {
+                        if (call_user_func([$record, $caller])) {
+                            $unset = $unset || call_user_func([$record, $caller]);
+                        }
                     }
                 }
-                return $return;
-            } else {
-                return [];
+                if ($unset) {
+                    unset($records[$k]);
+                }
             }
         }
-
-        return $query->execute();
     }
 
     /**
@@ -96,10 +120,31 @@ class ProjectRepository extends \S3b0\ProjectRegistration\Domain\Repository\Abst
     public function findByUid($uid)
     {
         $query = $this->createQuery();
+        $query->setQuerySettings($query->getQuerySettings()->setIncludeDeleted(true));
 
         return $query->matching(
             $query->equals('uid', $uid)
         )->execute()->getFirst();
+    }
+
+    /**
+     * @return array
+     */
+    public function findDeletable()
+    {
+        $query = $this->createQuery();
+
+        $projects = [];
+        if ($all = $query->execute()) {
+            /** @var \S3b0\ProjectRegistration\Domain\Model\Project $project */
+            foreach ($all as $project) {
+                if ($project->isExpired() || $project->isRejected()) {
+                    $projects[] = $project;
+                }
+            }
+        }
+
+        return $projects;
     }
 
 }

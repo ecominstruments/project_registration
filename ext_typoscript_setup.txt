@@ -1,0 +1,14 @@
+config.tx_extbase {
+	persistence {
+		classes {
+			S3b0\ProjectRegistration\Domain\Model\Project {
+				mapping {
+					tableName = tx_projectregistration_domain_model_project
+					columns {
+						deleted.mapOnProperty = deleted
+					}
+				}
+			}
+		}
+	}
+}

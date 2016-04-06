@@ -9,15 +9,15 @@ return [
         'dividers2tabs' => true,
         'delete'        => 'deleted',
         'enablecolumns' => ['disabled' => 'hidden'],
-        'searchFields'  => 'title,date_of_request,date_of_expiry,application,quantity,estimated_purchase_date,registration_notes,internal_note,denial_note,approved,gotten,registrant,end_user,product',
+        'searchFields'  => 'title,date_of_request,date_of_expiry,application,quantity,estimated_purchase_date,registration_notes,internal_note,denial_note,approved,won,lost,registrant,end_user,product',
         'iconfile'      => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('project_registration') . 'Resources/Public/Icons/tx_projectregistration_domain_model_project.gif'
     ],
     'interface' => [
-        'showRecordFieldList' => 'hidden, title, date_of_request, date_of_expiry, application, quantity, estimated_purchase_date, registration_notes, internal_note, denial_note, addressee, approved, gotten, registrant, end_user, product, property_values'
+        'showRecordFieldList' => 'hidden, title, date_of_request, date_of_expiry, application, quantity, estimated_purchase_date, registration_notes, internal_note, denial_note, addressee, approved, won, lost, registrant, end_user, product, property_values'
     ],
     'types'     => [
         '1' => [
-            'showitem' => 'hidden;;1, title, date_of_request, date_of_expiry, application, quantity, estimated_purchase_date, registration_notes, internal_note, denial_note, approved, gotten, registrant, end_user, product, property_values'
+            'showitem' => 'hidden;;1, title, date_of_request, date_of_expiry, application, quantity, estimated_purchase_date, registration_notes, internal_note, denial_note, approved, won, lost, registrant, end_user, product, property_values'
         ]
     ],
     'palettes'  => [
@@ -141,9 +141,17 @@ return [
                 'default' => 0
             ]
         ],
-        'gotten'                  => [
+        'won'                     => [
             'exclude' => 0,
-            'label'   => 'LLL:EXT:project_registration/Resources/Private/Language/locallang_db.xlf:tx_projectregistration_domain_model_project.gotten',
+            'label'   => 'LLL:EXT:project_registration/Resources/Private/Language/locallang_db.xlf:tx_projectregistration_domain_model_project.won',
+            'config'  => [
+                'type'    => 'check',
+                'default' => 0
+            ]
+        ],
+        'lost'                    => [
+            'exclude' => 0,
+            'label'   => 'LLL:EXT:project_registration/Resources/Private/Language/locallang_db.xlf:tx_projectregistration_domain_model_project.lost',
             'config'  => [
                 'type'    => 'check',
                 'default' => 0
@@ -184,7 +192,7 @@ return [
                 'minitems'      => 1
             ]
         ],
-        'property_values'          => [
+        'property_values'         => [
             'exclude' => 0,
             'label'   => 'LLL:EXT:project_registration/Resources/Private/Language/locallang_db.xlf:tx_projectregistration_domain_model_productproperty.property_values',
             'config'  => [

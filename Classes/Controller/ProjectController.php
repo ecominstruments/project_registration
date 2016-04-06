@@ -103,22 +103,42 @@ class ProjectController extends RepositoryInjectionController
      * action list
      *
      * @param bool $expired
+     * @param bool $won
+     * @param bool $lost
      * @param bool $deleted
      *
      * @return void
      */
-    public function listAction($expired = false, $deleted = false)
+    public function listAction($expired = false, $won = false, $lost = false, $deleted = false)
     {
-        $projects = $this->projectRepository->findAll($expired, $deleted);
+        $projects = $this->projectRepository->findAll($expired, $won, $lost, $deleted);
         $addressees = $this->getAddressees(false, null, true, true);
+        $displayingAll = $expired && $won && $lost && $deleted;
+        $displayingDef = !$expired && !$won && !$lost && !$deleted;
+        $trashButtonAttributes = [
+            'onclick' => 'return confirm(\'' . Lang::translate('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:deleteWarning', 'backend') . '\');'
+        ];
+        if (sizeof($this->projectRepository->findDeletable()) === 0) {
+            $trashButtonAttributes = [
+                'onclick'  => 'return false;',
+                'disabled' => 1
+            ];
+        }
 
         $this->view->assignMultiple([
-            'projects'      => $projects,
-            'addressees'    => $addressees,
-            'logInUserRole' => $this->logInUserRole,
-            'display'       => [
+            'projects'          => $projects,
+            'addressees'        => $addressees,
+            'logInUserRole'     => $this->logInUserRole,
+            'display'           => [
                 'expired' => $expired,
-                'deleted' => $deleted
+                'deleted' => $deleted,
+                'won'     => $won,
+                'lost'    => $lost
+            ],
+            'buttonsAttributes' => [
+                'show'   => $displayingAll ? ['onclick' => 'return false;', 'disabled' => 1] : [],
+                'hide'   => $displayingDef ? ['onclick' => 'return false;', 'disabled' => 1] : [],
+                'delete' => $trashButtonAttributes
             ]
         ]);
     }
@@ -363,15 +383,16 @@ class ProjectController extends RepositoryInjectionController
     }
 
     /**
-     * action gainedProject
+     * action winLose
      *
      * @param Model\Project $project
+     * @param boolean       $won
      *
      * @return void
      */
-    public function gainedProjectAction(Model\Project $project)
+    public function winLoseAction(Model\Project $project, $won = false)
     {
-        $project->setGotten(true);
+        $project->setWon($won);
         $this->updateRecord($project, "Project '{$project->getTitle()}' (#{$project->getUid()}) has won the race ;-)", \TYPO3\CMS\Core\Messaging\AbstractMessage::OK, self::NEUTER_ARTICLE, true);
         $this->internalRedirect('list');
     }
@@ -506,6 +527,28 @@ class ProjectController extends RepositoryInjectionController
     }
 
     /**
+     * action trash
+     */
+    public function trashAction()
+    {
+        if ($projects = $this->projectRepository->findDeletable()) {
+            /** @var \S3b0\ProjectRegistration\Domain\Model\Project $project */
+            foreach ($projects as $project) {
+                $message = "";
+                if ($project->isExpired()) {
+                    $message .= "Project expired! ";
+                } elseif ($project->isRejected()) {
+                    $message .= "Project rejected! ";
+                }
+                $message .= "» Project \"{$project->getTitle()}\" (#{$project->getUid()}) was deleted!";
+                $this->deleteRecord($project, $message, \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR, self::NEUTER_ARTICLE, true);
+            }
+        }
+
+        $this->internalRedirect('list');
+    }
+
+    /**
      * action exportCSV
      *
      * @param bool $noUSFormat
@@ -525,21 +568,24 @@ class ProjectController extends RepositoryInjectionController
             'hidden'          => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING,
             'date_of_request' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
         ]);
-        $projects = $this->projectRepository->findAll(true, true);
+        $projects = $this->projectRepository->findAll(true, true, true, true);
         $deleted = $this->projectRepository->findByDeleted(1);
         $csvArray = [];
 
-        if ($projects && $projects instanceof \Countable) {
+        if (sizeof($projects)) {
             /** @var Model\Project $project */
             foreach ($projects as $project) {
                 if ($project instanceof Model\Project) {
                     $eN = $this->extensionName;
                     $status = $project->isHidden() ? Lang::translate('state_2', $eN) : ($project->isAccepted() ? Lang::translate('state_1', $eN) : Lang::translate('state_0', $eN));
+                    if ($project->isWonOrLost()) {
+                        $status = $project->isWon() ? Lang::translate('won_1', $eN) : Lang::translate('lost_1', $eN);
+                    }
                     $isExpired = $project->isExpired() ? 'X' : '';
                     $isDeleted = $deleted instanceof \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult && in_array($project, $deleted->toArray()) ? 'X' : '';
                     $data = [
                         Lang::translate('status', $eN)                  => $status,
-                        Lang::translate('expired', $eN)                 => $isExpired,
+                        Lang::translate('validity.expired', $eN)        => $isExpired,
                         Lang::translate('deleted', $eN)                 => $isDeleted,
                         Lang::translate('legend_project_id', $eN)       => $project->getUid(),
                         Lang::translate('date_of_request', $eN)         => $project->getDateOfRequest()->format($this->settings[ 'formatDate' ] . ' h:i A'),

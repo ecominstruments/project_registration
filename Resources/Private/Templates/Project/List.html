@@ -7,14 +7,48 @@
 
 	<section class="header tx-project-registration-list-view">
 		<p style="text-align: right">
+			<strong>{projects -> f:count()} projects found</strong>
+			&nbsp; || &nbsp;
+			<label for="show-won" style="font-weight:300">
+				<f:form.checkbox id="show-won"
+				                 additionalAttributes="{onclick: 'if (this.checked) { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {expired: display.expired, won: 1, lost: display.lost, deleted: display.deleted})}\' } else { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {expired: display.expired, lost: display.lost, deleted: display.deleted})}\' }'}"
+				                 name="showWon"
+				                 value="1"
+				                 checked="{display.won}" />
+				<f:translate id="show_won" default="Include won projects" />
+			</label>
+			&nbsp;
+			<label for="show-lost" style="font-weight:300">
+				<f:form.checkbox id="show-lost"
+				                 additionalAttributes="{onclick: 'if (this.checked) { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {expired: display.expired, won: display.won, lost: 1, deleted: display.deleted})}\' } else { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {expired: display.expired, won: display.won, deleted: display.deleted})}\' }'}"
+				                 name="showLost"
+				                 value="1"
+				                 checked="{display.lost}" />
+				<f:translate id="show_lost" default="Include lost projects" />
+			</label>
+			&nbsp;
 			<label for="show-expired" style="font-weight:300">
 				<f:form.checkbox id="show-expired"
-				                 additionalAttributes="{onclick: 'if (this.checked) { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {expired: 1})}\' } else { window.location = \'{f:uri.page(absolute: 1)}\' }'}"
+				                 additionalAttributes="{onclick: 'if (this.checked) { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {expired: 1, won: display.won, lost: display.lost, deleted: display.deleted})}\' } else { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {won: display.won, lost: display.lost, deleted: display.deleted})}\' }'}"
 				                 name="showExpired"
 				                 value="1"
 				                 checked="{display.expired}" />
 				<f:translate id="show_expired" default="Include expired projects" />
 			</label>
+			&nbsp;
+			<label for="show-deleted" style="font-weight:300">
+				<f:form.checkbox id="show-deleted"
+				                 additionalAttributes="{onclick: 'if (this.checked) { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {expired: display.expired, won: display.won, lost: display.lost, deleted: 1})}\' } else { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {expired: display.expired, lost: display.lost, won: display.won})}\' }'}"
+				                 name="showDeleted"
+				                 value="1"
+				                 checked="{display.deleted}" />
+				<f:translate id="show_deleted" default="Include deleted projects" />
+			</label>
+			&nbsp;
+			<f:link.action action="list" class="btn btn-default" noCacheHash="1" absolute="1" additionalAttributes="{buttonsAttributes.show}" arguments="{expired: 1, won: 1, lost: 1, deleted: 1}"><i class="fa fa-eye fa-fw"></i> <f:translate id="button_show_all" default="Show 'em all" /></f:link.action>
+			<f:link.action action="list" class="btn btn-default" noCacheHash="1" absolute="1" additionalAttributes="{buttonsAttributes.hide}"><i class="fa fa-eye-slash fa-fw"></i> <f:translate id="button_hide_all" default="Hide 'em" /></f:link.action>
+			&nbsp;
+			<f:link.action action="trash" class="btn btn-danger" noCacheHash="1" absolute="1" additionalAttributes="{buttonsAttributes.delete}"><i class="fa fa-trash-o fa-fw"></i> <f:translate id="button_clear_db" default="Trash expired/rejected" /></f:link.action>
 			&nbsp; || &nbsp;
 			<label for="js-csv-us-format" style="font-weight:300">
 				<f:form.checkbox id="js-csv-us-format"
@@ -56,14 +90,14 @@
 			<f:for each="{projects}" as="project">
 				<tr class="{f:if(condition: project.accepted, then: 'success')}{f:if(condition: project.rejected, then: 'danger')}">
 					<td>
-						<f:if condition="{project.gotten}">
-							<f:then>
-								{project.uid} <i class="fa fa-trophy fa-lg fa-fw" style="color:#c0c0c0"></i>
-							</f:then>
-							<f:else>
+						<f:switch expression="{project.state}">
+							<f:case value="1">{project.uid} <i class="fa fa-thumbs-up fa-fw" title="{f:translate(id: 'won')}"></i></f:case>
+							<f:case value="2">{project.uid} <i class="fa fa-thumbs-down fa-fw" title="{f:translate(id: 'lost')}"></i></f:case>
+							<f:case value="3">{project.uid} <i class="fa fa-trash-o fa-fw text-danger" title="{f:translate(id: 'deleted')}"></i> <f:if condition="{project.won}"><i class="fa fa-thumbs-up fa-lg fa-fw" style="color:#c0c0c0"></i></f:if></f:case>
+							<f:case value="0">
 								{project.uid} <f:link.action action="resendRequestMail" arguments="{project: project}" title="Re-send original request"><i class="fa fa-paper-plane-o fa-fw"></i></f:link.action>
-							</f:else>
-						</f:if>
+							</f:case>
+						</f:switch>
 					</td>
 					<td data-sort-value="{project.dateOfRequest -> f:format.date(format: 'U')}">
 						{project.dateOfRequest -> f:format.date(format: 'd-m-Y')}
@@ -155,9 +189,12 @@
 										<f:link.action action="confirmation" arguments="{project: project, do: 'reject'}" noCacheHash="1" title="{f:translate(id: 'state_0')}" style="color: #ccc">
 											<i class="fa fa-times-circle-o fa-lg fa-fw"></i>
 										</f:link.action>
-										<f:if condition="{project.gotten} == 0">
-											<f:link.action action="gainedProject" arguments="{project: project}" noCacheHash="1" title="{f:translate(id: 'gotten')}">
-												<i class="fa fa-trophy fa-lg fa-fw"></i>
+										<f:if condition="{project.wonOrLost} == 0">
+											<f:link.action action="winLose" arguments="{project: project, won: 1}" noCacheHash="1" title="{f:translate(id: 'won')}">
+												<i class="fa fa-thumbs-o-up fa-fw"></i>
+											</f:link.action>
+											<f:link.action action="winLose" arguments="{project: project}" noCacheHash="1" title="{f:translate(id: 'lost')}">
+												<i class="fa fa-thumbs-o-down fa-fw"></i>
 											</f:link.action>
 										</f:if>
 									</f:then>

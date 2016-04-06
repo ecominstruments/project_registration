@@ -169,8 +169,26 @@
 			<trans-unit id="state_2">
 				<source>needs action</source>
 			</trans-unit>
-			<trans-unit id="gotten">
-				<source>gained project</source>
+			<trans-unit id="won">
+				<source>Project was won</source>
+			</trans-unit>
+			<trans-unit id="won_1">
+				<source>won</source>
+			</trans-unit>
+			<trans-unit id="lost">
+				<source>Project was lost</source>
+			</trans-unit>
+			<trans-unit id="lost_1">
+				<source>lost</source>
+			</trans-unit>
+			<trans-unit id="button_show_all">
+				<source>Show 'em all</source>
+			</trans-unit>
+			<trans-unit id="button_hide_all">
+				<source>Hide 'em</source>
+			</trans-unit>
+			<trans-unit id="button_clear_db">
+				<source>Trash expired/rejected</source>
 			</trans-unit>
 			<trans-unit id="button_send_request">
 				<source>Send request</source>

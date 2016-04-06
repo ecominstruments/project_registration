@@ -37,11 +37,15 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     const DATE_FORMAT = 'Y-m-d';
 
     /**
+     * Marks projects that were not yet accepted nor rejected
+     *
      * @var bool
      */
     protected $hidden = false;
 
     /**
+     * Marks deleted projects
+     *
      * @var bool
      */
     protected $deleted = false;
@@ -102,14 +106,25 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $addressee = 0;
 
     /**
+     * Marks projects that were accepted or rejected (boolean represents state)
+     *
      * @var bool
      */
     protected $approved = false;
 
     /**
+     * Marks projects we have won
+     *
      * @var bool
      */
-    protected $gotten = false;
+    protected $won = false;
+
+    /**
+     * Marks projects we have lost
+     *
+     * @var bool
+     */
+    protected $lost = false;
 
     /**
      * @var \S3b0\ProjectRegistration\Domain\Model\Person
@@ -130,6 +145,13 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\ProjectRegistration\Domain\Model\ProductPropertyValue>
      */
     protected $propertyValues = null;
+
+    /**
+     * Internal variable for Fluid f:switch to avoid f:if nesting
+     *
+     * @var integer
+     */
+    protected $state = 0;
 
     /**
      * Project constructor.
@@ -423,17 +445,43 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @return bool
      */
-    public function isGotten()
+    public function isWon()
     {
-        return $this->gotten;
+        return $this->approved && $this->won;
     }
 
     /**
-     * @param bool $gotten
+     * @param bool $won
      */
-    public function setGotten($gotten)
+    public function setWon($won)
     {
-        $this->gotten = $gotten;
+        $this->won = $won;
+        $this->lost = !$won;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLost()
+    {
+        return $this->approved && $this->lost;
+    }
+
+    /**
+     * @param bool $lost
+     */
+    public function setLost($lost)
+    {
+        $this->lost = $lost;
+        $this->won = !$lost;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWonOrLost()
+    {
+        return $this->approved && ($this->won ^ $this->lost);
     }
 
     /**
@@ -586,6 +634,26 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         }
 
         return $return;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getState()
+    {
+        if ($this->isDeleted()) {
+            return 3;
+        }
+
+        if ($this->isLost()) {
+            return 2;
+        }
+
+        if ($this->isWon()) {
+            return 1;
+        }
+
+        return 0;
     }
 
     /**
