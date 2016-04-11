@@ -189,20 +189,20 @@
 										<f:link.action action="confirmation" arguments="{project: project, do: 'reject'}" noCacheHash="1" title="{f:translate(id: 'state_0')}" style="color: #ccc">
 											<i class="fa fa-times-circle-o fa-lg fa-fw"></i>
 										</f:link.action>
-										<f:if condition="{project.wonOrLost} == 0">
-											<f:link.action action="winLose" arguments="{project: project, won: 1}" noCacheHash="1" title="{f:translate(id: 'won')}">
-												<i class="fa fa-thumbs-o-up fa-fw"></i>
-											</f:link.action>
-											<f:link.action action="winLose" arguments="{project: project}" noCacheHash="1" title="{f:translate(id: 'lost')}">
-												<i class="fa fa-thumbs-o-down fa-fw"></i>
-											</f:link.action>
-										</f:if>
 									</f:then>
 									<f:else>
 										<f:link.action action="confirmation" arguments="{project: project, do: 'accept'}" noCacheHash="1" title="{f:translate(id: 'state_1')}" style="color: #ccc">
 											<i class="fa fa-check-circle-o fa-lg fa-fw"></i>
 										</f:link.action>
 									</f:else>
+								</f:if>
+								<f:if condition="{project.wonOrLost} == 0">
+									<f:link.action action="winLose" arguments="{project: project, won: 1}" noCacheHash="1" title="{f:translate(id: 'won')}">
+										<i class="fa fa-thumbs-o-up fa-fw"></i>
+									</f:link.action>
+									<f:link.action action="winLose" arguments="{project: project}" noCacheHash="1" title="{f:translate(id: 'lost')}">
+										<i class="fa fa-thumbs-o-down fa-fw"></i>
+									</f:link.action>
 								</f:if>
 							</f:if>
 						</f:else>
