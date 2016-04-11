@@ -135,6 +135,7 @@ class ProjectController extends RepositoryInjectionController
                 'won'     => $won,
                 'lost'    => $lost
             ],
+            'deletable'         => sizeof($this->projectRepository->findDeletable()),
             'buttonsAttributes' => [
                 'show'   => $displayingAll ? ['onclick' => 'return false;', 'disabled' => 1] : [],
                 'hide'   => $displayingDef ? ['onclick' => 'return false;', 'disabled' => 1] : [],
