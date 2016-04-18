@@ -703,10 +703,9 @@ class ProjectController extends RepositoryInjectionController
          */
         $mailToSender->setFrom($noReply ?: CoreUtility\MailUtility::getSystemFrom())
             ->setTo([
-                'sebastian.iffland@ecom-ex.com' => 'Sebastian Iffland'
-                #$project->getRegistrant()->getEmail() => $project->getRegistrant()->getName()
+                $project->getRegistrant()->getEmail() => $project->getRegistrant()->getName()
             ])
-            #->setCc($receivers)
+            ->setCc($receivers)
             ->setSubject(($this->settings[ 'mail' ][ 'projectStatusUpdateSubject' ] ?: (Lang::translate('mail_project_status_update_subject', $this->extensionName) ?: 'Project status update')) . " #{$project->getUid()}")
             ->setBody($this->getStandAloneTemplate(
                 CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectStatusUpdated.html',
