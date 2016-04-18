@@ -135,11 +135,15 @@ class ProjectController extends RepositoryInjectionController
                 'won'     => $won,
                 'lost'    => $lost
             ],
-            'deletable'         => sizeof($this->projectRepository->findDeletable()),
             'buttonsAttributes' => [
                 'show'   => $displayingAll ? ['onclick' => 'return false;', 'disabled' => 1] : [],
                 'hide'   => $displayingDef ? ['onclick' => 'return false;', 'disabled' => 1] : [],
                 'delete' => $trashButtonAttributes
+            ],
+            'amounts'           => [
+                'all'       => sizeof($this->projectRepository->findAll(true, true, true, true)),
+                'filtered'  => sizeof($projects) - sizeof($this->projectRepository->findAll()),
+                'deletable' => sizeof($this->projectRepository->findDeletable())
             ]
         ]);
     }
@@ -599,7 +603,7 @@ class ProjectController extends RepositoryInjectionController
                         Lang::translate('legend_project_name', $eN)     => $project->getTitle(),
                         Lang::translate('product', $eN)                 => $project->getProduct() instanceof Model\Product ? $project->getProduct()->getTitle() : '',
                         Lang::translate('application', $eN)             => $project->getApplication(),
-                        Lang::translate('quantity', $eN)                => $project->getQuantity(),
+                        Lang::translate('quantity', $eN)                => "=\"{$project->getQuantity()}\"",
                         Lang::translate('estimated_purchase_date', $eN) => $project->getEstimatedPurchaseDate()->format($this->settings[ 'formatDate' ]),
                         Lang::translate('registration_notes', $eN)      => $project->getRegistrationNotes(),
                         Lang::translate('legend_enduser_company', $eN)  => $project->getEndUser()->getCompany(),
@@ -699,16 +703,18 @@ class ProjectController extends RepositoryInjectionController
          */
         $mailToSender->setFrom($noReply ?: CoreUtility\MailUtility::getSystemFrom())
             ->setTo([
-                $project->getRegistrant()->getEmail() => $project->getRegistrant()->getName()
+                'sebastian.iffland@ecom-ex.com' => 'Sebastian Iffland'
+                #$project->getRegistrant()->getEmail() => $project->getRegistrant()->getName()
             ])
-            ->setCc($receivers)
+            #->setCc($receivers)
             ->setSubject(($this->settings[ 'mail' ][ 'projectStatusUpdateSubject' ] ?: (Lang::translate('mail_project_status_update_subject', $this->extensionName) ?: 'Project status update')) . " #{$project->getUid()}")
             ->setBody($this->getStandAloneTemplate(
                 CoreUtility\ExtensionManagementUtility::siteRelPath(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->extensionName)) . 'Resources/Private/Templates/Email/ProjectStatusUpdated.html',
                 [
                     'settings' => $this->settings,
                     'project'  => $project,
-                    'accepted' => $isAccepted
+                    'accepted' => $isAccepted,
+                    'addressees' => $this->getAddressees()
                 ]
             ))
             ->send();

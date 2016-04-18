@@ -4,6 +4,127 @@
 <f:if condition="{data.accepted}">
 	<f:then>
 		<f:format.nl2br><f:translate id="message_status_update_accepted" /></f:format.nl2br>
+		<hr />
+		<table>
+			<tr>
+				<td><f:translate id="{data.settings.addressees.label}" /></td>
+				<td>{s:getArrayElement(array: data.addressees, key: data.project.addressee)}</td>
+			</tr>
+			<f:if condition="{data.project.registrant.noLoginUser}">
+				<tr>
+					<td colspan="2" style="font-size: 1.2em; font-weight: bold; padding-top: 1em;text-align: left"><f:translate id="registrant"/></td>
+				</tr>
+				<tr>
+					<td><f:translate id="name" /></td>
+					<td>{data.project.registrant.name}</td>
+				</tr>
+				<tr>
+					<td><f:translate id="company" /></td>
+					<td>{data.project.registrant.company}</td>
+				</tr>
+				<tr>
+					<td><f:translate id="email" /></td>
+					<td>{data.project.registrant.email}</td>
+				</tr>
+				<tr>
+					<td><f:translate id="phone" /></td>
+					<td>{data.project.registrant.phone}</td>
+				</tr>
+			</f:if>
+			<tr>
+				<td colspan="2" style="font-size: 1.2em; font-weight: bold; padding-top: 1em;text-align: left"><f:translate id="project"/></td>
+			</tr>
+			<tr>
+				<td>ID</td>
+				<td>#{data.project.uid}</td>
+			</tr>
+			<tr>
+				<td><f:translate id="date_of_request"/></td>
+				<td>{data.project.dateOfRequest -> f:format.date(format: '{data.settings.formatDate} h:i A')}</td>
+			</tr>
+			<tr>
+				<td><f:translate id="title"/></td>
+				<td>{data.project.title}</td>
+			</tr>
+			<tr>
+				<td><f:translate id="product"/></td>
+				<td>{data.project.product.title}</td>
+			</tr>
+			<f:if condition="{data.project.propertyValues -> f:count()}">
+				<f:for each="{data.project.propertyValues}" as="propertyValue">
+					<tr>
+						<td>{propertyValue.property.title}</td>
+						<td>{propertyValue.title}</td>
+					</tr>
+				</f:for>
+			</f:if>
+			<tr>
+				<td><f:translate id="application"/></td>
+				<td>{data.project.application}</td>
+			</tr>
+			<tr>
+				<td><f:translate id="quantity"/></td>
+				<td>{data.project.quantity}</td>
+			</tr>
+			<tr>
+				<td><f:translate id="estimated_purchase_date"/></td>
+				<td>{data.project.estimatedPurchaseDate -> f:format.date(format: data.settings.formatDate)}</td>
+			</tr>
+			<f:if condition="{data.project.registrationNotes}">
+				<tr>
+					<td><f:translate id="registration_notes"/></td>
+					<td>{data.project.registrationNotes -> f:format.nl2br()}</td>
+				</tr>
+			</f:if>
+			<!-- End user information -->
+			<tr>
+				<td colspan="2" style="font-size: 1.2em; font-weight: bold; padding-top: 1em;text-align: left"><f:translate id="end_user"/></td>
+			</tr>
+			<tr>
+				<td><f:translate id="company" /></td>
+				<td>{data.project.endUser.company}</td>
+			</tr>
+			<f:if condition="{data.project.endUser.name}">
+				<tr>
+					<td><f:translate id="name" /></td>
+					<td>{data.project.endUser.name}</td>
+				</tr>
+			</f:if>
+			<f:if condition="{data.project.endUser.email}">
+				<tr>
+					<td><f:translate id="email" /></td>
+					<td>{data.project.endUser.email}</td>
+				</tr>
+			</f:if>
+			<f:if condition="{data.project.endUser.phone}">
+				<tr>
+					<td><f:translate id="phone" /></td>
+					<td>{data.project.endUser.phone}</td>
+				</tr>
+			</f:if>
+			<f:if condition="{data.project.endUser.city}">
+				<tr>
+					<td><f:translate id="city" /></td>
+					<td>{data.project.endUser.city}</td>
+				</tr>
+			</f:if>
+			<f:if condition="{data.project.endUser.site}">
+				<tr>
+					<td><f:translate id="site" /></td>
+					<td>{data.project.endUser.site}</td>
+				</tr>
+			</f:if>
+			<tr>
+				<td><f:translate id="country" /></td>
+				<td>{data.project.endUser.country.title}</td>
+			</tr>
+			<f:if condition="{data.project.endUser.state}">
+				<tr>
+					<td><f:translate id="state" /></td>
+					<td>{data.project.endUser.state.title}</td>
+				</tr>
+			</f:if>
+		</table>
 	</f:then>
 	<f:else>
 		<f:format.nl2br><f:translate id="message_status_update_rejected" /></f:format.nl2br>

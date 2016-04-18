@@ -45,10 +45,10 @@
 				<f:translate id="show_deleted" default="Include deleted projects" />
 			</label>
 			&nbsp;
-			<f:link.action action="list" class="btn btn-default" noCacheHash="1" absolute="1" additionalAttributes="{buttonsAttributes.show}" arguments="{expired: 1, won: 1, lost: 1, deleted: 1}"><i class="fa fa-eye fa-fw"></i> <f:translate id="button_show_all" default="Show 'em all" /></f:link.action>
-			<f:link.action action="list" class="btn btn-default" noCacheHash="1" absolute="1" additionalAttributes="{buttonsAttributes.hide}"><i class="fa fa-eye-slash fa-fw"></i> <f:translate id="button_hide_all" default="Hide 'em" /></f:link.action>
+			<f:link.action action="list" class="btn btn-default" noCacheHash="1" absolute="1" additionalAttributes="{buttonsAttributes.show}" arguments="{expired: 1, won: 1, lost: 1, deleted: 1}"><i class="fa fa-eye fa-fw"></i> <f:translate id="button_show_all" default="Show 'em all" /> ({amounts.all} found)</f:link.action>
+			<f:link.action action="list" class="btn btn-default" noCacheHash="1" absolute="1" additionalAttributes="{buttonsAttributes.hide}"><i class="fa fa-eye-slash fa-fw"></i> <f:translate id="button_hide_all" default="Hide 'em" /> ({amounts.filtered} found)</f:link.action>
 			&nbsp;
-			<f:link.action action="trash" class="btn btn-danger" noCacheHash="1" absolute="1" additionalAttributes="{buttonsAttributes.delete}"><i class="fa fa-trash-o fa-fw"></i> <f:translate id="button_clear_db" default="Trash expired/rejected" /><f:if condition="{deletable}"> ({deletable} found)</f:if></f:link.action>
+			<f:link.action action="trash" class="btn btn-danger" noCacheHash="1" absolute="1" additionalAttributes="{buttonsAttributes.delete}"><i class="fa fa-trash-o fa-fw"></i> <f:translate id="button_clear_db" default="Trash expired/rejected" /> ({amounts.deletable} found)</f:link.action>
 			&nbsp; || &nbsp;
 			<label for="js-csv-us-format" style="font-weight:300">
 				<f:form.checkbox id="js-csv-us-format"
@@ -95,7 +95,7 @@
 							<f:case value="2">{project.uid} <i class="fa fa-thumbs-down fa-fw" title="{f:translate(id: 'lost')}"></i></f:case>
 							<f:case value="3">{project.uid} <i class="fa fa-trash-o fa-fw text-danger" title="{f:translate(id: 'deleted')}"></i> <f:if condition="{project.won}"><i class="fa fa-thumbs-up fa-lg fa-fw" style="color:#c0c0c0"></i></f:if></f:case>
 							<f:case value="0">
-								{project.uid} <f:link.action action="resendRequestMail" arguments="{project: project}" title="Re-send original request"><i class="fa fa-paper-plane-o fa-fw"></i></f:link.action>
+								{project.uid} <f:link.action action="resendRequestMail" arguments="{project: project}" title="Re-send original request" noCacheHash="1"><i class="fa fa-paper-plane-o fa-fw"></i></f:link.action>
 							</f:case>
 						</f:switch>
 					</td>
@@ -114,11 +114,9 @@
 						<f:if condition="{project.expired}">
 							<i class="fa fa-calendar-times-o text-danger hover-title" title="{f:translate(id: 'validity.expired')}"></i>
 						</f:if>
-						<f:if condition="{project.active} == 0">
-							<f:link.action action="extendExpiry" arguments="{project: project}" title="Extend expiry">
-								<i class="fa fa-calendar-plus-o fa-fw" title="{f:translate(id: 'validity.extend')}"></i>
-							</f:link.action>
-						</f:if>
+						<f:link.action action="extendExpiry" arguments="{project: project}" title="Extend expiry">
+							<i class="fa fa-calendar-plus-o fa-fw" title="{f:translate(id: 'validity.extend')}"></i>
+						</f:link.action>
 					</td>
 					<td style="white-space:nowrap">{project.registrant.name}
 						<f:if condition="{f:ecom.inArray(haystack: project.registrant.feUserGroups, needle: settings.certifiedUsersUserGroup)}">
