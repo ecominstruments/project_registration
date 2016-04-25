@@ -6,48 +6,52 @@
 	<f:render partial="FlashMessages" arguments="{_all}"/>
 
 	<section class="header tx-project-registration-list-view">
-		<p style="text-align: right">
+		<div style="text-align: right">
 			<strong>{projects -> f:count()} projects found</strong>
-			&nbsp; || &nbsp;
-			<label for="show-won" style="font-weight:300">
-				<f:form.checkbox id="show-won"
-				                 additionalAttributes="{onclick: 'if (this.checked) { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {expired: display.expired, won: 1, lost: display.lost, deleted: display.deleted})}\' } else { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {expired: display.expired, lost: display.lost, deleted: display.deleted})}\' }'}"
-				                 name="showWon"
-				                 value="1"
-				                 checked="{display.won}" />
-				<f:translate id="show_won" default="Include won projects" />
-			</label>
-			&nbsp;
-			<label for="show-lost" style="font-weight:300">
-				<f:form.checkbox id="show-lost"
-				                 additionalAttributes="{onclick: 'if (this.checked) { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {expired: display.expired, won: display.won, lost: 1, deleted: display.deleted})}\' } else { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {expired: display.expired, won: display.won, deleted: display.deleted})}\' }'}"
-				                 name="showLost"
-				                 value="1"
-				                 checked="{display.lost}" />
-				<f:translate id="show_lost" default="Include lost projects" />
-			</label>
-			&nbsp;
-			<label for="show-expired" style="font-weight:300">
-				<f:form.checkbox id="show-expired"
-				                 additionalAttributes="{onclick: 'if (this.checked) { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {expired: 1, won: display.won, lost: display.lost, deleted: display.deleted})}\' } else { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {won: display.won, lost: display.lost, deleted: display.deleted})}\' }'}"
-				                 name="showExpired"
-				                 value="1"
-				                 checked="{display.expired}" />
-				<f:translate id="show_expired" default="Include expired projects" />
-			</label>
-			&nbsp;
-			<label for="show-deleted" style="font-weight:300">
-				<f:form.checkbox id="show-deleted"
-				                 additionalAttributes="{onclick: 'if (this.checked) { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {expired: display.expired, won: display.won, lost: display.lost, deleted: 1})}\' } else { window.location = \'{f:uri.action(action: \'list\', noCacheHash: 1, absolute: 1, arguments: {expired: display.expired, lost: display.lost, won: display.won})}\' }'}"
-				                 name="showDeleted"
-				                 value="1"
-				                 checked="{display.deleted}" />
-				<f:translate id="show_deleted" default="Include deleted projects" />
-			</label>
-			&nbsp;
-			<f:link.action action="list" class="btn btn-default" noCacheHash="1" absolute="1" additionalAttributes="{buttonsAttributes.show}" arguments="{expired: 1, won: 1, lost: 1, deleted: 1}"><i class="fa fa-eye fa-fw"></i> <f:translate id="button_show_all" default="Show 'em all" /> ({amounts.all} found)</f:link.action>
-			<f:link.action action="list" class="btn btn-default" noCacheHash="1" absolute="1" additionalAttributes="{buttonsAttributes.hide}"><i class="fa fa-eye-slash fa-fw"></i> <f:translate id="button_hide_all" default="Hide 'em" /> ({amounts.filtered} found)</f:link.action>
-			&nbsp;
+			<f:form id="filter">
+				<label for="show-action-required" style="font-weight:300">
+					<f:form.checkbox id="show-action-required"
+					                 name="actionRequired"
+					                 value="1"
+					                 checked="{display.actionRequired}" />
+					<f:translate id="show_action_required" default="Action required" /> [{amounts.actionRequired}]
+				</label>
+				&nbsp;
+				<label for="show-won" style="font-weight:300">
+					<f:form.checkbox id="show-won"
+					                 name="won"
+					                 value="1"
+					                 checked="{display.won}" />
+					<f:translate id="show_won" default="Won projects" /> [{amounts.won}]
+				</label>
+				&nbsp;
+				<label for="show-lost" style="font-weight:300">
+					<f:form.checkbox id="show-lost"
+					                 name="lost"
+					                 value="1"
+					                 checked="{display.lost}" />
+					<f:translate id="show_lost" default="Lost projects" /> [{amounts.lost}]
+				</label>
+				&nbsp;
+				<label for="show-expired" style="font-weight:300">
+					<f:form.checkbox id="show-expired"
+					                 name="expired"
+					                 value="1"
+					                 checked="{display.expired}" />
+					<f:translate id="show_expired" default="Expired projects" /> [{amounts.expired}]
+				</label>
+				&nbsp;
+				<label for="show-deleted" style="font-weight:300">
+					<f:form.checkbox id="show-deleted"
+					                 name="deleted"
+					                 value="1"
+					                 checked="{display.deleted}" />
+					<f:translate id="show_deleted" default="Deleted projects" /> [{amounts.deleted}]
+				</label>
+				&nbsp;
+				<f:form.button type="submit" class="btn btn-default"><f:translate id="button.apply" default="Apply" /></f:form.button>
+				<f:link.action class="btn btn-warning"><i class="fa fa-undo fa-fw"></i> <f:translate id="reset" default="Reset" /></f:link.action>
+			</f:form>
 			<f:link.action action="trash" class="btn btn-danger" noCacheHash="1" absolute="1" additionalAttributes="{buttonsAttributes.delete}"><i class="fa fa-trash-o fa-fw"></i> <f:translate id="button_clear_db" default="Trash expired/rejected" /> ({amounts.deletable} found)</f:link.action>
 			&nbsp; || &nbsp;
 			<label for="js-csv-us-format" style="font-weight:300">
@@ -60,7 +64,7 @@
 			</label>
 			&nbsp;
 			<f:link.action action="exportCSV" id="csvExportLink" class="btn btn-success"><f:translate id="csvExport" extensionName="lowlevel" /> <i class="fa fa-file-excel-o fa-fw"></i></f:link.action>
-		</p>
+		</div>
 		<input type="search" class="light-table-filter form-control" data-table="table" placeholder="Filter">
 		<p>&nbsp;</p>
 	</section>

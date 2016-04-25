@@ -154,6 +154,11 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $state = 0;
 
     /**
+     * @var boolean
+     */
+    protected $showInList = true;
+
+    /**
      * Project constructor.
      */
     public function __construct()
@@ -500,6 +505,11 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         return $this->isVisible() && !$this->approved;
     }
 
+    public function isActionRequired()
+    {
+        return $this->hidden && !$this->approved;
+    }
+
     /**
      * @return string
      */
@@ -634,6 +644,22 @@ class Project extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         }
 
         return $return;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isShowInList()
+    {
+        return $this->showInList;
+    }
+
+    /**
+     * @param boolean $showInList
+     */
+    public function setShowInList($showInList)
+    {
+        $this->showInList = $showInList;
     }
 
     /**

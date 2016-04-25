@@ -102,19 +102,20 @@ class ProjectController extends RepositoryInjectionController
     /**
      * action list
      *
-     * @param bool $expired
-     * @param bool $won
-     * @param bool $lost
-     * @param bool $deleted
+     * @param boolean $actionRequired
+     * @param boolean $expired
+     * @param boolean $won
+     * @param boolean $lost
+     * @param boolean $deleted
      *
      * @return void
      */
-    public function listAction($expired = false, $won = false, $lost = false, $deleted = false)
+    public function listAction($actionRequired = false, $expired = false, $won = false, $lost = false, $deleted = false)
     {
-        $projects = $this->projectRepository->findAll($expired, $won, $lost, $deleted);
+        $projects = $this->projectRepository->findAllFiltered($actionRequired, $expired, $won, $lost, $deleted);
         $addressees = $this->getAddressees(false, null, true, true);
-        $displayingAll = $expired && $won && $lost && $deleted;
-        $displayingDef = !$expired && !$won && !$lost && !$deleted;
+        $displayingAll = $actionRequired && $expired && $won && $lost && $deleted;
+        $displayingDef = !$actionRequired && !$expired && !$won && !$lost && !$deleted;
         $trashButtonAttributes = [
             'onclick' => 'return confirm(\'' . Lang::translate('LLL:EXT:backend/Resources/Private/Language/locallang_layout.xlf:deleteWarning', 'backend') . '\');'
         ];
@@ -130,10 +131,11 @@ class ProjectController extends RepositoryInjectionController
             'addressees'        => $addressees,
             'logInUserRole'     => $this->logInUserRole,
             'display'           => [
-                'expired' => $expired,
-                'deleted' => $deleted,
-                'won'     => $won,
-                'lost'    => $lost
+                'actionRequired' => $actionRequired,
+                'expired'        => $expired,
+                'deleted'        => $deleted,
+                'won'            => $won,
+                'lost'           => $lost
             ],
             'buttonsAttributes' => [
                 'show'   => $displayingAll ? ['onclick' => 'return false;', 'disabled' => 1] : [],
@@ -141,9 +143,14 @@ class ProjectController extends RepositoryInjectionController
                 'delete' => $trashButtonAttributes
             ],
             'amounts'           => [
-                'all'       => sizeof($this->projectRepository->findAll(true, true, true, true)),
-                'filtered'  => sizeof($projects) - sizeof($this->projectRepository->findAll()),
-                'deletable' => sizeof($this->projectRepository->findDeletable())
+                'all'            => sizeof($this->projectRepository->findAll()),
+                'filtered'       => sizeof($this->projectRepository->findAllFiltered()),
+                'deletable'      => sizeof($this->projectRepository->findDeletable()),
+                'deleted'        => $this->projectRepository->countByDeleted(true),
+                'expired'        => $this->projectRepository->countByExpired(true),
+                'won'            => $this->projectRepository->countByWon(true),
+                'lost'           => $this->projectRepository->countByLost(true),
+                'actionRequired' => $this->projectRepository->countByActionRequired(true)
             ]
         ]);
     }
@@ -573,7 +580,7 @@ class ProjectController extends RepositoryInjectionController
             'hidden'          => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING,
             'date_of_request' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
         ]);
-        $projects = $this->projectRepository->findAll(true, true, true, true);
+        $projects = $this->projectRepository->findAll();
         $deleted = $this->projectRepository->findByDeleted(1);
         $csvArray = [];
 

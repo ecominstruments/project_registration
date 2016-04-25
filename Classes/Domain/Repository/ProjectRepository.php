@@ -56,27 +56,81 @@ class ProjectRepository extends \S3b0\ProjectRegistration\Domain\Repository\Abst
     /**
      * Returns all objects of this repository.
      *
-     * @param bool $expired
-     * @param bool $won
-     * @param bool $lost
-     * @param bool $deleted
-     *
-     * @return array
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function findAll($expired = false, $won = false, $lost = false, $deleted = false)
+    public function findAll()
+    {
+        $query = $this->createQuery();
+
+        $query->setQuerySettings($query->getQuerySettings()->setIncludeDeleted(true));
+
+        return $query->execute();
+    }
+
+    /**
+     * Returns all objects of this repository.
+     *
+     * @param boolean $actionRequired
+     * @param boolean $expired
+     * @param boolean $won
+     * @param boolean $lost
+     * @param boolean $deleted
+     *
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function findAllFiltered($actionRequired = false, $expired = false, $won = false, $lost = false, $deleted = false)
     {
         $query = $this->createQuery();
 
         $query->setQuerySettings($query->getQuerySettings()->setIncludeDeleted($deleted));
 
         $records = $query->execute()->toArray();
-        self::excludeByProperties($records, [
-            'expired' => $expired,
-            'won'     => $won,
-            'lost'    => $lost
-        ]);
+        if ($actionRequired || $expired || $won || $lost || $deleted) {
+            // If every argument is set, state equals show all
+            if ($actionRequired && $expired && $won && $lost && $deleted) {
+                return $this->findAll();
+            }
+            self::includeByProperties($records, [
+                'actionRequired' => $actionRequired,
+                'expired'        => $expired,
+                'won'            => $won,
+                'lost'           => $lost,
+                'deleted'        => $deleted
+            ]);
+        }
 
         return $records;
+    }
+
+    /**
+     * Remove records off the array, by various properties.
+     * Property getters MUST provide booleans as return values!
+     *
+     * @param array $records
+     * @param array $properties
+     */
+    private static function includeByProperties(array &$records, array $properties = [])
+    {
+        if (sizeof($properties)) {
+            /** @var \S3b0\ProjectRegistration\Domain\Model\Project $record */
+            foreach ($records as $k => $record) {
+                $show = false;
+                foreach ($properties as $property => $check) {
+                    $caller = 'is' . GeneralUtility::underscoredToUpperCamelCase($property);
+                    if (method_exists($record, $caller) === false) {
+                        $caller = 'get' . GeneralUtility::underscoredToUpperCamelCase($property);
+                    }
+                    if ($check && method_exists($record, $caller)) {
+                        if (call_user_func([$record, $caller])) {
+                            $show = $show || call_user_func([$record, $caller]);
+                        }
+                    }
+                }
+                if ($show === false) {
+                    unset($records[$k]);
+                }
+            }
+        }
     }
 
     /**
@@ -145,6 +199,114 @@ class ProjectRepository extends \S3b0\ProjectRegistration\Domain\Repository\Abst
         }
 
         return $projects;
+    }
+
+    /**
+     * @param boolean $deleted
+     *
+     * @return integer
+     */
+    public function countByDeleted($deleted = false)
+    {
+        $query = $this->createQuery();
+
+        $query->setQuerySettings($query->getQuerySettings()->setIncludeDeleted(true));
+
+        return $query->matching(
+            $query->equals('deleted', $deleted)
+        )->execute()->count();
+    }
+
+    /**
+     * @param boolean $won
+     *
+     * @return integer
+     */
+    public function countByWon($won = false)
+    {
+        $query = $this->createQuery();
+
+        return $query->matching(
+            $query->logicalAnd([
+                $query->equals('won', $won),
+                $query->equals('approved', true)
+            ])
+        )->execute()->count();
+    }
+
+    /**
+     * @param boolean $lost
+     *
+     * @return integer
+     */
+    public function countByLost($lost = false)
+    {
+        $query = $this->createQuery();
+
+        return $query->matching(
+            $query->logicalAnd([
+                $query->equals('lost', $lost),
+                $query->equals('approved', true)
+            ])
+        )->execute()->count();
+    }
+
+    /**
+     * @param boolean $expired
+     *
+     * @return integer
+     */
+    public function countByExpired($expired = false)
+    {
+        $query = $this->createQuery();
+
+        if ($records = $query->execute()->toArray()) {
+            /** @var \S3b0\ProjectRegistration\Domain\Model\Project $project */
+            foreach ($records as $offset => $project) {
+                if ($expired) {
+                    if (!$project->isExpired()) {
+                        unset($records[$offset]);
+                    }
+                } else {
+                    if ($project->isExpired()) {
+                        unset($records[$offset]);
+                    }
+                }
+            }
+
+            return sizeof($records);
+        }
+
+        return $query->execute()->count();
+    }
+
+    /**
+     * @param boolean $actionRequired
+     *
+     * @return integer
+     */
+    public function countByActionRequired($actionRequired = false)
+    {
+        $query = $this->createQuery();
+
+        if ($records = $query->matching($query->equals('hidden', true))->execute()->toArray()) {
+            /** @var \S3b0\ProjectRegistration\Domain\Model\Project $project */
+            foreach ($records as $offset => $project) {
+                if ($actionRequired) {
+                    if ($project->isApproved()) {
+                        unset($records[$offset]);
+                    }
+                } else {
+                    if (!$project->isApproved()) {
+                        unset($records[$offset]);
+                    }
+                }
+            }
+
+            return sizeof($records);
+        }
+
+        return $query->execute()->count();
     }
 
 }

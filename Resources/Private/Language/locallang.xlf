@@ -182,10 +182,10 @@
 				<source>lost</source>
 			</trans-unit>
 			<trans-unit id="button_show_all">
-				<source>Show 'em all</source>
+				<source>Show all</source>
 			</trans-unit>
-			<trans-unit id="button_hide_all">
-				<source>Hide 'em</source>
+			<trans-unit id="button_apply">
+				<source>Apply</source>
 			</trans-unit>
 			<trans-unit id="button_clear_db">
 				<source>Trash expired/rejected</source>
